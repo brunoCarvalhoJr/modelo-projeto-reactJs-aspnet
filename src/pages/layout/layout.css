@@ -1,0 +1,83 @@
+#components-layout-demo-custom-trigger .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#components-layout-demo-custom-trigger .trigger:hover {
+  color: #1890ff;
+}
+
+#components-layout-demo-custom-trigger .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.site-layout-background {
+  padding: 0px 10% !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.layout-logo {
+  display: flex;
+  justify-content: flex-start;
+  width: 80%;
+}
+.layout-logo .logo {
+  margin-right: 5%;
+  width: 80px;
+  height: 50px;
+}
+
+#map {
+  width: 100%;
+  height: 800px;
+  z-index: 0;
+}
+
+.site-layout-sub-header {
+  margin-top: 60px;
+  margin-bottom: 5px;
+  background: #fff;
+  height: 70px;
+  padding: 0 50px;
+  line-height: 64px;
+}
+
+.site-layout-sub-header-content {
+  margin: 0 auto;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.site-layout-sub-header-content .ant-statistic {
+  margin-right: 50px;
+}
+
+.site-page-header {
+  border: 1px solid #ebedf0;
+}
+
+.site-content .ant-page-header {
+  background: #fff;
+}
+
+.site-content {
+  width: 100%;
+  margin: 0 auto;
+  min-height: 300 !important;
+}
+
+.fazenda {
+  padding: 10px;
+  display: flex;
+}
+.fazenda .anticon {
+  font-size: 25px;
+  margin-top: 3%;
+  margin-right: 15px;
+}

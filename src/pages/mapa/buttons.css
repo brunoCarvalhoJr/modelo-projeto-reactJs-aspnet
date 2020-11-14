@@ -1,0 +1,64 @@
+.buttons-group {
+  top: 0;
+  height: 100%;
+  margin-bottom: 10px !important; }
+
+.sidebar-left .buttons-group {
+  left: 0; }
+
+.buttons-right {
+  margin-right: 10px;
+  left: 0;
+  right: 40px; }
+
+.buttons-group,
+.buttons-group > ul {
+  width: 40px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+
+.buttons-group > li,
+.buttons-group > ul > li {
+  width: 100%;
+  height: 40px;
+  color: #333;
+  font-size: 12pt;
+  overflow: hidden;
+  transition: all 80ms; }
+
+.buttons-group > li:hover,
+.buttons-group > ul > li:hover {
+  color: #000;
+  background-color: #eee; }
+
+.buttons-group > li.active,
+.buttons-group > ul > li.active {
+  color: #fff;
+  background-color: #0074d9; }
+
+.buttons-group > li.disabled,
+.buttons-group > ul > li.disabled {
+  color: rgba(51, 51, 51, 0.4); }
+
+.buttons-group > li.disabled:hover,
+.buttons-group > ul > li.disabled:hover {
+  background: transparent; }
+
+.buttons-group > li.disabled > a,
+.buttons-group > ul > li.disabled > a {
+  cursor: default; }
+
+.buttons-group > li > a,
+.buttons-group > ul > li > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 40px;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer; }
+
+.buttons-group > ul + ul {
+  bottom: 0; }
