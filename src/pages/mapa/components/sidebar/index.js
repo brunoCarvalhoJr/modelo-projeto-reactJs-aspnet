@@ -1,11 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, List, Collapse, Card, Typography } from "antd";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import "./sidebar.scss";
+import "./sidebar.css";
 import talhao from "assets/talhao.png";
 
 const { Panel } = Collapse;

@@ -9,3 +9,23 @@
   height: 100%;
   display: flex;
 }
+
+.buttons-group {
+  top: 0;
+  height: 100%;
+  margin-bottom: 10px !important; }
+
+.sidebar-left .buttons-group {
+  left: 0; }
+
+.buttons-right {
+  margin-right: 10px;
+  left: 0;
+  right: 40px; }
+
+.buttons-group {
+  width: 40px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none; 
+}

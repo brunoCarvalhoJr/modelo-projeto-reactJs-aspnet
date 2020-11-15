@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button } from "antd";
 import L from "leaflet";
-
-import "./map.css";
-import "./buttons.css";
-
 import {
   GEO_SERVER,
   CENTROIDE_MAPA,
@@ -12,83 +7,18 @@ import {
   ZOOM_MAXIMO_MAPA,
   ZOOM_MINIMO_MAPA,
 } from "./Constants";
-
 import SideBar, { MapPainel } from "./components/sidebar";
 import { MapContainer } from "./components/container";
 import { Context } from "./Context";
+import { ToolBar } from "./components/tools/ToolBar";
+import { Zoom } from "./components/tools/Zoom";
 
-const Zoom = () => {
-  const mapContext = React.useContext(Context);
-  const [text] = useState("Teste");
-
-  const alertTeste = () => {
-    mapContext.map.setZoom(20);
-  };
-
-  const alertTeste2 = () => {
-    mapContext.map.setZoom(2);
-  };
-
-  return (
-    <div className="buttons-group buttons-right">
-      <Button
-        type="default"
-        icon={<i class="fas fa-search-plus"></i>}
-        size={"large"}
-        onClick={alertTeste}
-      />
-      <Button
-        type="default"
-        icon={<i class="fas fa-search-minus"></i>}
-        size={"large"}
-        onClick={alertTeste2}
-      />
-    </div>
-  );
-};
-
-const Teste = () => {
-  const mapContext = React.useContext(Context);
-  const [text] = useState("Teste");
-
-  const alertTeste = () => {
-    mapContext.map.setZoom(20);
-  };
-
-  const alertTeste2 = () => {
-    mapContext.map.setZoom(2);
-  };
-
-  return (
-    <div className="buttons-group buttons-right">
-      <Button
-        type="default"
-        icon={<i class="fas fa-draw-polygon"></i>}
-        size={"large"}
-        onClick={alertTeste}
-      />
-      <Button
-        type="default"
-        icon={<i class="fas fa-pastafarianism"></i>}
-        size={"large"}
-        onClick={alertTeste2}
-      />
-       <Button
-        type="default"
-        icon={<i class="fas fa-comment-alt"></i>}
-        size={"large"}
-        onClick={alertTeste2}
-      />
-    </div>
-  );
-};
-
+import "./map.css";
 
 const car = "MG-3108008-AAEEAB404821459BB17C92EB0C235B5E";
 
-const MapTeste = () => {
+const PageMapa = () => {
   const mapRef = useRef(null);
-  const painel = useRef(null);
   const containerTopleft = useRef(null);
   const containerTopRight = useRef(null);
   const containerBottomLeft = useRef(null);
@@ -152,56 +82,34 @@ const MapTeste = () => {
     lmap.addLayer(layerCar);
   };
 
-  const topleft = (lmap) => {
+  function addControl(lmap, containerCurrent, position) {
     const container = L.control({
-      position: "topleft",
+      position: position,
     });
-
+  
     container.onAdd = function () {
-      var divContainer = L.DomUtil.create("div", "leaflet-control topleft");
+      var divContainer = L.DomUtil.create("div", `leaflet-control ${position}`);
       return divContainer;
     };
     container.addTo(lmap);
-    containerTopleft.current = container;
+    containerCurrent.current = container;
+  }
+
+  const topleft = (lmap) => {
+    addControl(lmap, containerTopleft, 'topleft');
   };
 
   const topright = (lmap) => {
-    const container = L.control({
-      position: "topright",
-    });
-
-    container.onAdd = function () {
-      var divContainer = L.DomUtil.create("div", "leaflet-control topright");
-      return divContainer;
-    };
-    container.addTo(lmap);
-    containerTopRight.current = container;
+    addControl(lmap, containerTopRight, 'topright');
   };
 
   const bottomleft = (lmap) => {
-    const container = L.control({
-      position: "bottomleft",
-    });
-
-    container.onAdd = function () {
-      var divContainer = L.DomUtil.create("div", "leaflet-control bottomleft");
-      return divContainer;
-    };
-    container.addTo(lmap);
-    containerBottomLeft.current = container;
+    addControl(lmap, containerBottomLeft, 'bottomleft');
   };
 
-  const bottomright = (lmap) => {
-    const container = L.control({
-      position: "bottomright",
-    });
 
-    container.onAdd = function () {
-      var divContainer = L.DomUtil.create("div", "leaflet-control bottomright");
-      return divContainer;
-    };
-    container.addTo(lmap);
-    containerBottomRight.current = container;
+  const bottomright = (lmap) => {
+    addControl(lmap, containerBottomRight, 'bottomright');
   };
 
   return (
@@ -218,8 +126,8 @@ const MapTeste = () => {
           )}
           {initialized && containerTopRight && (
             <MapContainer container={containerTopRight}>
-              <Zoom />
-              <Teste />
+              <Zoom initialValue={ZOOM_INICIAL_MAPA} max={ZOOM_MAXIMO_MAPA} min={ZOOM_MINIMO_MAPA} />
+              <ToolBar />
             </MapContainer>
           )}
           {initialized && containerBottomLeft && (
@@ -234,4 +142,5 @@ const MapTeste = () => {
   );
 };
 
-export default MapTeste;
+export default PageMapa;
+
