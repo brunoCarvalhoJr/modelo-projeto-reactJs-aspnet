@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Context } from '../../Context';
+import './toolsConfig';
 
 export const ToolBar = () => {
   const mapContext = React.useContext(Context);
@@ -8,7 +9,7 @@ export const ToolBar = () => {
 
   const { ferramentas, ferramentaAtual, setFerramentaAtual } = mapContext.tools;
 
-  const desenhar = (tipo) => {
+  const desenhar = tipo => {
     const ferramenta = ferramentas[tipo];
 
     if (ferramenta) {
@@ -44,39 +45,55 @@ export const ToolBar = () => {
   };
 
   return (
-    <div className="buttons-group buttons-right">
+    <>
       {!ferramentaAtual.ativa && (
         <>
-          <Button
-            type="default"
-            icon={<i class="fas fa-draw-polygon"></i>}
-            size={'large'}
-            onClick={desenharPoligono}
-          />
-          <Button
-            type="default"
-            icon={<i class="fas fa-pastafarianism"></i>}
-            size={'large'}
-            onClick={inserirPraga}
-          />
-          <Button
-            type="default"
-            icon={<i class="fas fa-comment-alt"></i>}
-            size={'large'}
-            onClick={inseriAnotacao}
-          />
+          <div className="buttons-group buttons-right">
+            <Button
+              type="default"
+              icon={<i class="fas fa-draw-polygon"></i>}
+              size={'large'}
+              onClick={desenharPoligono}
+            />
+            <Button
+              type="default"
+              icon={<i class="fas fa-pastafarianism"></i>}
+              size={'large'}
+              onClick={inserirPraga}
+            />
+            <Button
+              type="default"
+              icon={<i class="fas fa-comment-alt"></i>}
+              size={'large'}
+              onClick={inseriAnotacao}
+            />
+          </div>
+          <div className="buttons-group buttons-right">
+            <Button
+              type="default"
+              icon={<i class="fa fa-pencil"></i>}
+              size={'large'}
+              onClick={desenharPoligono}
+            />
+            <Button
+              type="default"
+              icon={<i class="fas fa-trash"></i>}
+              size={'large'}
+              onClick={inserirPraga}
+            />
+          </div>
         </>
       )}
       {ferramentaAtual.ativa && (
-        <>
+        <div className="buttons-group buttons-right">
           <Button
             type="default"
             icon={<i class="fas fa-trash"></i>}
             size={'large'}
             onClick={cancelarDesenho}
           />
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };

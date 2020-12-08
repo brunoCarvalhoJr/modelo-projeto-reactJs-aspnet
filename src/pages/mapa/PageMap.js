@@ -15,6 +15,7 @@ import { MapContainer } from './components/container';
 import { Context } from './Context';
 import { ToolBar } from './components/tools/ToolBar';
 import { Zoom } from './components/tools/Zoom';
+import iconPadrao from 'assets/markers/algae.png';
 
 import './map.css';
 
@@ -78,21 +79,12 @@ const PageMapa = () => {
       transparent: true,
       tiled: true,
     });
-    // const layerCar = L.tileLayer.wms(GEO_SERVER, {
-    //   layers: 'agro:fazenda',
-    //   format: 'image/png',
-    //   transparent: true,
-    //   tiled: true,
-    //   cql_filter: `cod_imovel = '${car}'`,
-    // });
 
     layerEstado.layer = layerEstados;
 
     layerEstado.addLayer(layerEstados);
 
     lmap.addLayer(layerEstado);
-    //lmap.addLayer(layerCar);
-    // lmap.fitBounds(layerCar.getBounds());
   };
 
   const centralizarEm = (lmap, geometria, options = {}) => {
@@ -104,6 +96,18 @@ const PageMapa = () => {
     } else if (geometria instanceof L.LatLng || geometria instanceof Array) {
       lmap.setView(geometria, zoom);
     }
+  };
+
+  const gerarEstiloMarcador = icone => {
+    return {
+      iconUrl: icone,
+      shadowAnchor: [20, 40],
+      shadowSize: [40, 40],
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+      popupAnchor: [1, -25],
+      tooltipAnchor: [16, -25],
+    };
   };
 
   const adicionarGeometrias = async lmap => {
@@ -147,7 +151,10 @@ const PageMapa = () => {
     const POLIGONO = new L.Draw.Polygon(lmap, {
       shapeOptions: ESTILO_PADRAO_DESENHO,
     });
-    const CIRCLEMARKER = new L.Draw.Marker(lmap, {});
+    const padrao = L.icon(gerarEstiloMarcador(iconPadrao));
+    const CIRCLEMARKER = new L.Draw.Marker(lmap, {
+      icon: padrao,
+    });
     setFerramentas({
       ...ferramentas,
       ...{ POLIGONO: POLIGONO, CIRCLEMARKER: CIRCLEMARKER },
