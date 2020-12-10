@@ -1,10 +1,10 @@
 import React, {
   useEffect,
-  createRef
+  useRef
 } from "react";
 
 export const MapContainer = ({ container, children }) => {
-  const ref = createRef();
+  const ref = useRef(null);
   useEffect(() => {
     if (container.current) {
       container.current._container.appendChild(ref.current);

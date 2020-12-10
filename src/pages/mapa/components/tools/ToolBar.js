@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import L from 'leaflet';
 import { Context } from '../../Context';
 import './toolsConfig';
-import { ESTILO_PADRAO_DESENHO } from '../../Constants';
+import { ESTILO_TALHAO } from '../../Constants';
 import iconPadrao from 'assets/markers/algae.png';
 
 const _estiloMarcador = icone => {
@@ -36,7 +36,7 @@ export const ToolBar = () => {
 
   const ferramentasDesenho = () => {
     const POLIGONO = new L.Draw.Polygon(map, {
-      shapeOptions: ESTILO_PADRAO_DESENHO,
+      shapeOptions: ESTILO_TALHAO,
     });
     const CIRCLEMARKER = new L.Draw.Marker(map, {
       icon: L.icon(_estiloMarcador(iconPadrao)),
@@ -110,19 +110,19 @@ export const ToolBar = () => {
           <div className="buttons-group buttons-right">
             <Button
               type="default"
-              icon={<i class="fas fa-draw-polygon"></i>}
+              icon={<i className="fas fa-draw-polygon"></i>}
               size={'large'}
               onClick={desenharPoligono}
             />
             <Button
               type="default"
-              icon={<i class="fas fa-pastafarianism"></i>}
+              icon={<i className="fas fa-pastafarianism"></i>}
               size={'large'}
               onClick={desenharMarcadorPraga}
             />
             <Button
               type="default"
-              icon={<i class="fas fa-comment-alt"></i>}
+              icon={<i className="fas fa-comment-alt"></i>}
               size={'large'}
               onClick={desenharMarcadorAnotacao}
             />
@@ -130,7 +130,7 @@ export const ToolBar = () => {
           <div className="buttons-group buttons-right">
             <Button
               type="default"
-              icon={<i class="fa fa-pencil"></i>}
+              icon={<i className="fa fa-pencil"></i>}
               size={'large'}
               onClick={editarGeometria}
             />
@@ -141,7 +141,7 @@ export const ToolBar = () => {
         <div className="buttons-group buttons-right">
           <Button
             type="default"
-            icon={<i class="fas fa-save"></i>}
+            icon={<i className="fas fa-save"></i>}
             size={'large'}
             onClick={salvar}
           />
@@ -151,7 +151,7 @@ export const ToolBar = () => {
         <div className="buttons-group buttons-right">
           <Button
             type="default"
-            icon={<i class="fas fa-redo"></i>}
+            icon={<i className="fas fa-redo"></i>}
             size={'large'}
             onClick={cancelarDesenho}
           />

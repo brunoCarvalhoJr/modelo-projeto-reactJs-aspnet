@@ -3,6 +3,7 @@ using backend.Data;
 using backend.Models;
 using backend.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 
 namespace backend.Controllers
@@ -18,14 +19,28 @@ namespace backend.Controllers
     }
 
     [HttpPost]
-    public Geometry Post(CreateTalhao viewModel)
+    public Feature Post(CreateTalhao viewModel)
     {
       Talhao talhao = new Talhao();
-      talhao.Nome = "nome";
+      talhao.Nome = viewModel.Nome;
+      talhao.Numero = viewModel.Numero;
+      talhao.ImovelId = viewModel.ImovelId;
       talhao.TheGeom = viewModel.TheGeom.Geometry;
       context.Talhao.Add(talhao);
       context.SaveChanges();
-      return viewModel.TheGeom.Geometry;
+      viewModel.TheGeom.Attributes.Add("nome", viewModel.Nome);
+      viewModel.TheGeom.Attributes.Add("numero", viewModel.Numero);
+      viewModel.TheGeom.Attributes.Add("imovelid", viewModel.ImovelId);
+      return viewModel.TheGeom;
+    }
+
+    [HttpDelete("{id}")]
+    public int Delete(int id)
+    {
+      var talhao = context.Talhao.Find(id);
+      context.Remove(talhao);
+      context.SaveChanges();
+      return id;
     }
   }
 }

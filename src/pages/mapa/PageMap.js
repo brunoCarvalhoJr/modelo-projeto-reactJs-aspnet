@@ -4,7 +4,10 @@ import * as turf from '@turf/turf';
 import qs from 'querystring';
 import L from 'leaflet';
 import {
+  SERVER,
   GEO_SERVER,
+  ESTILO_TALHAO,
+  ESTILO_IMOVEL,
   CENTROIDE_MAPA,
   ZOOM_MAXIMO_MAPA,
   ZOOM_MINIMO_MAPA,
@@ -27,6 +30,7 @@ const PageMapa = () => {
   const containerTopRight = useRef(null);
   const containerBottomLeft = useRef(null);
   const containerBottomRight = useRef(null);
+  const [talhoes, setTalhoes] = useState([]);
   const [initialized, setInitialized] = useState(false);
   const [layers] = useState(new L.featureGroup());
   const [layersEdit] = useState(new L.featureGroup());
@@ -64,6 +68,7 @@ const PageMapa = () => {
       bindEvents(mapRef.current);
       addLayerEstado(mapRef.current);
       await addLayerImovel(mapRef.current);
+      await addLayerTalhao();
       setInitialized(true);
     };
     load();
@@ -77,7 +82,7 @@ const PageMapa = () => {
     lmap.addLayer(layers);
   };
 
-  const _addLayerGEOJSON = async (lmap, query, property) => {
+  const _addLayerGEOJson = async (query, style, property) => {
     const { data } = await axios.get(GEO_SERVER_GEO_JSON, {
       params: { ...query },
       paramsSerializer: params => {
@@ -86,10 +91,15 @@ const PageMapa = () => {
     });
 
     const { features } = data;
-    const geoJSON = L.geoJSON(data);
-    geoJSON.bindTooltip(features[0].properties[property]);
-    layers.addLayer(geoJSON);
-    _zoomLayer(lmap, geoJSON);
+    const geoJSON = L.geoJSON(data, { style });
+    const list = [];
+    geoJSON.eachLayer((layer)=> {
+      layer.bindTooltip(features[0].properties[property]);
+      layers.addLayer(layer);
+      list.push(layer);
+    });
+    setTalhoes(list);
+    return Promise.resolve({ layer: geoJSON, features});
   };
 
   const _zoomLayer = (lmap, geometria, options = {}) => {
@@ -134,7 +144,17 @@ const PageMapa = () => {
       outputFormat: 'application/json',
       CQL_FILTER: `cod_imovel='${car}'`,
     };
-    await _addLayerGEOJSON(lmap, queryImovel, 'cod_imovel');
+    const { layer } = await _addLayerGEOJson(queryImovel, ESTILO_IMOVEL, 'cod_imovel');
+    _zoomLayer(lmap, layer)
+  };
+
+  const addLayerTalhao = async () => {
+    const queryTalhao = {
+      typeName: 'agro:talhao',
+      maxFeatures: 50,
+      outputFormat: 'application/json',
+    };
+    const { layer } = await _addLayerGEOJson(queryTalhao, ESTILO_TALHAO, 'nome');
   };
 
   const bindEvents = lmap => {
@@ -144,16 +164,24 @@ const PageMapa = () => {
   };
 
   const addLayerEditing = async layer => {
-    layer.on('edit',  async ({ target }) => {
+    layer.on('edit', async ({ target }) => {
       await sendServer(target);
     });
     layersEdit.addLayer(layer);
     await sendServer(layer);
   };
 
-  const sendServer = async (layer) => {
-    await axios.post('/', layer.toGeoJSON());
-  }
+  const sendServer = async layer => {
+    const data = {
+      Nome: 'T000',
+      Numero: '2',
+      ImovelId: 786,
+      TheGeom: layer.toGeoJSON(),
+    };
+    const talhao = await axios.post(`${SERVER}/talhao`, data);
+    // const talhaoLayer = L.geoJSON(talhao);
+    //setTalhoes([...talhoes, talhaoLayer]);
+  };
 
   const topleft = lmap => {
     _addControl(lmap, containerTopleft, 'topleft');
@@ -180,7 +208,7 @@ const PageMapa = () => {
         }}
       >
         <div className={`painel ${sidebarOpen ? '' : 'collapsed'}`}>
-          <MapPainel onClickItem={onClickSideBar} />
+          <MapPainel onClickItem={onClickSideBar} talhoes={talhoes} />
         </div>
         <div id="map">
           {initialized && containerTopleft && (

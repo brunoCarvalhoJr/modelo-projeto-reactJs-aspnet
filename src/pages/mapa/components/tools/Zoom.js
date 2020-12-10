@@ -26,13 +26,13 @@ export const Zoom = ({ initialValue, min, max }) => {
     <div className="buttons-group buttons-right">
       <Button
         type="default"
-        icon={<i class="fas fa-search-plus"></i>}
+        icon={<i className="fas fa-search-plus"></i>}
         size={'large'}
         onClick={zoomIn}
       />
       <Button
         type="default"
-        icon={<i class="fas fa-search-minus"></i>}
+        icon={<i className="fas fa-search-minus"></i>}
         size={'large'}
         onClick={zoomOut}
       />

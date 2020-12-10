@@ -64,16 +64,16 @@ const AppLayout = ({children}) => {
               <Menu.Item key="3" icon={<UserOutlined />}>
                 Cadastro de pragas
               </Menu.Item>
-              <Menu.Item key="3" icon={<UserOutlined />}>
+              <Menu.Item key="4" icon={<UserOutlined />}>
                 Cadastro de defensivos
               </Menu.Item>
-              <Menu.Item key="3" icon={<UserOutlined />}>
+              <Menu.Item key="5" icon={<UserOutlined />}>
                 Cadastro de sementes
               </Menu.Item>
-              <Menu.Item key="3" icon={<UserOutlined />}>
+              <Menu.Item key="6" icon={<UserOutlined />}>
                 Cadastro de fertilizantes
               </Menu.Item>
-              <Menu.Item key="3" icon={<UserOutlined />}>
+              <Menu.Item key="7" icon={<UserOutlined />}>
                 Monitorametno
               </Menu.Item>
             </Menu>

@@ -1,55 +1,34 @@
-import React from "react";
-import { Button, List, Collapse, Card, Typography } from "antd";
-import "./sidebar.css";
-import talhao from "assets/talhao.png";
+import React from 'react';
+import axios from 'axios';
+import { Button, List, Collapse, Card, Typography } from 'antd';
+import { SERVER } from '../../Constants';
+import './sidebar.css';
+import talhao from 'assets/talhao.png';
 
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
 const { Meta } = Card;
 
-const teste = ({ data, onClickItem }) => (
-  <div class="sidebar-pane active" id="home">
-    <h1 class="sidebar-header">
-      Camadas
-      <span class="sidebar-close">
-        <i class="fa fa-caret-left"></i>
-      </span>
-    </h1>
-    <div>
-      <Collapse defaultActiveKey={["1"]}>
-        <Panel header="Áreas federação" key="1">
-          <List
-            size="small"
-            dataSource={data}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta title={item} onClick={onClickItem} />
-                <i class="fas fa-eye"></i>
-              </List.Item>
-            )}
-          />
-        </Panel>
-      </Collapse>
-      <div className={"filtrar"}>
-        <Button type="primary" block>
-          Pesquisar
-        </Button>
-      </div>
-    </div>
-  </div>
-);
-
-const CardItem = () => {
+const CardItem = item => {
+  const { properties } = item.feature;
+  const onClickItem = async () => {
+    await axios.delete(`${SERVER}/talhao/${properties.id}`);
+  };
   return (
     <Card
-      style={{ width: "100%" }}
+      style={{ width: '100%' }}
       cover={<img width={200} height={150} alt="example" src={talhao} />}
     >
       <Meta
         title={
           <>
-            <Text strong>Talhão:</Text>
-            <span>T0001</span>
+            <Button danger onClick={onClickItem}>
+              <i className="fas fa-times"></i>
+            </Button>
+            <Text style={{ marginLeft: '10px' }} strong>
+              Talhão:
+            </Text>
+            <span>{properties.nome}</span>
           </>
         }
       />
@@ -57,24 +36,26 @@ const CardItem = () => {
   );
 };
 
-export const MapPainel = ({ painel, onClickItem }) => {
+export const MapPainel = ({ painel, onClickItem, talhoes }) => {
+  console.log(talhoes);
+
   return (
-    <div class="painel-content">
+    <div className="painel-content">
       <List
         header={
           <div className="header-painel">
             <Title level={4} className="header-painel-item">
               Talhões cadastrados
-            </Title>{" "}
-            <Button shape="circle" danger onClick={onClickItem}>
-              <i class="fas fa-times"></i>
+            </Title>{' '}
+            <Button danger onClick={onClickItem}>
+              <i className="fas fa-times"></i>
             </Button>
           </div>
         }
         size="small"
         bordered
-        dataSource={["t", "dd", "paulo", "vieira"]}
-        renderItem={(item) => <List.Item>{CardItem()}</List.Item>}
+        dataSource={talhoes}
+        renderItem={item => <List.Item>{CardItem(item)}</List.Item>}
       />
     </div>
   );
@@ -83,26 +64,26 @@ export const MapPainel = ({ painel, onClickItem }) => {
 const SideBar = ({ onClickItem }) => {
   return (
     <div id="sidebar" className={`sidebar sidebar-left`}>
-      <div class="sidebar-tabs">
+      <div className="sidebar-tabs">
         <Button
           type="default"
-          icon={<i class="fab fa-envira"></i>}
-          size={"large"}
-          className={"sidebar-button-margin-bottom"}
+          icon={<i className="fab fa-envira"></i>}
+          size={'large'}
+          className={'sidebar-button-margin-bottom'}
           onClick={onClickItem}
         />
         <Button
           type="default"
-          icon={<i class="fas fa-layer-group"></i>}
-          size={"large"}
-          className={"sidebar-button-margin-bottom"}
+          icon={<i className="fas fa-layer-group"></i>}
+          size={'large'}
+          className={'sidebar-button-margin-bottom'}
           onClick={onClickItem}
         />
         <Button
           type="default"
-          icon={<i class="fas fa-filter"></i>}
-          size={"large"}
-          className={"sidebar-button-margin-bottom"}
+          icon={<i className="fas fa-filter"></i>}
+          size={'large'}
+          className={'sidebar-button-margin-bottom'}
           onClick={onClickItem}
         />
       </div>
