@@ -10,7 +10,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AgroContext))]
-    [Migration("20201210114833_InitialCreate")]
+    [Migration("20201210121035_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,17 +26,21 @@ namespace backend.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .UseIdentityByDefaultColumn();
 
                     b.Property<string>("Nome")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
 
                     b.Property<Geometry>("TheGeom")
-                        .HasColumnType("geometry");
+                        .HasColumnType("geometry")
+                        .HasColumnName("the_geom");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_talhao");
 
-                    b.ToTable("Talhao");
+                    b.ToTable("talhao");
                 });
 #pragma warning restore 612, 618
         }

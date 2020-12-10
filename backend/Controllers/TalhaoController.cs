@@ -18,7 +18,7 @@ namespace backend.Controllers
     }
 
     [HttpPost]
-    public Geometry Post(CreateViewModel viewModel)
+    public Geometry Post(CreateTalhao viewModel)
     {
       Talhao talhao = new Talhao();
       talhao.Nome = "nome";

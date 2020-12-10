@@ -9,24 +9,24 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Talhao",
+                name: "talhao",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "text", nullable: true),
-                    TheGeom = table.Column<Geometry>(type: "geometry", nullable: true)
+                    nome = table.Column<string>(type: "text", nullable: true),
+                    the_geom = table.Column<Geometry>(type: "geometry", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Talhao", x => x.ID);
+                    table.PrimaryKey("pk_talhao", x => x.id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Talhao");
+                name: "talhao");
         }
     }
 }
