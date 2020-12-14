@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Draw, Modify, Snap, Select } from 'ol/interaction';
+import { equalTo } from 'ol/format/filter';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 
@@ -21,6 +22,14 @@ import {
   drawingStyle,
   imovelStyle,
 } from '../../components/OpenLayers/utils/styles';
+import { getFeatures } from 'components/OpenLayers/utils/wfs';
+
+// fontes para exibição de imóveis
+const imovelSource = new VectorSource();
+const imovelLayer = new VectorLayer({
+  source: imovelSource,
+  style: imovelStyle,
+});
 
 // Ferramentas e fontes para criação e edição de talhões
 const drawTalhaoSource = new VectorSource();
@@ -52,7 +61,13 @@ const snapPraga = new Snap({ source: drawPragaSource });
 const selectSingleClick = new Select({});
 
 // Lista de camadas
-const layers = [basemapLayer, estadoLayer, drawTalhaoLayer, drawPragaLayer];
+const layers = [
+  basemapLayer,
+  estadoLayer,
+  imovelLayer,
+  drawTalhaoLayer,
+  drawPragaLayer,
+];
 
 // Lista de botões e suas ferramentas
 const toolbarButtons = [
@@ -76,10 +91,24 @@ const toolbarButtons = [
   },
 ];
 
+const car = 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E';
 // const features = drawTalhaoSource.getFeatures();
 function App() {
   const [toolbarButtonsState, setToolbarButtonsState] = useState(null);
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    async function init() {
+      const features = await getFeatures(equalTo('cod_imovel', car));
+      imovelSource.addFeatures(features);
+      mapRef.current.getView().fit(imovelSource.getExtent(), {
+        size: mapRef.current.getSize(),
+        padding: [50, 50, 50, 50],
+        duration: 2500,
+      });
+    }
+    init();
+  });
 
   useEffect(() => {
     const selectedButton = toolbarButtons.filter(

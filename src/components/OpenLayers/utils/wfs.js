@@ -6,7 +6,6 @@ import { GEOSERVER_WFS_URL } from './constants';
 
 export async function getFeatures(filter) {
   const featureRequest = new WFS().writeGetFeature({
-    srsName: 'EPSG:4326',
     featureNS: 'agro',
     featurePrefix: 'agro',
     featureTypes: ['fazenda'],
