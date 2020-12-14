@@ -2,7 +2,7 @@ import { createHashHistory } from "history";
 import React from "react";
 import { Redirect, Route, Router, Switch } from "react-router-dom";
 import LayoutContainer from "../pages/layout";
-import PageMap from "../pages/mapa/PageMap";
+import PageMapa from "../pages/mapa/PageMapa";
 import PageLogin from "../pages/login/PageLogin";
 
 export const history = createHashHistory();
@@ -44,8 +44,8 @@ const Routes = () => (
       <Route exact path="/" component={PageLogin} />
       <LayoutContainer>
         <Switch>
-          <PrivateRoute path="/home" component={PageMap} />
-          <Redirect to="/home" component={PageMap} />
+          <PrivateRoute path="/home" component={PageMapa} />
+          <Redirect to="/home" component={PageMapa} />
         </Switch>
       </LayoutContainer>
     </Switch>
