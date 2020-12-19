@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Modal, Input } from 'antd';
 import {
   faDrawPolygon,
   faBug,
@@ -19,10 +20,14 @@ import {
   estadoLayer,
 } from '../../components/OpenLayers/utils/layers';
 import {
-  drawingStyle,
+  talhaoStyle,
+  pragaStyle,
+  anotacaoStyle,
   imovelStyle,
 } from '../../components/OpenLayers/utils/styles';
 import { getFeatures } from 'components/OpenLayers/utils/wfs';
+
+const { TextArea } = Input;
 
 // fontes para exibição de imóveis
 const imovelSource = new VectorSource();
@@ -35,7 +40,7 @@ const imovelLayer = new VectorLayer({
 const drawTalhaoSource = new VectorSource();
 const drawTalhaoLayer = new VectorLayer({
   source: drawTalhaoSource,
-  style: drawingStyle,
+  style: talhaoStyle,
 });
 const drawTalhao = new Draw({
   source: drawTalhaoSource,
@@ -48,7 +53,7 @@ const snapTalhao = new Snap({ source: drawTalhaoSource });
 const drawPragaSource = new VectorSource();
 const drawPragaLayer = new VectorLayer({
   source: drawPragaSource,
-  style: drawingStyle,
+  style: pragaStyle,
 });
 const drawPraga = new Draw({
   source: drawPragaSource,
@@ -56,6 +61,19 @@ const drawPraga = new Draw({
 });
 const modifyPraga = new Modify({ source: drawPragaSource });
 const snapPraga = new Snap({ source: drawPragaSource });
+
+// Ferramentas e fontes para criação e edição de anotações
+const drawAnotacaoSource = new VectorSource();
+const drawAnotacaoLayer = new VectorLayer({
+  source: drawAnotacaoSource,
+  style: anotacaoStyle,
+});
+const drawAnotacao = new Draw({
+  source: drawAnotacaoSource,
+  type: 'Point',
+});
+const modifyAnotacao = new Modify({ source: drawAnotacaoSource });
+const snapAnotacao = new Snap({ source: drawAnotacaoSource });
 
 // Ferramentas para seleção de polígonos para exclusão
 const selectSingleClick = new Select({});
@@ -67,10 +85,11 @@ const layers = [
   imovelLayer,
   drawTalhaoLayer,
   drawPragaLayer,
+  drawAnotacaoLayer,
 ];
 
 // Lista de botões e suas ferramentas
-const toolbarButtons = [
+const Buttons = [
   {
     id: 0,
     icon: <FontAwesomeIcon icon={faDrawPolygon} />,
@@ -85,6 +104,12 @@ const toolbarButtons = [
   },
   {
     id: 2,
+    icon: <FontAwesomeIcon icon={faCommentAlt} />,
+    tooltip: 'Marcar anotação',
+    tools: [drawAnotacao, snapAnotacao, modifyAnotacao],
+  },
+  {
+    id: 3,
     icon: <FontAwesomeIcon icon={faTrashAlt} />,
     tooltip: 'Excluir feição',
     tools: [selectSingleClick],
@@ -94,7 +119,12 @@ const toolbarButtons = [
 const car = 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E';
 // const features = drawTalhaoSource.getFeatures();
 function App() {
-  const [toolbarButtonsState, setToolbarButtonsState] = useState(null);
+  const [ButtonsState, setButtonsState] = useState(null);
+  const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
+  const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
+  const [currentPraga, setCurrentPraga] = useState(null);
+  const [currentAnotacao, setCurrentAnotacao] = useState(null);
+
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -111,12 +141,8 @@ function App() {
   });
 
   useEffect(() => {
-    const selectedButton = toolbarButtons.filter(
-      item => item.id === toolbarButtonsState,
-    );
-    const notSelectedButtons = toolbarButtons.filter(
-      item => item.id !== toolbarButtonsState,
-    );
+    const selectedButton = Buttons.filter(item => item.id === ButtonsState);
+    const notSelectedButtons = Buttons.filter(item => item.id !== ButtonsState);
 
     selectedButton.forEach(element => {
       element.tools.forEach(tool => {
@@ -128,14 +154,38 @@ function App() {
         mapRef.current.removeInteraction(tool);
       });
     });
-  }, [mapRef, toolbarButtonsState]);
+  }, [mapRef, ButtonsState]);
+
+  drawPraga.on('drawend', function (element) {
+    setIsModalPragaVisible(true);
+    setCurrentPraga(element);
+  });
+
+  drawAnotacao.on('drawend', function (element) {
+    setIsModalAnotacaoVisible(true);
+    setCurrentAnotacao(element);
+  });
+
+  function handleOkPraga() {
+    setIsModalPragaVisible(false);
+    setCurrentPraga(null);
+  }
+
+  function handleOkAnotacao() {
+    setIsModalAnotacaoVisible(false);
+  }
 
   selectSingleClick.on('select', function (element) {
     try {
       element.selected.forEach(item => {
         switch (item.getGeometry().getType()) {
           case 'Point':
-            drawPragaSource.removeFeature(item);
+            try {
+              drawPragaSource.removeFeature(item);
+            } catch (error) {}
+            try {
+              drawAnotacaoSource.removeFeature(item);
+            } catch (error) {}
             break;
           case 'Polygon':
             drawTalhaoSource.removeFeature(item);
@@ -149,6 +199,25 @@ function App() {
 
   return (
     <div>
+      <Modal
+        title="Dados da praga"
+        visible={isModalPragaVisible}
+        onOk={handleOkPraga}
+        cancelButtonProps={{ style: { display: 'none' } }}
+      >
+        <Input placeholder="Raio" addonAfter="m2" />
+
+        <TextArea rows={4} placeholder="Digite aqui suas considerações..." />
+      </Modal>
+      <Modal
+        title="Anotações sobre o ponto"
+        visible={isModalAnotacaoVisible}
+        onOk={handleOkAnotacao}
+        cancelButtonProps={{ style: { display: 'none' } }}
+      >
+        <Input placeholder="Raio" addonAfter="m2" />
+        <TextArea rows={4} placeholder="Digite aqui suas anotações..." />
+      </Modal>
       <Map
         ref={mapRef}
         height={'800px'}
@@ -157,14 +226,14 @@ function App() {
         layers={layers}
       >
         <Toolbar>
-          {toolbarButtons.map(item => (
+          {Buttons.map(item => (
             <Button
               key={item.id}
-              active={toolbarButtonsState === item.id}
+              active={ButtonsState === item.id}
               onClick={() =>
-                toolbarButtonsState === item.id
-                  ? setToolbarButtonsState(null)
-                  : setToolbarButtonsState(item.id)
+                ButtonsState === item.id
+                  ? setButtonsState(null)
+                  : setButtonsState(item.id)
               }
               {...item}
             ></Button>

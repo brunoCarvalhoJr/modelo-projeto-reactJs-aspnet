@@ -1,7 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-
 import { Map, View } from 'ol';
-
 import './index.css';
 
 function MapView({ options, children, height, layers, width }, ref) {
