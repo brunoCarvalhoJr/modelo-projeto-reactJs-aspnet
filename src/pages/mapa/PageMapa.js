@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, Input } from 'antd';
+import { Form, Modal, Input, Button } from 'antd';
 import {
   faDrawPolygon,
   faBug,
@@ -13,7 +13,10 @@ import { equalTo } from 'ol/format/filter';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 
-import Map, { Button, Toolbar } from '../../components/OpenLayers';
+import Map, {
+  Button as ToolbarButton,
+  Toolbar,
+} from '../../components/OpenLayers';
 import { DEFAULT_OPTIONS } from '../../components/OpenLayers/utils/constants';
 import {
   basemapLayer,
@@ -25,9 +28,7 @@ import {
   anotacaoStyle,
   imovelStyle,
 } from '../../components/OpenLayers/utils/styles';
-import { getFeatures } from 'components/OpenLayers/utils/wfs';
-
-const { TextArea } = Input;
+import { getFeatures, insertFeatures } from 'components/OpenLayers/utils/wfs';
 
 // fontes para exibição de imóveis
 const imovelSource = new VectorSource();
@@ -118,18 +119,24 @@ const Buttons = [
 
 const car = 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E';
 // const features = drawTalhaoSource.getFeatures();
-function App() {
-  const [ButtonsState, setButtonsState] = useState(null);
+function PageMapa() {
+  const [buttonsState, setButtonsState] = useState(null);
   const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
   const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
   const [currentPraga, setCurrentPraga] = useState(null);
   const [currentAnotacao, setCurrentAnotacao] = useState(null);
 
   const mapRef = useRef(null);
+  const formPragaRef = useRef(null);
+  const formAnotacaoRef = useRef(null);
 
   useEffect(() => {
     async function init() {
-      const features = await getFeatures(equalTo('cod_imovel', car));
+      const features = await getFeatures(
+        'agro',
+        ['fazenda'],
+        equalTo('cod_imovel', car),
+      );
       imovelSource.addFeatures(features);
       mapRef.current.getView().fit(imovelSource.getExtent(), {
         size: mapRef.current.getSize(),
@@ -141,8 +148,8 @@ function App() {
   });
 
   useEffect(() => {
-    const selectedButton = Buttons.filter(item => item.id === ButtonsState);
-    const notSelectedButtons = Buttons.filter(item => item.id !== ButtonsState);
+    const selectedButton = Buttons.filter(item => item.id === buttonsState);
+    const notSelectedButtons = Buttons.filter(item => item.id !== buttonsState);
 
     selectedButton.forEach(element => {
       element.tools.forEach(tool => {
@@ -154,25 +161,51 @@ function App() {
         mapRef.current.removeInteraction(tool);
       });
     });
-  }, [mapRef, ButtonsState]);
+  }, [mapRef, buttonsState]);
 
   drawPraga.on('drawend', function (element) {
     setIsModalPragaVisible(true);
-    setCurrentPraga(element);
+    setCurrentPraga(element.feature);
   });
 
   drawAnotacao.on('drawend', function (element) {
     setIsModalAnotacaoVisible(true);
-    setCurrentAnotacao(element);
+    setCurrentAnotacao(element.feature);
   });
 
-  function handleOkPraga() {
+  function handleSalvarPraga(values) {
+    currentPraga.setProperties(values);
     setIsModalPragaVisible(false);
     setCurrentPraga(null);
+    formPragaRef.current.resetFields();
   }
 
-  function handleOkAnotacao() {
+  function handleSalvarAnotacao(values) {
+    currentAnotacao.setProperties(values);
     setIsModalAnotacaoVisible(false);
+    setCurrentAnotacao(null);
+    formAnotacaoRef.current.resetFields();
+  }
+
+  async function salvar() {
+    const talhaoIDs = await insertFeatures(
+      'agro',
+      'talhao',
+      drawTalhaoSource.getFeatures(),
+    );
+    const pragaIDs = await insertFeatures(
+      'agro',
+      'praga',
+      drawPragaSource.getFeatures(),
+    );
+    const anotacaoIDs = await insertFeatures(
+      'agro',
+      'anotacao',
+      drawAnotacaoSource.getFeatures(),
+    );
+    console.log(talhaoIDs);
+    console.log(pragaIDs);
+    console.log(anotacaoIDs);
   }
 
   selectSingleClick.on('select', function (element) {
@@ -202,46 +235,110 @@ function App() {
       <Modal
         title="Dados da praga"
         visible={isModalPragaVisible}
-        onOk={handleOkPraga}
+        okButtonProps={{ style: { display: 'none' } }}
         cancelButtonProps={{ style: { display: 'none' } }}
+        closable={false}
       >
-        <Input placeholder="Raio" addonAfter="m2" />
-
-        <TextArea rows={4} placeholder="Digite aqui suas considerações..." />
+        <Form
+          name="praga"
+          initialValues={{ remember: false }}
+          onFinish={handleSalvarPraga}
+          ref={formPragaRef}
+        >
+          <Form.Item
+            labelCol={{ span: 24 }}
+            label="Raio"
+            name="raio"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor digite o raio da área afetada pela praga.',
+              },
+            ]}
+          >
+            <Input addonAfter="metros" />
+          </Form.Item>
+          <Form.Item
+            name={'conteudo'}
+            label="Considerações sobre a praga"
+            labelCol={{ span: 24 }}
+          >
+            <Input.TextArea rows={8} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Confirmar
+            </Button>
+          </Form.Item>
+        </Form>
       </Modal>
       <Modal
         title="Anotações sobre o ponto"
         visible={isModalAnotacaoVisible}
-        onOk={handleOkAnotacao}
+        okButtonProps={{ style: { display: 'none' } }}
         cancelButtonProps={{ style: { display: 'none' } }}
+        closable={false}
       >
-        <Input placeholder="Raio" addonAfter="m2" />
-        <TextArea rows={4} placeholder="Digite aqui suas anotações..." />
+        <Form
+          name="anotacao"
+          initialValues={{ remember: false }}
+          onFinish={handleSalvarAnotacao}
+          ref={formAnotacaoRef}
+        >
+          <Form.Item
+            labelCol={{ span: 24 }}
+            label="Raio"
+            name="raio"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor digite o raio da área da anotação.',
+              },
+            ]}
+          >
+            <Input addonAfter="metros" />
+          </Form.Item>
+          <Form.Item
+            name={'conteudo'}
+            label="Considerações"
+            labelCol={{ span: 24 }}
+          >
+            <Input.TextArea rows={8} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Confirmar
+            </Button>
+          </Form.Item>
+        </Form>
       </Modal>
       <Map
         ref={mapRef}
-        height={'800px'}
+        height={'700px'}
         width={'100%'}
         options={DEFAULT_OPTIONS}
         layers={layers}
       >
         <Toolbar>
           {Buttons.map(item => (
-            <Button
+            <ToolbarButton
               key={item.id}
-              active={ButtonsState === item.id}
+              active={buttonsState === item.id}
               onClick={() =>
-                ButtonsState === item.id
+                buttonsState === item.id
                   ? setButtonsState(null)
                   : setButtonsState(item.id)
               }
               {...item}
-            ></Button>
+            ></ToolbarButton>
           ))}
         </Toolbar>
       </Map>
+      <Button type="primary" onClick={salvar}>
+        Salvar
+      </Button>
     </div>
   );
 }
 
-export default App;
+export default PageMapa;

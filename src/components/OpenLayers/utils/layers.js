@@ -1,11 +1,7 @@
 import { Tile as TileLayer } from 'ol/layer';
 import { XYZ as XYZSource, TileWMS as TileWMSSource } from 'ol/source';
 
-import {
-  ARCGIS_WORLD_IMAGERY_URL,
-  GEOSERVER_WMS_URL,
-  SIRGAS2000,
-} from './constants';
+import { ARCGIS_WORLD_IMAGERY_URL, GEOSERVER_WMS_URL } from './constants';
 
 export const basemapLayer = new TileLayer({
   source: new XYZSource({
