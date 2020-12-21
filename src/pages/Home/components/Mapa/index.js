@@ -13,21 +13,15 @@ import { equalTo } from 'ol/format/filter';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 
-import Map, {
-  Button as ToolbarButton,
-  Toolbar,
-} from '../../components/OpenLayers';
-import { DEFAULT_OPTIONS } from '../../components/OpenLayers/utils/constants';
-import {
-  basemapLayer,
-  estadoLayer,
-} from '../../components/OpenLayers/utils/layers';
+import Map, { Button as ToolbarButton, Toolbar } from 'components/OpenLayers';
+import { DEFAULT_OPTIONS } from 'components/OpenLayers/utils/constants';
+import { basemapLayer, estadoLayer } from 'components/OpenLayers/utils/layers';
 import {
   talhaoStyle,
   pragaStyle,
   anotacaoStyle,
   imovelStyle,
-} from '../../components/OpenLayers/utils/styles';
+} from 'components/OpenLayers/utils/styles';
 import { getFeatures, insertFeatures } from 'components/OpenLayers/utils/wfs';
 
 // fontes para exibição de imóveis
@@ -90,7 +84,7 @@ const layers = [
 ];
 
 // Lista de botões e suas ferramentas
-const Buttons = [
+const buttons = [
   {
     id: 0,
     icon: <FontAwesomeIcon icon={faDrawPolygon} />,
@@ -117,9 +111,7 @@ const Buttons = [
   },
 ];
 
-const car = 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E';
-// const features = drawTalhaoSource.getFeatures();
-function PageMapa() {
+function Mapa({ car }) {
   const [buttonsState, setButtonsState] = useState(null);
   const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
   const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
@@ -148,8 +140,8 @@ function PageMapa() {
   });
 
   useEffect(() => {
-    const selectedButton = Buttons.filter(item => item.id === buttonsState);
-    const notSelectedButtons = Buttons.filter(item => item.id !== buttonsState);
+    const selectedButton = buttons.filter(item => item.id === buttonsState);
+    const notSelectedButtons = buttons.filter(item => item.id !== buttonsState);
 
     selectedButton.forEach(element => {
       element.tools.forEach(tool => {
@@ -320,7 +312,7 @@ function PageMapa() {
         layers={layers}
       >
         <Toolbar>
-          {Buttons.map(item => (
+          {buttons.map(item => (
             <ToolbarButton
               key={item.id}
               active={buttonsState === item.id}
@@ -334,11 +326,8 @@ function PageMapa() {
           ))}
         </Toolbar>
       </Map>
-      <Button type="primary" onClick={salvar}>
-        Salvar
-      </Button>
     </div>
   );
 }
 
-export default PageMapa;
+export default Mapa;
