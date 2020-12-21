@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Form, Modal, Input, Button } from 'antd';
-import { Vector as VectorSource } from 'ol/source';
-import { Vector as VectorLayer } from 'ol/layer';
+import { Button } from 'antd';
 
 import Mapa from './components/Mapa';
 
