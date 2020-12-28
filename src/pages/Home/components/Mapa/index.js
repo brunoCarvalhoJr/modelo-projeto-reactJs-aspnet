@@ -13,7 +13,7 @@ import { equalTo } from 'ol/format/filter';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 
-import Map, { Button as ToolbarButton, Toolbar } from 'components/OpenLayers';
+import Map from 'components/OpenLayers';
 import { DEFAULT_OPTIONS } from 'components/OpenLayers/utils/constants';
 import { basemapLayer, estadoLayer } from 'components/OpenLayers/utils/layers';
 import {
@@ -311,9 +311,9 @@ function Mapa({ car }) {
         options={DEFAULT_OPTIONS}
         layers={layers}
       >
-        <Toolbar>
+        <Map.Toolbar>
           {buttons.map(item => (
-            <ToolbarButton
+            <Map.Toolbar.Button
               key={item.id}
               active={buttonsState === item.id}
               onClick={() =>
@@ -322,10 +322,13 @@ function Mapa({ car }) {
                   : setButtonsState(item.id)
               }
               {...item}
-            ></ToolbarButton>
+            ></Map.Toolbar.Button>
           ))}
-        </Toolbar>
+        </Map.Toolbar>
       </Map>
+      <Button type="primary" onClick={salvar}>
+        Salvar
+      </Button>
     </div>
   );
 }
