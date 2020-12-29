@@ -5,6 +5,7 @@ import {
   faBug,
   faTrashAlt,
   faCommentAlt,
+  faSave,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -324,11 +325,14 @@ function Mapa({ car }) {
               {...item}
             ></Map.Toolbar.Button>
           ))}
+          <Map.Toolbar.Button
+            icon={<FontAwesomeIcon icon={faSave} />}
+            tooltip="Salvar"
+            onClick={salvar}
+            active={false}
+          ></Map.Toolbar.Button>
         </Map.Toolbar>
       </Map>
-      <Button type="primary" onClick={salvar}>
-        Salvar
-      </Button>
     </div>
   );
 }
