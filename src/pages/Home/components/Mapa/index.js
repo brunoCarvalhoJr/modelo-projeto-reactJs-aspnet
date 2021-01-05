@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { Form, Modal, Input, Button } from 'antd';
 import { equalTo } from 'ol/format/filter';
 import { Map, WFS } from 'ol-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,7 +24,14 @@ import { anotacaoStyle, imovelStyle, pragaStyle, talhaoStyle } from './styles';
 import 'ol-kit/dist/index.css';
 
 function Mapa() {
+  const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
+  const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
+  const [currentPraga, setCurrentPraga] = useState(null);
+  const [currentAnotacao, setCurrentAnotacao] = useState(null);
   const [currentDrawing, setCurrentDrawing] = useState(-1);
+
+  const formPragaRef = useRef(null);
+  const formAnotacaoRef = useRef(null);
 
   const changeCurrentDrawing = useCallback(
     current => {
@@ -94,15 +102,111 @@ function Mapa() {
   }
 
   function onDrawPragaEnd(event) {
-    console.log('praga', event);
+    setIsModalPragaVisible(true);
+    setCurrentPraga(event.feature);
   }
 
   function onDrawAnotacaoEnd(event) {
-    console.log('anotacao', event);
+    setIsModalAnotacaoVisible(true);
+    setCurrentAnotacao(event.feature);
+  }
+
+  function handleSalvarPraga(values) {
+    currentPraga.setProperties(values);
+    setIsModalPragaVisible(false);
+    setCurrentPraga(null);
+    formPragaRef.current.resetFields();
+  }
+
+  function handleSalvarAnotacao(values) {
+    currentAnotacao.setProperties(values);
+    setIsModalAnotacaoVisible(false);
+    setCurrentAnotacao(null);
+    formAnotacaoRef.current.resetFields();
   }
 
   return (
     <div>
+      <Modal
+        title="Dados da praga"
+        visible={isModalPragaVisible}
+        okButtonProps={{ style: { display: 'none' } }}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        closable={false}
+      >
+        <Form
+          name="praga"
+          initialValues={{ remember: false }}
+          onFinish={handleSalvarPraga}
+          ref={formPragaRef}
+        >
+          <Form.Item
+            labelCol={{ span: 24 }}
+            label="Raio"
+            name="raio"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor digite o raio da área afetada pela praga.',
+              },
+            ]}
+          >
+            <Input addonAfter="metros" />
+          </Form.Item>
+          <Form.Item
+            name={'conteudo'}
+            label="Considerações sobre a praga"
+            labelCol={{ span: 24 }}
+          >
+            <Input.TextArea rows={8} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Confirmar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Anotações sobre o ponto"
+        visible={isModalAnotacaoVisible}
+        okButtonProps={{ style: { display: 'none' } }}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        closable={false}
+      >
+        <Form
+          name="anotacao"
+          initialValues={{ remember: false }}
+          onFinish={handleSalvarAnotacao}
+          ref={formAnotacaoRef}
+        >
+          <Form.Item
+            labelCol={{ span: 24 }}
+            label="Raio"
+            name="raio"
+            rules={[
+              {
+                required: true,
+                message: 'Por favor digite o raio da área da anotação.',
+              },
+            ]}
+          >
+            <Input addonAfter="metros" />
+          </Form.Item>
+          <Form.Item
+            name={'conteudo'}
+            label="Considerações"
+            labelCol={{ span: 24 }}
+          >
+            <Input.TextArea rows={8} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Confirmar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
       <Map height={'700px'} width={'100%'}>
         <Map.Toolbar>
           <Map.Toolbar.Button
