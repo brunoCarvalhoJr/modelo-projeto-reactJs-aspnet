@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Form, Modal, Input, Button } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { equalTo } from 'ol/format/filter';
+import { Map, WFS } from 'ol-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faDrawPolygon,
   faBug,
@@ -7,191 +9,61 @@ import {
   faCommentAlt,
   faSave,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Draw, Modify, Snap, Select } from 'ol/interaction';
-import { equalTo } from 'ol/format/filter';
-import { Vector as VectorSource } from 'ol/source';
-import { Vector as VectorLayer } from 'ol/layer';
-
-import Map from 'components/OpenLayers';
-import { DEFAULT_OPTIONS } from 'components/OpenLayers/utils/constants';
-import { basemapLayer, estadoLayer } from 'components/OpenLayers/utils/layers';
+import { GEOSERVER_WFS_URL, options } from './constants';
 import {
-  talhaoStyle,
-  pragaStyle,
-  anotacaoStyle,
-  imovelStyle,
-} from 'components/OpenLayers/utils/styles';
-import { getFeatures, insertFeatures } from 'components/OpenLayers/utils/wfs';
-
-// fontes para exibição de imóveis
-const imovelSource = new VectorSource();
-const imovelLayer = new VectorLayer({
-  source: imovelSource,
-  style: imovelStyle,
-});
-
-// Ferramentas e fontes para criação e edição de talhões
-const drawTalhaoSource = new VectorSource();
-const drawTalhaoLayer = new VectorLayer({
-  source: drawTalhaoSource,
-  style: talhaoStyle,
-});
-const drawTalhao = new Draw({
-  source: drawTalhaoSource,
-  type: 'Polygon',
-});
-const modifyTalhao = new Modify({ source: drawTalhaoSource });
-const snapTalhao = new Snap({ source: drawTalhaoSource });
-
-// Ferramentas e fontes para criação e edição de pragas
-const drawPragaSource = new VectorSource();
-const drawPragaLayer = new VectorLayer({
-  source: drawPragaSource,
-  style: pragaStyle,
-});
-const drawPraga = new Draw({
-  source: drawPragaSource,
-  type: 'Point',
-});
-const modifyPraga = new Modify({ source: drawPragaSource });
-const snapPraga = new Snap({ source: drawPragaSource });
-
-// Ferramentas e fontes para criação e edição de anotações
-const drawAnotacaoSource = new VectorSource();
-const drawAnotacaoLayer = new VectorLayer({
-  source: drawAnotacaoSource,
-  style: anotacaoStyle,
-});
-const drawAnotacao = new Draw({
-  source: drawAnotacaoSource,
-  type: 'Point',
-});
-const modifyAnotacao = new Modify({ source: drawAnotacaoSource });
-const snapAnotacao = new Snap({ source: drawAnotacaoSource });
-
-// Ferramentas para seleção de polígonos para exclusão
-const selectSingleClick = new Select({});
-
-// Lista de camadas
-const layers = [
-  basemapLayer,
+  drawAnotacaoSource,
+  drawPragaSource,
+  drawTalhaoSource,
+  imovelSource,
+  esriWorldImagery,
   estadoLayer,
-  imovelLayer,
-  drawTalhaoLayer,
-  drawPragaLayer,
-  drawAnotacaoLayer,
-];
+} from './sources';
+import { anotacaoStyle, imovelStyle, pragaStyle, talhaoStyle } from './styles';
+import 'ol-kit/dist/index.css';
 
-// Lista de botões e suas ferramentas
-const buttons = [
-  {
-    id: 0,
-    icon: <FontAwesomeIcon icon={faDrawPolygon} />,
-    tooltip: 'Desenhar talhão',
-    tools: [drawTalhao, snapTalhao, modifyTalhao],
-  },
-  {
-    id: 1,
-    icon: <FontAwesomeIcon icon={faBug} />,
-    tooltip: 'Marcar praga',
-    tools: [drawPraga, snapPraga, modifyPraga],
-  },
-  {
-    id: 2,
-    icon: <FontAwesomeIcon icon={faCommentAlt} />,
-    tooltip: 'Marcar anotação',
-    tools: [drawAnotacao, snapAnotacao, modifyAnotacao],
-  },
-  {
-    id: 3,
-    icon: <FontAwesomeIcon icon={faTrashAlt} />,
-    tooltip: 'Excluir feição',
-    tools: [selectSingleClick],
-  },
-];
+function Mapa() {
+  const [currentDrawing, setCurrentDrawing] = useState(-1);
 
-function Mapa({ car }) {
-  const [buttonsState, setButtonsState] = useState(null);
-  const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
-  const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
-  const [currentPraga, setCurrentPraga] = useState(null);
-  const [currentAnotacao, setCurrentAnotacao] = useState(null);
-
-  const mapRef = useRef(null);
-  const formPragaRef = useRef(null);
-  const formAnotacaoRef = useRef(null);
+  const changeCurrentDrawing = useCallback(
+    current => {
+      if (currentDrawing === current) {
+        setCurrentDrawing(-1);
+      } else {
+        setCurrentDrawing(current);
+      }
+    },
+    [currentDrawing],
+  );
 
   useEffect(() => {
     async function init() {
-      const features = await getFeatures(
+      const wfsFeatures = await WFS.get(
+        GEOSERVER_WFS_URL,
         'agro',
         ['fazenda'],
-        equalTo('cod_imovel', car),
+        equalTo('cod_imovel', 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E'),
       );
-      imovelSource.addFeatures(features);
-      mapRef.current.getView().fit(imovelSource.getExtent(), {
-        size: mapRef.current.getSize(),
-        padding: [50, 50, 50, 50],
-        duration: 2500,
-      });
+      imovelSource.addFeatures(wfsFeatures);
     }
     init();
   });
 
-  useEffect(() => {
-    const selectedButton = buttons.filter(item => item.id === buttonsState);
-    const notSelectedButtons = buttons.filter(item => item.id !== buttonsState);
-
-    selectedButton.forEach(element => {
-      element.tools.forEach(tool => {
-        mapRef.current.addInteraction(tool);
-      });
-    });
-    notSelectedButtons.forEach(element => {
-      element.tools.forEach(tool => {
-        mapRef.current.removeInteraction(tool);
-      });
-    });
-  }, [mapRef, buttonsState]);
-
-  drawPraga.on('drawend', function (element) {
-    setIsModalPragaVisible(true);
-    setCurrentPraga(element.feature);
-  });
-
-  drawAnotacao.on('drawend', function (element) {
-    setIsModalAnotacaoVisible(true);
-    setCurrentAnotacao(element.feature);
-  });
-
-  function handleSalvarPraga(values) {
-    currentPraga.setProperties(values);
-    setIsModalPragaVisible(false);
-    setCurrentPraga(null);
-    formPragaRef.current.resetFields();
-  }
-
-  function handleSalvarAnotacao(values) {
-    currentAnotacao.setProperties(values);
-    setIsModalAnotacaoVisible(false);
-    setCurrentAnotacao(null);
-    formAnotacaoRef.current.resetFields();
-  }
-
   async function salvar() {
-    const talhaoIDs = await insertFeatures(
+    const talhaoIDs = await WFS.insert(
+      GEOSERVER_WFS_URL,
       'agro',
       'talhao',
       drawTalhaoSource.getFeatures(),
     );
-    const pragaIDs = await insertFeatures(
+    const pragaIDs = await WFS.insert(
+      GEOSERVER_WFS_URL,
       'agro',
       'praga',
       drawPragaSource.getFeatures(),
     );
-    const anotacaoIDs = await insertFeatures(
+    const anotacaoIDs = await WFS.insert(
+      GEOSERVER_WFS_URL,
       'agro',
       'anotacao',
       drawAnotacaoSource.getFeatures(),
@@ -201,137 +73,142 @@ function Mapa({ car }) {
     console.log(anotacaoIDs);
   }
 
-  selectSingleClick.on('select', function (element) {
-    try {
-      element.selected.forEach(item => {
-        switch (item.getGeometry().getType()) {
-          case 'Point':
-            try {
-              drawPragaSource.removeFeature(item);
-            } catch (error) {}
-            try {
-              drawAnotacaoSource.removeFeature(item);
-            } catch (error) {}
-            break;
-          case 'Polygon':
-            drawTalhaoSource.removeFeature(item);
-            break;
-          default:
-            break;
-        }
-      });
-    } catch (error) {}
-  });
+  function onSelected(element) {
+    element.selected.forEach(item => {
+      switch (item.getGeometry()?.getType()) {
+        case 'Point':
+          try {
+            drawPragaSource.removeFeature(item);
+          } catch (error) {}
+          try {
+            drawAnotacaoSource.removeFeature(item);
+          } catch (error) {}
+          break;
+        case 'Polygon':
+          drawTalhaoSource.removeFeature(item);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  function onDrawPragaEnd(event) {
+    console.log('praga', event);
+  }
+
+  function onDrawAnotacaoEnd(event) {
+    console.log('anotacao', event);
+  }
 
   return (
     <div>
-      <Modal
-        title="Dados da praga"
-        visible={isModalPragaVisible}
-        okButtonProps={{ style: { display: 'none' } }}
-        cancelButtonProps={{ style: { display: 'none' } }}
-        closable={false}
-      >
-        <Form
-          name="praga"
-          initialValues={{ remember: false }}
-          onFinish={handleSalvarPraga}
-          ref={formPragaRef}
-        >
-          <Form.Item
-            labelCol={{ span: 24 }}
-            label="Raio"
-            name="raio"
-            rules={[
-              {
-                required: true,
-                message: 'Por favor digite o raio da área afetada pela praga.',
-              },
-            ]}
-          >
-            <Input addonAfter="metros" />
-          </Form.Item>
-          <Form.Item
-            name={'conteudo'}
-            label="Considerações sobre a praga"
-            labelCol={{ span: 24 }}
-          >
-            <Input.TextArea rows={8} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Confirmar
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        title="Anotações sobre o ponto"
-        visible={isModalAnotacaoVisible}
-        okButtonProps={{ style: { display: 'none' } }}
-        cancelButtonProps={{ style: { display: 'none' } }}
-        closable={false}
-      >
-        <Form
-          name="anotacao"
-          initialValues={{ remember: false }}
-          onFinish={handleSalvarAnotacao}
-          ref={formAnotacaoRef}
-        >
-          <Form.Item
-            labelCol={{ span: 24 }}
-            label="Raio"
-            name="raio"
-            rules={[
-              {
-                required: true,
-                message: 'Por favor digite o raio da área da anotação.',
-              },
-            ]}
-          >
-            <Input addonAfter="metros" />
-          </Form.Item>
-          <Form.Item
-            name={'conteudo'}
-            label="Considerações"
-            labelCol={{ span: 24 }}
-          >
-            <Input.TextArea rows={8} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Confirmar
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Map
-        ref={mapRef}
-        height={'700px'}
-        width={'100%'}
-        options={DEFAULT_OPTIONS}
-        layers={layers}
-      >
+      <Map height={'700px'} width={'100%'}>
         <Map.Toolbar>
-          {buttons.map(item => (
-            <Map.Toolbar.Button
-              key={item.id}
-              active={buttonsState === item.id}
-              onClick={() =>
-                buttonsState === item.id
-                  ? setButtonsState(null)
-                  : setButtonsState(item.id)
-              }
-              {...item}
-            ></Map.Toolbar.Button>
-          ))}
           <Map.Toolbar.Button
-            icon={<FontAwesomeIcon icon={faSave} />}
-            tooltip="Salvar"
-            onClick={salvar}
+            active={currentDrawing === 0}
+            onClick={() => {
+              changeCurrentDrawing(0);
+            }}
+            tooltip={'Desenhar talhão'}
+            icon={<FontAwesomeIcon icon={faDrawPolygon} />}
+          ></Map.Toolbar.Button>
+          <Map.Toolbar.Button
+            active={currentDrawing === 1}
+            onClick={() => {
+              changeCurrentDrawing(1);
+            }}
+            tooltip={'Demarcar praga'}
+            icon={<FontAwesomeIcon icon={faBug} />}
+          ></Map.Toolbar.Button>
+          <Map.Toolbar.Button
+            active={currentDrawing === 2}
+            onClick={() => {
+              changeCurrentDrawing(2);
+            }}
+            tooltip={'Demarcar anotação'}
+            icon={<FontAwesomeIcon icon={faCommentAlt} />}
+          ></Map.Toolbar.Button>
+          <Map.Toolbar.Button
+            active={currentDrawing === 3}
+            onClick={() => {
+              changeCurrentDrawing(3);
+            }}
+            tooltip={'Excluir geometrias'}
+            icon={<FontAwesomeIcon icon={faTrashAlt} />}
+          ></Map.Toolbar.Button>
+          <Map.Toolbar.Button
             active={false}
+            onClick={salvar}
+            tooltip={'Salvar'}
+            icon={<FontAwesomeIcon icon={faSave} />}
           ></Map.Toolbar.Button>
         </Map.Toolbar>
+
+        <Map.View options={options}></Map.View>
+
+        <Map.Layer.Tile source={esriWorldImagery}></Map.Layer.Tile>
+        <Map.Layer.Tile source={estadoLayer}></Map.Layer.Tile>
+
+        <Map.Layer.Vector
+          source={imovelSource}
+          style={imovelStyle}
+          fit={true}
+        ></Map.Layer.Vector>
+
+        <Map.Layer.Vector
+          source={drawTalhaoSource}
+          style={talhaoStyle}
+        ></Map.Layer.Vector>
+        <Map.Layer.Vector
+          source={drawPragaSource}
+          style={pragaStyle}
+        ></Map.Layer.Vector>
+        <Map.Layer.Vector
+          source={drawAnotacaoSource}
+          style={anotacaoStyle}
+        ></Map.Layer.Vector>
+
+        {currentDrawing === 0 && (
+          <>
+            <Map.Interaction.Draw
+              source={drawTalhaoSource}
+              type={'Polygon'}
+            ></Map.Interaction.Draw>
+            <Map.Interaction.Modify
+              source={drawTalhaoSource}
+            ></Map.Interaction.Modify>
+          </>
+        )}
+        {currentDrawing === 1 && (
+          <>
+            <Map.Interaction.Draw
+              source={drawPragaSource}
+              type={'Point'}
+              onDrawEnd={onDrawPragaEnd}
+            ></Map.Interaction.Draw>
+            <Map.Interaction.Modify
+              source={drawPragaSource}
+            ></Map.Interaction.Modify>
+          </>
+        )}
+        {currentDrawing === 2 && (
+          <>
+            <Map.Interaction.Draw
+              source={drawAnotacaoSource}
+              type={'Point'}
+              onDrawEnd={onDrawAnotacaoEnd}
+            ></Map.Interaction.Draw>
+            <Map.Interaction.Modify
+              source={drawAnotacaoSource}
+            ></Map.Interaction.Modify>
+          </>
+        )}
+        {currentDrawing === 3 && (
+          <Map.Interaction.Select
+            onSelected={onSelected}
+          ></Map.Interaction.Select>
+        )}
       </Map>
     </div>
   );
