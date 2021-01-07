@@ -8318,10 +8318,10 @@ obuf@^1.0.0, obuf@^1.1.2:
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
-ol-kit@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/ol-kit/-/ol-kit-0.0.3.tgz#fcdf3fd2d015ab48cf80969db297886ffffdec25"
-  integrity sha512-hhFuk4tA5jhTpP01kWThwZNX3qD0NxqVbR3jZPXi8Ys5lVCwAoxlUmjPDHw13HEoLoJ9ZzVdCVntMQ6OYivZNw==
+ol-kit@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/ol-kit/-/ol-kit-0.0.10.tgz#1d5f75f0810d5d4b304d793b1e615f27977e2034"
+  integrity sha512-/lJBeY3wyzerqFsBpmQqpQxyfmXrwZgWxgmpa80P/Y2kkUTeO5mJVcZ/lbNgFhG3ZUOiYlpTr4Gq2/WO0YPHBQ==
 
 ol-mapbox-style@^6.1.1:
   version "6.2.1"

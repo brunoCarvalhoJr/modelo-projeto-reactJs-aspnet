@@ -46,7 +46,7 @@ function Mapa() {
 
   useEffect(() => {
     async function init() {
-      const wfsFeatures = await WFS.get(
+      const wfsFeatures = await WFS.getFeatures(
         GEOSERVER_WFS_URL,
         'agro',
         ['fazenda'],
@@ -58,46 +58,73 @@ function Mapa() {
   });
 
   async function salvar() {
-    const talhaoIDs = await WFS.insert(
+    const responseTalhao = await WFS.upsertFeatures(
       GEOSERVER_WFS_URL,
       'agro',
       'talhao',
       drawTalhaoSource.getFeatures(),
+      'CRS:84',
     );
-    const pragaIDs = await WFS.insert(
+    const responsePraga = await WFS.upsertFeatures(
       GEOSERVER_WFS_URL,
       'agro',
       'praga',
       drawPragaSource.getFeatures(),
+      'CRS:84',
     );
-    const anotacaoIDs = await WFS.insert(
+    const responseAnotacao = await WFS.upsertFeatures(
       GEOSERVER_WFS_URL,
       'agro',
       'anotacao',
       drawAnotacaoSource.getFeatures(),
+      'CRS:84',
     );
-    console.log(talhaoIDs);
-    console.log(pragaIDs);
-    console.log(anotacaoIDs);
+    console.log('Salvo talhão: ', responseTalhao);
+    console.log('Salvo praga: ', responsePraga);
+    console.log('Salvo anotação: ', responseAnotacao);
   }
 
-  function onSelected(element) {
-    element.selected.forEach(item => {
-      switch (item.getGeometry()?.getType()) {
-        case 'Point':
-          try {
-            drawPragaSource.removeFeature(item);
-          } catch (error) {}
-          try {
-            drawAnotacaoSource.removeFeature(item);
-          } catch (error) {}
-          break;
-        case 'Polygon':
-          drawTalhaoSource.removeFeature(item);
-          break;
-        default:
-          break;
-      }
+  function onSelected(event) {
+    event.selected.forEach(async item => {
+      try {
+        drawTalhaoSource.removeFeature(item);
+        if (item.getId()) {
+          const responseTalhao = await WFS.deleteFeatures(
+            GEOSERVER_WFS_URL,
+            'agro',
+            'talhao',
+            [item],
+            'CRS:84',
+          );
+          console.log('Excluído talhão: ', responseTalhao);
+        }
+      } catch {}
+      try {
+        drawPragaSource.removeFeature(item);
+        if (item.getId()) {
+          const responsePraga = await WFS.deleteFeatures(
+            GEOSERVER_WFS_URL,
+            'agro',
+            'praga',
+            [item],
+            'CRS:84',
+          );
+          console.log('Excluído praga: ', responsePraga);
+        }
+      } catch {}
+      try {
+        drawAnotacaoSource.removeFeature(item);
+        if (item.getId()) {
+          const responseAnotacao = await WFS.deleteFeatures(
+            GEOSERVER_WFS_URL,
+            'agro',
+            'anotacao',
+            [item],
+            'CRS:84',
+          );
+          console.log('Excluído anotação: ', responseAnotacao);
+        }
+      } catch {}
     });
   }
 
