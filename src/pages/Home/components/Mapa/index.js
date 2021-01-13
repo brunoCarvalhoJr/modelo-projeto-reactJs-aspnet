@@ -53,8 +53,31 @@ function Mapa({id}) {
         equalTo('id', id),
       );
 
-      imovelSource.addFeatures(wfsFeatures);
+      const talhaoFeatures = await WFS.getFeatures(
+        GEOSERVER_WFS_URL,
+        'agro',
+        ['talhao'],
+        equalTo('id_imovel_car', id),
+      );
 
+      const pragaFeatures = await WFS.getFeatures(
+        GEOSERVER_WFS_URL,
+        'agro',
+        ['praga'],
+        equalTo('id_imovel_car', id),
+      );
+
+      const anotacaoFeatures = await WFS.getFeatures(
+        GEOSERVER_WFS_URL,
+        'agro',
+        ['anotacao'],
+        equalTo('id_imovel_car', id),
+      );
+
+      imovelSource.addFeatures(wfsFeatures);
+      drawTalhaoSource.addFeatures(talhaoFeatures)
+      drawPragaSource.addFeatures(pragaFeatures)
+      drawAnotacaoSource.addFeatures(anotacaoFeatures)
     }
     init();
   });
