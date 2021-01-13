@@ -4,7 +4,7 @@ import Mapa from './components/Mapa';
 function Home() {
   return (
     <div>
-      <Mapa></Mapa>
+      <Mapa id={786}></Mapa>
     </div>
   );
 }

@@ -23,7 +23,7 @@ import {
 import { anotacaoStyle, imovelStyle, pragaStyle, talhaoStyle } from './styles';
 import 'ol-kit/dist/index.css';
 
-function Mapa() {
+function Mapa({id}) {
   const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
   const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
   const [currentPraga, setCurrentPraga] = useState(null);
@@ -50,9 +50,11 @@ function Mapa() {
         GEOSERVER_WFS_URL,
         'agro',
         ['fazenda'],
-        equalTo('cod_imovel', 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E'),
+        equalTo('id', id),
       );
+
       imovelSource.addFeatures(wfsFeatures);
+
     }
     init();
   });
@@ -128,12 +130,18 @@ function Mapa() {
     });
   }
 
+  function onDrawTalhaoEnd(event) {
+    event.feature.setProperties({"id_imovel_car": id})
+  }
+
   function onDrawPragaEnd(event) {
+    event.feature.setProperties({"id_imovel_car": id})
     setIsModalPragaVisible(true);
     setCurrentPraga(event.feature);
   }
 
   function onDrawAnotacaoEnd(event) {
+    event.feature.setProperties({"id_imovel_car": id})
     setIsModalAnotacaoVisible(true);
     setCurrentAnotacao(event.feature);
   }
@@ -305,6 +313,7 @@ function Mapa() {
             <Map.Interaction.Draw
               source={drawTalhaoSource}
               type={'Polygon'}
+              onDrawEnd={onDrawTalhaoEnd}
             ></Map.Interaction.Draw>
             <Map.Interaction.Modify
               source={drawTalhaoSource}
