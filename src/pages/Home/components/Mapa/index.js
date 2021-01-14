@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Form, Modal, Input, Button } from 'antd';
+import {
+  Form,
+  Modal,
+  Input,
+  Button,
+  Typography,
+  Divider,
+  Row,
+  Col,
+} from 'antd';
 import { equalTo } from 'ol/format/filter';
 import { Map, WFS } from 'ol-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,26 +32,24 @@ import {
 import { anotacaoStyle, imovelStyle, pragaStyle, talhaoStyle } from './styles';
 import 'ol-kit/dist/index.css';
 
+const { Title } = Typography;
+
 function Mapa({ id }) {
   const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
   const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
+
   const [currentPraga, setCurrentPraga] = useState(null);
   const [currentAnotacao, setCurrentAnotacao] = useState(null);
-  const [currentDrawing, setCurrentDrawing] = useState(-1);
+  const [currentDrawingToolId, setCurrentDrawingToolId] = useState(-1);
+  const [currentPopupPosition, setCurrentPopupPosition] = useState(undefined);
+  const [currentPopupFeature, setCurrentPopupFeature] = useState(null);
+  const [currentPopupTitle, setCurrentPopupTitle] = useState('');
+
+  const [visible, setVisible] = useState(true);
 
   const formPragaRef = useRef(null);
   const formAnotacaoRef = useRef(null);
-
-  const changeCurrentDrawing = useCallback(
-    current => {
-      if (currentDrawing === current) {
-        setCurrentDrawing(-1);
-      } else {
-        setCurrentDrawing(current);
-      }
-    },
-    [currentDrawing],
-  );
+  const toolbarLock = useRef(false);
 
   useEffect(() => {
     async function init() {
@@ -82,6 +89,61 @@ function Mapa({ id }) {
     init();
   });
 
+  useEffect(() => {
+    setVisible(true);
+  }, [currentPopupPosition]);
+
+  const changeCurrentDrawing = useCallback(
+    current => {
+      if (currentDrawingToolId === current) {
+        toolbarLock.current = false;
+        setCurrentDrawingToolId(-1);
+      } else {
+        toolbarLock.current = true;
+        setCurrentDrawingToolId(current);
+      }
+    },
+    [currentDrawingToolId],
+  );
+
+  const onSingleClick = useCallback(
+    event => {
+      if (
+        toolbarLock.current === false &&
+        (!currentPopupPosition ||
+          (event.coordinate[0] !== currentPopupPosition[0] &&
+            event.coordinate[1] !== currentPopupPosition[1]))
+      ) {
+        event.map.forEachFeatureAtPixel(
+          event.pixel,
+          function (feature, layer) {
+            setCurrentPopupPosition(event.coordinate);
+            setCurrentPopupTitle(layer.get('name'));
+            setCurrentPopupFeature(feature.getProperties());
+          },
+          {
+            layerFilter: function (layer) {
+              return (
+                layer.get('name') === 'Praga' ||
+                layer.get('name') === 'Anotação'
+              );
+            },
+          },
+        );
+      }
+    },
+    [currentPopupPosition],
+  );
+
+  function onCloseClick() {
+    setVisible(false);
+    setCurrentPopupPosition(undefined);
+  }
+
+  function featureSelectionFilter(_feature, layer) {
+    return layer.get('name') !== 'Imóvel';
+  }
+
   async function salvar() {
     const responseTalhao = await WFS.upsertFeatures(
       GEOSERVER_WFS_URL,
@@ -109,7 +171,7 @@ function Mapa({ id }) {
     console.log('Salvo anotação: ', responseAnotacao);
   }
 
-  function onSelected(event) {
+  function onFeatureSelected(event) {
     event.selected.forEach(async item => {
       try {
         drawTalhaoSource.removeFeature(item);
@@ -265,10 +327,25 @@ function Mapa({ id }) {
           </Form.Item>
         </Form>
       </Modal>
-      <Map height={'700px'} width={'100%'}>
+      <Map height={'700px'} width={'100%'} onSingleClick={onSingleClick}>
+        <Map.Overlay position={currentPopupPosition}>
+          <Map.Overlay.Popup onCloseClick={onCloseClick} visible={visible}>
+            <Title level={4}>{currentPopupTitle}</Title>
+            <Row>
+              <Col span={4}>
+                <strong>Raio:</strong>
+              </Col>
+              <Col span={20}>{currentPopupFeature?.raio} metros</Col>
+            </Row>
+            <div>
+              <strong>Conteúdo:</strong>
+            </div>
+            <div>{currentPopupFeature?.conteudo}</div>
+          </Map.Overlay.Popup>
+        </Map.Overlay>
         <Map.Toolbar>
           <Map.Toolbar.Button
-            active={currentDrawing === 0}
+            active={currentDrawingToolId === 0}
             onClick={() => {
               changeCurrentDrawing(0);
             }}
@@ -276,7 +353,7 @@ function Mapa({ id }) {
             icon={<FontAwesomeIcon icon={faDrawPolygon} />}
           ></Map.Toolbar.Button>
           <Map.Toolbar.Button
-            active={currentDrawing === 1}
+            active={currentDrawingToolId === 1}
             onClick={() => {
               changeCurrentDrawing(1);
             }}
@@ -284,7 +361,7 @@ function Mapa({ id }) {
             icon={<FontAwesomeIcon icon={faBug} />}
           ></Map.Toolbar.Button>
           <Map.Toolbar.Button
-            active={currentDrawing === 2}
+            active={currentDrawingToolId === 2}
             onClick={() => {
               changeCurrentDrawing(2);
             }}
@@ -292,7 +369,7 @@ function Mapa({ id }) {
             icon={<FontAwesomeIcon icon={faCommentAlt} />}
           ></Map.Toolbar.Button>
           <Map.Toolbar.Button
-            active={currentDrawing === 3}
+            active={currentDrawingToolId === 3}
             onClick={() => {
               changeCurrentDrawing(3);
             }}
@@ -316,22 +393,26 @@ function Mapa({ id }) {
           source={imovelSource}
           style={imovelStyle}
           fit={true}
+          name={'imovel'}
         ></Map.Layer.Vector>
 
         <Map.Layer.Vector
           source={drawTalhaoSource}
           style={talhaoStyle}
+          name={'Talhão'}
         ></Map.Layer.Vector>
         <Map.Layer.Vector
           source={drawPragaSource}
           style={pragaStyle}
+          name={'Praga'}
         ></Map.Layer.Vector>
         <Map.Layer.Vector
           source={drawAnotacaoSource}
           style={anotacaoStyle}
+          name={'Anotação'}
         ></Map.Layer.Vector>
 
-        {currentDrawing === 0 && (
+        {currentDrawingToolId === 0 && (
           <>
             <Map.Interaction.Draw
               source={drawTalhaoSource}
@@ -343,7 +424,7 @@ function Mapa({ id }) {
             ></Map.Interaction.Modify>
           </>
         )}
-        {currentDrawing === 1 && (
+        {currentDrawingToolId === 1 && (
           <>
             <Map.Interaction.Draw
               source={drawPragaSource}
@@ -355,7 +436,7 @@ function Mapa({ id }) {
             ></Map.Interaction.Modify>
           </>
         )}
-        {currentDrawing === 2 && (
+        {currentDrawingToolId === 2 && (
           <>
             <Map.Interaction.Draw
               source={drawAnotacaoSource}
@@ -367,9 +448,10 @@ function Mapa({ id }) {
             ></Map.Interaction.Modify>
           </>
         )}
-        {currentDrawing === 3 && (
+        {currentDrawingToolId === 3 && (
           <Map.Interaction.Select
-            onSelected={onSelected}
+            onSelected={onFeatureSelected}
+            filter={featureSelectionFilter}
           ></Map.Interaction.Select>
         )}
       </Map>
