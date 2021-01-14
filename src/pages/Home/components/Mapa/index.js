@@ -393,7 +393,7 @@ function Mapa({ id }) {
           source={imovelSource}
           style={imovelStyle}
           fit={true}
-          name={'imovel'}
+          name={'Imóvel'}
         ></Map.Layer.Vector>
 
         <Map.Layer.Vector
