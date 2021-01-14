@@ -23,7 +23,7 @@ import {
 import { anotacaoStyle, imovelStyle, pragaStyle, talhaoStyle } from './styles';
 import 'ol-kit/dist/index.css';
 
-function Mapa({id}) {
+function Mapa({ id }) {
   const [isModalPragaVisible, setIsModalPragaVisible] = useState(false);
   const [isModalAnotacaoVisible, setIsModalAnotacaoVisible] = useState(false);
   const [currentPraga, setCurrentPraga] = useState(null);
@@ -75,9 +75,9 @@ function Mapa({id}) {
       );
 
       imovelSource.addFeatures(wfsFeatures);
-      drawTalhaoSource.addFeatures(talhaoFeatures)
-      drawPragaSource.addFeatures(pragaFeatures)
-      drawAnotacaoSource.addFeatures(anotacaoFeatures)
+      drawTalhaoSource.addFeatures(talhaoFeatures);
+      drawPragaSource.addFeatures(pragaFeatures);
+      drawAnotacaoSource.addFeatures(anotacaoFeatures);
     }
     init();
   });
@@ -154,17 +154,17 @@ function Mapa({id}) {
   }
 
   function onDrawTalhaoEnd(event) {
-    event.feature.setProperties({"id_imovel_car": id})
+    event.feature.setProperties({ id_imovel_car: id });
   }
 
   function onDrawPragaEnd(event) {
-    event.feature.setProperties({"id_imovel_car": id})
+    event.feature.setProperties({ id_imovel_car: id });
     setIsModalPragaVisible(true);
     setCurrentPraga(event.feature);
   }
 
   function onDrawAnotacaoEnd(event) {
-    event.feature.setProperties({"id_imovel_car": id})
+    event.feature.setProperties({ id_imovel_car: id });
     setIsModalAnotacaoVisible(true);
     setCurrentAnotacao(event.feature);
   }
