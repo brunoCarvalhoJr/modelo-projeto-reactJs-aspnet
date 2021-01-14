@@ -2,6 +2,7 @@ import { createHashHistory } from 'history';
 import React from 'react';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import LayoutContainer from 'pages/layout';
+import LoginContainer from 'pages/layout/login';
 import Home from 'pages/Home';
 import PageLogin from 'pages/login/PageLogin';
 
@@ -41,7 +42,15 @@ class PrivateRoute extends React.Component {
 const Routes = () => (
   <Router history={history}>
     <Switch>
-      <Route exact path="/" component={PageLogin} />
+      <Route
+        exact
+        path="/"
+        render={props => (
+          <LoginContainer>
+            <PageLogin {...props} />
+          </LoginContainer>
+        )}
+      />
       <LayoutContainer>
         <Switch>
           <PrivateRoute path="/home" component={Home} />
