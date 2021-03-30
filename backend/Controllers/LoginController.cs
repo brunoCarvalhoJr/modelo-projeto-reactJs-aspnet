@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 
-namespace Seguranca
+namespace backend.Controllers
 {
     [Authorize]
     [Produces("application/json")]
