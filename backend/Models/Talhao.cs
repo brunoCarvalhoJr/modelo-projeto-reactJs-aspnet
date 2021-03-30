@@ -5,7 +5,7 @@ using NetTopologySuite.Geometries;
 
 namespace backend.Models
 {
-  [Table("talhao")]
+  [Table("talhao", Schema = "monitoramento")]
   public class Talhao
   {
     public int ID { get; set; }

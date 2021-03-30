@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
-  [Table("imovel_car")]
+  [Table("imovel", Schema = "monitoramento")]
   public class Imovel
   {
     [Column(name: "id")]

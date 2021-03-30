@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Models;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace backend
 {
@@ -34,6 +36,18 @@ namespace backend
         optionsAction.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), x => x.UseNetTopologySuite());
       });
 
+      services.AddIdentity<Usuario, Perfil>(options =>
+        {
+          options.Password.RequireDigit = false;
+          options.Password.RequireLowercase = false;
+          options.Password.RequireUppercase = false;
+          options.Password.RequireNonAlphanumeric = false;
+          options.SignIn.RequireConfirmedEmail = false;
+          options.SignIn.RequireConfirmedPhoneNumber = false;
+          options.Lockout.AllowedForNewUsers = true;
+        })
+        .AddEntityFrameworkStores<AgroContext>()
+        .AddDefaultTokenProviders();
 
       services.AddControllers(options =>
       {
@@ -80,6 +94,7 @@ namespace backend
       {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
       });
+      app.UseAuthentication();
       app.UseDefaultFiles();
       app.UseStaticFiles();
       app.UseRouting();
