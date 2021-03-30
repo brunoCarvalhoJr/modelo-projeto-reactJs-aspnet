@@ -14,6 +14,7 @@ using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using Sync.v1;
 
 namespace backend
 {
@@ -73,6 +74,8 @@ namespace backend
 
 
       services.AddDatabaseDeveloperPageExceptionFilter();
+      services.AddScoped<SyncPullService>();
+      services.AddScoped<SyncPushService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Models;
+using Sync.v1;
 
 namespace backend.Controllers
 {
@@ -17,15 +18,20 @@ namespace backend.Controllers
   [Route("api/v1/sincronizacao")]
   public class SincronizacaoV1Controller : Controller
   {
-    public SincronizacaoV1Controller()
+    private readonly SyncPullService syncPullService;
+
+    public SincronizacaoV1Controller(SyncPullService syncPullService)
     {
+      this.syncPullService = syncPullService;
     }
+
 
     [HttpGet("{usuario}")]
     public async Task<IActionResult> GetAsync(string usuario)
     {
       await Task.Run(() => { });
-      return Ok();
+      PopulateSchemas populateSchemas = this.syncPullService.Execute();
+      return Ok(populateSchemas);
     }
 
     [HttpPost("{usuario}")]
