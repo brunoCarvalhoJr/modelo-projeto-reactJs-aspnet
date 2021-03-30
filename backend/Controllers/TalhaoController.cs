@@ -1,10 +1,9 @@
 ﻿using System;
+using backend.Commands;
 using backend.Data;
 using backend.Models;
-using backend.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Features;
-using NetTopologySuite.Geometries;
 
 namespace backend.Controllers
 {
@@ -19,12 +18,12 @@ namespace backend.Controllers
     }
 
     [HttpPost]
-    public Feature Post(CreateTalhao viewModel)
+    public Feature Post(TalhaoCreateCommand viewModel)
     {
       Talhao talhao = new Talhao();
       talhao.Nome = viewModel.Nome;
       talhao.Numero = viewModel.Numero;
-      talhao.ImovelId = viewModel.ImovelId;
+      // talhao.ImovelId = viewModel.ImovelId;
       talhao.TheGeom = viewModel.TheGeom.Geometry;
       context.Talhao.Add(talhao);
       context.SaveChanges();

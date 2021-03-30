@@ -61,12 +61,10 @@ namespace backend.Migrations
                 schema: "monitoramento",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     nome = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     numero = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    the_geom = table.Column<Geometry>(type: "geometry", nullable: true),
-                    imovel_id = table.Column<int>(type: "integer", nullable: false)
+                    the_geom = table.Column<Geometry>(type: "geometry", nullable: true)
                 },
                 constraints: table =>
                 {

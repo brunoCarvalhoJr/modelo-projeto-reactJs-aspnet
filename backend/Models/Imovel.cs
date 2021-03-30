@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Data;
 
 namespace backend.Models
 {
-  [Table("imovel", Schema = "monitoramento")]
+  [Table("imovel", Schema = Schema.SCHEMA_MONITORAMENTO)]
   public class Imovel
   {
     [Column(name: "id")]

@@ -11,7 +11,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AgroContext))]
-    [Migration("20210330135840_InitialCreate")]
+    [Migration("20210330144412_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -282,15 +282,10 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Talhao", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<int>("ImovelId")
-                        .HasColumnType("integer")
-                        .HasColumnName("imovel_id");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(200)
@@ -306,7 +301,7 @@ namespace backend.Migrations
                         .HasColumnType("geometry")
                         .HasColumnName("the_geom");
 
-                    b.HasKey("ID")
+                    b.HasKey("Id")
                         .HasName("pk_talhao");
 
                     b.ToTable("talhao", "monitoramento");

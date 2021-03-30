@@ -1,20 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Data;
 using Microsoft.AspNetCore.Identity;
 
 namespace Models
 {
-  /// <summary>
-  /// Papéis
-  /// </summary>
-  [Table("perfil", Schema = "monitoramento")]
+  [Table("perfil", Schema = Schema.SCHEMA_MONITORAMENTO)]
   public partial class Perfil : IdentityRole<int>
   {
     #region Properties
 
-    /// <summary>
-    /// Nome
-    /// </summary>
     [StringLength(40)]
     public override string Name
     {

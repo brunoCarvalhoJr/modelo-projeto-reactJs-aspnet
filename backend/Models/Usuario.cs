@@ -1,12 +1,12 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Data;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 
 namespace Models
 {
-  [Table("usuario", Schema = "monitoramento")]
+  [Table("usuario", Schema = Schema.SCHEMA_MONITORAMENTO)]
   public partial class Usuario : IdentityUser<int>
   {
     #region Properties

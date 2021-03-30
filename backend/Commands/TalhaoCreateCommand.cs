@@ -1,9 +1,9 @@
 using System;
 using NetTopologySuite.Features;
 
-namespace backend.ViewModels
+namespace backend.Commands
 {
-  public class CreateTalhao
+  public class TalhaoCreateCommand
   {
     public String Nome { get; set; }
     public String Numero { get; set; }

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Models;
 
 namespace backend
 {
@@ -30,8 +32,9 @@ namespace backend
         try
         {
           var context = services.GetRequiredService<AgroContext>();
+          var userManager = services.GetRequiredService<UserManager<Usuario>>();
           context.Database.EnsureCreated();
-          DbInitializer.Initialize(context);
+          DbInitializer.Initialize(userManager, context);
         }
         catch (Exception ex)
         {

@@ -94,10 +94,11 @@ namespace backend
       {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
       });
-      app.UseAuthentication();
       app.UseDefaultFiles();
       app.UseStaticFiles();
       app.UseRouting();
+      app.UseAuthentication();
+      app.UseAuthorization();
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
