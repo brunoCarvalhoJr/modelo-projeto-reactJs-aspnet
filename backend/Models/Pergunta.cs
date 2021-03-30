@@ -14,7 +14,7 @@ namespace backend.Models
     public Guid Id { get; set; } = Guid.NewGuid();
     public String Tipo { get; set; }
     public String Nome { get; set; }
-    public bool Obrigatorio { get; set; }
+    public bool Obrigatorio { get; set; } = false;
     public List<Alternativa> Alternativas { get; set; }
 
     [ForeignKey(nameof(Ocorrencia))]

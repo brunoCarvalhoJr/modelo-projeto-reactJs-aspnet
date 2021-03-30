@@ -69,6 +69,150 @@ namespace backend.Data
         agroContext.SaveChanges();
       }
 
+      PopularPerguntas();
+    }
+
+    private void PopularPerguntas()
+    {
+      if (agroContext.OcorrenciaCategorias.Count() != 0)
+        return;
+
+      // ######################################################################################################
+      // ################################### ANOTACAO #########################################################
+      // ######################################################################################################
+      OcorrenciaCategoria ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Anotação",
+        Tipo = "ANOTACAO",
+        Ordem = 0,
+        Icone = "default",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      Ocorrencia ocorrencia = new Ocorrencia()
+      {
+        Nome = "Anotação",
+        OcorrenciaCategoriaId = ocorrenciaCategoria.Id
+      };
+      agroContext.Ocorrencias.Add(ocorrencia);
+
+      // ######################################################################################################
+      // ################################### INSETO ###########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Inseto",
+        Tipo = "OCORRENCIA",
+        Ordem = 0,
+        Icone = "virus",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      ocorrencia = new Ocorrencia()
+      {
+        Nome = "Ferrugem do cafeeiro",
+        OcorrenciaCategoriaId = ocorrenciaCategoria.Id
+      };
+      agroContext.Ocorrencias.Add(ocorrencia);
+
+      Pergunta pergunta = new Pergunta()
+      {
+        Nome = "Pergunta Texto",
+        Tipo = "text",
+        OcorrenciaId = ocorrencia.Id
+      };
+      agroContext.Perguntas.Add(pergunta);
+
+      pergunta = new Pergunta()
+      {
+        Nome = "Pergunta com Alternativa",
+        Tipo = "select",
+        OcorrenciaId = ocorrencia.Id
+      };
+      agroContext.Perguntas.Add(pergunta);
+
+      Alternativa alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 01",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 02",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 03",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      // ######################################################################################################
+      // ################################### Doença ###########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Doença",
+        Tipo = "OCORRENCIA",
+        Ordem = 1,
+        Icone = "spider",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      // ######################################################################################################
+      // ################################### Invasora #########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Invasora",
+        Tipo = "OCORRENCIA",
+        Ordem = 2,
+        Icone = "spa",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      // ######################################################################################################
+      // ################################### Nematoide #########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Nematoide",
+        Tipo = "OCORRENCIA",
+        Icone = "pastafarianism",
+        Ordem = 3,
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      // ######################################################################################################
+      // ################################### Inimigo #########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Inimigo",
+        Tipo = "OCORRENCIA",
+        Ordem = 4,
+        Icone = "otter",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      // ######################################################################################################
+      // ################################### Outro #########################################################
+      // ######################################################################################################
+      ocorrenciaCategoria = new OcorrenciaCategoria()
+      {
+        Nome = "Outro",
+        Tipo = "OCORRENCIA",
+        Ordem = 5,
+        Icone = "pen-nib",
+      };
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+
+      agroContext.SaveChanges();
     }
 
     private Geometry validarGeoJSON(string geoJson)
