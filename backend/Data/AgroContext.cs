@@ -15,7 +15,18 @@ namespace backend.Data
     {
     }
 
-    public DbSet<Talhao> Talhao { get; set; }
+    public DbSet<Alternativa> Alternativas { get; set; }
+    public DbSet<Fazenda> Fazendas { get; set; }
+    public DbSet<Formulario> Formularios { get; set; }
+    public DbSet<FormularioItem> FormularioItems { get; set; }
+    public DbSet<FormularioItemAlternativa> FormularioItemAlternativas { get; set; }
+    public DbSet<Foto> Fotos { get; set; }
+    public DbSet<Localizacao> Localizacoes { get; set; }
+    public DbSet<Ocorrencia> Ocorrencias { get; set; }
+    public DbSet<OcorrenciaCategoria> OcorrenciaCategorias { get; set; }
+    public DbSet<Pergunta> Perguntas { get; set; }
+    public DbSet<Talhao> Talhoes { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

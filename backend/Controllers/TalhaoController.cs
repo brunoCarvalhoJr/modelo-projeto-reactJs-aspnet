@@ -22,10 +22,10 @@ namespace backend.Controllers
     {
       Talhao talhao = new Talhao();
       talhao.Nome = viewModel.Nome;
-      talhao.Numero = viewModel.Numero;
+      talhao.Codigo = viewModel.Numero;
       // talhao.ImovelId = viewModel.ImovelId;
       talhao.TheGeom = viewModel.TheGeom.Geometry;
-      context.Talhao.Add(talhao);
+      context.Talhoes.Add(talhao);
       context.SaveChanges();
       viewModel.TheGeom.Attributes.Add("nome", viewModel.Nome);
       viewModel.TheGeom.Attributes.Add("numero", viewModel.Numero);
@@ -36,7 +36,7 @@ namespace backend.Controllers
     [HttpDelete("{id}")]
     public int Delete(int id)
     {
-      var talhao = context.Talhao.Find(id);
+      var talhao = context.Talhoes.Find(id);
       context.Remove(talhao);
       context.SaveChanges();
       return id;

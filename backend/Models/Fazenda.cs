@@ -7,21 +7,17 @@ using NetTopologySuite.Geometries;
 
 namespace backend.Models
 {
-  [Table("talhao", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Talhao
+  [Table("fazenda", Schema = Schema.SCHEMA_MONITORAMENTO)]
+  public class Fazenda
   {
     [Key]
     [Required]
     public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
-    public String Codigo { get; set; }
-    public float Area { get; set; }
+    public String Numero { get; set; }
+    public double Area { get; set; }
     public Geometry TheGeom { get; set; }
-    public List<Localizacao> Localizacoes { get; set; }
-
-    [ForeignKey(nameof(Fazenda))]
-    public Guid FazendaId { get; set; }
-    public virtual Fazenda Fazenda { get; set; }
+    public List<Talhao> Talhoes { get; set; } = new List<Talhao>();
   }
 
 }

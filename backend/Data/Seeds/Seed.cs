@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using backend.Models;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
@@ -17,32 +18,62 @@ namespace backend.Data
 
     public void Executar()
     {
-      var geoJsonFazenda = File.ReadAllText(Path.Combine("Data", "Seeds", "fazenda.json"));
-      var geoFazenda = validarGeoJSON(geoJsonFazenda);
+      if (agroContext.Fazendas.Count() == 0)
+      {
+        var geoJsonFazenda = File.ReadAllText(Path.Combine("Data", "Seeds", "fazenda.json"));
+        var geoFazenda = validarGeoJSON(geoJsonFazenda);
 
-      var geoJsonTalhao001 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_001.json"));
-      var geoTalhao001 = validarGeoJSON(geoJsonTalhao001);
+        var geoJsonTalhao001 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_001.json"));
+        var geoTalhao001 = validarGeoJSON(geoJsonTalhao001);
 
-      agroContext.Talhao.Add(new Talhao(){
-         Nome = "Talhao",
-         Numero = "200",
-         TheGeom = geoTalhao001
-      });
+        var geoJsonTalhao002 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_002.json"));
+        var geoTalhao002 = validarGeoJSON(geoJsonTalhao002);
 
-      agroContext.SaveChanges();
+        var geoJsonTalhao003 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_003.json"));
+        var geoTalhao003 = validarGeoJSON(geoJsonTalhao003);
 
-      var geoJsonTalhao002 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_002.json"));
-      var geoTalhao002 = validarGeoJSON(geoJsonTalhao002);
+        var fazenda = new Fazenda()
+        {
+          Nome = "Fazenda 100",
+          Numero = "1000",
+          Area = 1,
+          TheGeom = geoFazenda
+        };
 
-      var geoJsonTalhao003 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_003.json"));
-      var geoTalhao003 = validarGeoJSON(geoJsonTalhao003);
+        agroContext.Fazendas.Add(fazenda);
+
+        agroContext.Talhoes.Add(new Talhao()
+        {
+          Nome = "Talhao",
+          Codigo = "001",
+          TheGeom = geoTalhao001,
+          FazendaId = fazenda.Id
+        });
+
+        agroContext.Talhoes.Add(new Talhao()
+        {
+          Nome = "Talhao",
+          Codigo = "002",
+          TheGeom = geoTalhao002,
+          FazendaId = fazenda.Id
+        });
+
+        agroContext.Talhoes.Add(new Talhao()
+        {
+          Nome = "Talhao",
+          Codigo = "003",
+          TheGeom = geoTalhao003,
+          FazendaId = fazenda.Id
+        });
+
+        agroContext.SaveChanges();
+      }
 
     }
 
     private Geometry validarGeoJSON(string geoJson)
     {
       Feature geometry;
-      string retorno;
       var serializer = GeoJsonSerializer.Create();
       using (var stringReader = new StringReader(geoJson))
       using (var jsonReader = new JsonTextReader(stringReader))
