@@ -13,7 +13,7 @@ namespace backend.Models
     [Required]
     public Guid Id { get; set; } = Guid.NewGuid();
     public String Valor { get; set; }
-    public virtual List<FormularioItemAlternativa> Alternativas { get; set; }
+    public virtual List<FormularioItemAlternativa> Alternativas { get; set; } = new List<FormularioItemAlternativa>();
 
     [ForeignKey(nameof(Pergunta))]
     public Guid PerguntaId { get; set; }

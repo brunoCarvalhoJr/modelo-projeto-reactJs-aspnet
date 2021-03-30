@@ -25,12 +25,11 @@ namespace backend.Controllers
       this.syncPullService = syncPullService;
     }
 
-
     [HttpGet("{usuario}")]
     public async Task<IActionResult> GetAsync(string usuario)
     {
       await Task.Run(() => { });
-      PopulateSchemas populateSchemas = this.syncPullService.Execute();
+      var populateSchemas = this.syncPullService.Execute(usuario);
       return Ok(populateSchemas);
     }
 

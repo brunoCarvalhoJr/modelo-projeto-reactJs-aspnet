@@ -13,7 +13,7 @@ namespace backend.Models
     [Required]
     public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
-    public List<Pergunta> Perguntas { get; set; }
+    public List<Pergunta> Perguntas { get; set; } = new List<Pergunta>();
 
     [ForeignKey(nameof(OcorrenciaCategoria))]
     public Guid OcorrenciaCategoriaId { get; set; }

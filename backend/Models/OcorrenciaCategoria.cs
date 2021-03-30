@@ -16,6 +16,6 @@ namespace backend.Models
     public String Tipo { get; set; }
     public int Ordem { get; set; }
     public String Icone { get; set; }
-    public List<Ocorrencia> Ocorrencias { get; set; }
+    public List<Ocorrencia> Ocorrencias { get; set; } = new List<Ocorrencia>();
   }
 }

@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Sync.Base;
+
+namespace Sync.v1.Models
+{
+  public class FormularioItemAdapter : IBaseAdapter<FormularioItem, backend.Models.FormularioItem>
+  {
+    public List<FormularioItem> Pull(List<backend.Models.FormularioItem> source)
+    {
+      return source.Select(c => PullConvertEntity(c)).ToList();
+    }
+
+    public List<backend.Models.FormularioItem> Push(List<FormularioItem> source)
+    {
+      return source.Select(c => PushConvertEntity(c)).ToList();
+    }
+
+    public FormularioItem PullConvertEntity(backend.Models.FormularioItem source)
+    {
+      FormularioItem FormularioItem = new FormularioItem()
+      {
+        Id = source.Id,
+        Pergunta = new ObjectId(source.PerguntaId),
+        Alternativas = source.Alternativas.Select(c => new ObjectId(source.Id)).ToList()
+      };
+      return FormularioItem;
+    }
+
+    public backend.Models.FormularioItem PushConvertEntity(FormularioItem source)
+    {
+      backend.Models.FormularioItem FormularioItem = new backend.Models.FormularioItem()
+      {
+        Id = source.Id,
+      };
+      return FormularioItem;
+    }
+  }
+}

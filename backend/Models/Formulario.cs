@@ -13,8 +13,8 @@ namespace backend.Models
     [Required]
     public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
-    public List<FormularioItem> Itens { get; set; }
-    public List<Foto> Fotos { get; set; }
+    public List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
+    public List<Foto> Fotos { get; set; } = new List<Foto>();
 
     [ForeignKey(nameof(Localizacao))]
     public Guid LocalizacaoId { get; set; }

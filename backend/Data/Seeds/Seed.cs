@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using backend.Models;
@@ -18,6 +19,8 @@ namespace backend.Data
 
     public void Executar()
     {
+      var perguntaId = PopularPerguntas();
+
       if (agroContext.Fazendas.Count() == 0)
       {
         var geoJsonFazenda = File.ReadAllText(Path.Combine("Data", "Seeds", "fazenda.json"));
@@ -32,6 +35,9 @@ namespace backend.Data
         var geoJsonTalhao003 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_003.json"));
         var geoTalhao003 = validarGeoJSON(geoJsonTalhao003);
 
+        var geoJsonLocalizacao001 = File.ReadAllText(Path.Combine("Data", "Seeds", "localizacao_001.json"));
+        var geoLocalizacao001 = validarGeoJSON(geoJsonLocalizacao001);
+
         var fazenda = new Fazenda()
         {
           Nome = "Fazenda 100",
@@ -42,13 +48,15 @@ namespace backend.Data
 
         agroContext.Fazendas.Add(fazenda);
 
-        agroContext.Talhoes.Add(new Talhao()
+        var talhao = new Talhao()
         {
           Nome = "Talhao",
           Codigo = "001",
           TheGeom = geoTalhao001,
           FazendaId = fazenda.Id
-        });
+        };
+
+        agroContext.Talhoes.Add(talhao);
 
         agroContext.Talhoes.Add(new Talhao()
         {
@@ -66,16 +74,45 @@ namespace backend.Data
           FazendaId = fazenda.Id
         });
 
+        var localizacao = new Localizacao(){
+          Tipo = "OCORRENCIA",
+          Status = "FINALIZADO",
+          TheGeom = geoLocalizacao001,
+          TalhaoId = talhao.Id
+        };
+        agroContext.Localizacoes.Add(localizacao);
+
+
+        var formulario = new Formulario(){
+          Nome = "Formulário",
+          LocalizacaoId = localizacao.Id
+        };
+        agroContext.Formularios.Add(formulario);
+
+
+        var formularioItem = new FormularioItem(){
+            Valor = "Valor",
+            PerguntaId = perguntaId,
+            FormularioId = formulario.Id
+        };
+
+        agroContext.FormularioItems.Add(formularioItem);
+
+        var alternativaFormulario = new FormularioItemAlternativa(){
+          AlternativaId = agroContext.Alternativas.FirstOrDefault().Id,
+          FormularioItemId = formularioItem.Id
+        };
+
+        agroContext.FormularioItemAlternativas.Add(alternativaFormulario);
+
         agroContext.SaveChanges();
       }
-
-      PopularPerguntas();
     }
 
-    private void PopularPerguntas()
+    private Guid PopularPerguntas()
     {
       if (agroContext.OcorrenciaCategorias.Count() != 0)
-        return;
+        return Guid.Empty;
 
       // ######################################################################################################
       // ################################### ANOTACAO #########################################################
@@ -213,6 +250,8 @@ namespace backend.Data
       agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
 
       agroContext.SaveChanges();
+
+      return pergunta.Id;
     }
 
     private Geometry validarGeoJSON(string geoJson)
