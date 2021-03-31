@@ -34,7 +34,7 @@ namespace backend.Controllers
     }
 
     [HttpPost("{usuario}")]
-    public async Task<IActionResult> PostAsync(string usuario)
+    public async Task<IActionResult> PostAsync(string usuario, [FromBody] PopulateSchemas schemas)
     {
       await Task.Run(() => { });
       return Ok();

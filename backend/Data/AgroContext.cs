@@ -37,10 +37,10 @@ namespace backend.Data
       builder.Ignore<IdentityUser<int>>();
       builder.Entity<Usuario>().HasKey(m => m.Id);
       builder.Entity<Perfil>().HasKey(m => m.Id);
-      builder.Entity<FormularioItemAlternativa>()
-       .HasOne(formItemAlternativa => formItemAlternativa.FormularioItem)
-       .WithMany(formItem => formItem.Alternativas)
-       .HasForeignKey(formItemAlternativa => formItemAlternativa.FormularioItemId);
+      // builder.Entity<FormularioItemAlternativa>()
+      //  .HasOne(formItemAlternativa => formItemAlternativa.FormularioItem)
+      //  .WithMany(formItem => formItem.Alternativas)
+      //  .HasForeignKey(formItemAlternativa => formItemAlternativa.FormularioItemId);
 
       base.OnModelCreating(builder);
 

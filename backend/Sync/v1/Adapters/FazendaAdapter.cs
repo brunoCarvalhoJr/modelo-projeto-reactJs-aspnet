@@ -23,6 +23,7 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Nome = source.Nome,
+        Numero = source.Numero,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
         Talhoes = source.Talhoes.Select(c => new ObjectId(c.Id)).ToList()
       };

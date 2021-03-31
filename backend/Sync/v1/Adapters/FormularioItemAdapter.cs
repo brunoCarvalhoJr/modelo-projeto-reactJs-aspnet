@@ -22,19 +22,20 @@ namespace Sync.v1.Models
       FormularioItem FormularioItem = new FormularioItem()
       {
         Id = source.Id,
+        Valor = source.Valor,
         Pergunta = new ObjectId(source.PerguntaId),
-        Alternativas = source.Alternativas.Select(c => new ObjectId(source.Id)).ToList()
+        Alternativas = source.Alternativas.Select(c => new ObjectId(c.AlternativaId)).ToList()
       };
       return FormularioItem;
     }
 
-    public backend.Models.FormularioItem PushConvertEntity(FormularioItem source)
+  public backend.Models.FormularioItem PushConvertEntity(FormularioItem source)
+  {
+    backend.Models.FormularioItem FormularioItem = new backend.Models.FormularioItem()
     {
-      backend.Models.FormularioItem FormularioItem = new backend.Models.FormularioItem()
-      {
-        Id = source.Id,
-      };
-      return FormularioItem;
-    }
+      Id = source.Id,
+    };
+    return FormularioItem;
   }
+}
 }

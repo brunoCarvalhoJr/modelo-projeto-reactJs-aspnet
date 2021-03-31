@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using backend.Data;
+using Microsoft.EntityFrameworkCore;
 using Sync.v1.Models;
 
 namespace Sync.v1
@@ -31,7 +32,7 @@ namespace Sync.v1
       var ocorrenciasCategorias = agroContext.OcorrenciaCategorias.ToList();
       populateSchema.OcorrenciaCategoria = new OcorrenciaCategoriaAdapter().Pull(ocorrenciasCategorias);
 
-      var formularioItems = agroContext.FormularioItems.ToList();
+      var formularioItems = agroContext.FormularioItems.Include(c => c.Alternativas).ToList();
       populateSchema.FormularioItem = new FormularioItemAdapter().Pull(formularioItems);
 
       var formularios = agroContext.Formularios.ToList();
