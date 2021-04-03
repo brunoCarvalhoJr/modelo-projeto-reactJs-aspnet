@@ -24,7 +24,8 @@ namespace Sync.v1.Models
         Id = source.Id,
         Nome = source.Nome,
         Path = source.Path,
-        Uri = source.Uri
+        Uri = source.Uri,
+        Date = source.DataSync
       };
       return Foto;
     }

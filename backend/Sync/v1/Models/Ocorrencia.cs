@@ -8,5 +8,6 @@ namespace Sync.v1.Models
   {
     public String Nome { get; set; }
     public List<ObjectId> Perguntas { get; set; }
+    public DateTime Date;
   }
 }

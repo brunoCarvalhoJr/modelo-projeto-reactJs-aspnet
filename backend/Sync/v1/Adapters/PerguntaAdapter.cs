@@ -25,7 +25,8 @@ namespace Sync.v1.Models
         Nome = source.Nome,
         Tipo = source.Tipo,
         Obrigatorio = source.Obrigatorio,
-        Alternativas = source.Alternativas.Select(c=> new ObjectId(c.Id)).ToList()
+        Alternativas = source.Alternativas.Select(c=> new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return Pergunta;
     }

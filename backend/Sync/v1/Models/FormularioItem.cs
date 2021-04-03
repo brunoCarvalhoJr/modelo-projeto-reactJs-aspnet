@@ -9,5 +9,6 @@ namespace Sync.v1.Models
     public String Valor { get; set; }
     public virtual List<ObjectId> Alternativas { get; set; }
     public ObjectId Pergunta { get; set; }
+    public DateTime Date;
   }
 }

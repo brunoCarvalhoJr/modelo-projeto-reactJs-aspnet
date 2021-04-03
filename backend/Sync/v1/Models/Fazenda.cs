@@ -11,6 +11,7 @@ namespace Sync.v1.Models
     public double Area { get; set; }
     public object TheGeom { get; set; }
     public List<ObjectId> Talhoes { get; set; } = new List<ObjectId>();
+    public DateTime Date;
   }
 }
 

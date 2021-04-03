@@ -11,5 +11,6 @@ namespace Sync.v1.Models
     public int Ordem { get; set; }
     public String Icone { get; set; }
     public List<ObjectId> Ocorrencias { get; set; }
+    public DateTime Date;
   }
 }

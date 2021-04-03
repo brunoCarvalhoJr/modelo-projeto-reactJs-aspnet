@@ -23,7 +23,8 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Nome = source.Nome,
-        Perguntas = source.Perguntas.Select(c=> new ObjectId(c.Id)).ToList()
+        Perguntas = source.Perguntas.Select(c=> new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return Ocorrencia;
     }

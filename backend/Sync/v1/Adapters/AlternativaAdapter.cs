@@ -22,7 +22,8 @@ namespace Sync.v1.Models
       Alternativa alternativa = new Alternativa()
       {
         Id = source.Id,
-        Nome = source.Nome
+        Nome = source.Nome,
+        Date = source.DataSync
       };
       return alternativa;
     }

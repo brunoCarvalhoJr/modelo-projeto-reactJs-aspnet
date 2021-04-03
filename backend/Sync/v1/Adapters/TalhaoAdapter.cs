@@ -26,7 +26,8 @@ namespace Sync.v1.Models
         Area = source.Area,
         Codigo = source.Codigo,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
-        Localizacoes = source.Localizacoes.Select(c => new ObjectId(c.Id)).ToList()
+        Localizacoes = source.Localizacoes.Select(c => new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return Talhao;
     }

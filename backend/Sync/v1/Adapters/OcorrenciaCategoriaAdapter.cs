@@ -26,7 +26,8 @@ namespace Sync.v1.Models
         Tipo = source.Tipo,
         Ordem = source.Ordem,
         Icone = source.Icone,
-        Ocorrencias = source.Ocorrencias.Select(c => new ObjectId(c.Id)).ToList()
+        Ocorrencias = source.Ocorrencias.Select(c => new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return OcorrenciaCategoria;
     }

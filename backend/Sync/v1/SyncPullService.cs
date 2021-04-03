@@ -17,7 +17,10 @@ namespace Sync.v1
     {
       var populateSchema = new PopulateSchemas();
 
-      dataSync = dataSync.AddHours(-3);
+      if (dataSync.Year != DateTime.MinValue.Year)
+        dataSync = dataSync.AddHours(-3);
+      else
+        dataSync = dataSync.ToUniversalTime();
 
       var alternativas = agroContext.Alternativas.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Alternativa = new AlternativaAdapter().Pull(alternativas);

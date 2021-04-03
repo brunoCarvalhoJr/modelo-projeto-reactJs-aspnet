@@ -25,7 +25,8 @@ namespace Sync.v1.Models
         Nome = source.Nome,
         Numero = source.Numero,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
-        Talhoes = source.Talhoes.Select(c => new ObjectId(c.Id)).ToList()
+        Talhoes = source.Talhoes.Select(c => new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return alternativa;
     }

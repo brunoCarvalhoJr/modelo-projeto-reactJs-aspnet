@@ -11,5 +11,7 @@ namespace Sync.v1.Models
     public float Area { get; set; }
     public object TheGeom { get; set; }
     public List<ObjectId> Localizacoes { get; set; }
+
+    public DateTime Date;
   }
 }

@@ -25,6 +25,7 @@ namespace Sync.v1.Models
         Nome = source.Nome,
         Fotos = source.Fotos.Select(c => new ObjectId(c.Id)).ToList(),
         Itens = source.Itens.Select(c => new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return Formulario;
     }

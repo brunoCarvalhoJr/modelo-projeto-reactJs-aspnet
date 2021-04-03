@@ -11,5 +11,6 @@ namespace Sync.v1.Models
     public String Status { get; set; }
     public List<ObjectId> Formularios { get; set; }
     public Guid Talhao { get; set; }
+    public DateTime Date;
   }
 }

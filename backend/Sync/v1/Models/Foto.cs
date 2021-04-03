@@ -8,5 +8,6 @@ namespace Sync.v1.Models
     public String Uri { get; set; }
     public String Nome { get; set; }
     public String Path { get; set; }
+    public DateTime Date;
   }
 }

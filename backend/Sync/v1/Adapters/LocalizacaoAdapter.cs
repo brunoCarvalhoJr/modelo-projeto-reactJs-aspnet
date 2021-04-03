@@ -26,7 +26,8 @@ namespace Sync.v1.Models
         Status = source.Status,
         Talhao = source.TalhaoId,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
-        Formularios = source.Formularios.Select(c => new ObjectId(c.Id)).ToList()
+        Formularios = source.Formularios.Select(c => new ObjectId(c.Id)).ToList(),
+        Date = source.DataSync
       };
       return Localizacao;
     }

@@ -24,7 +24,8 @@ namespace Sync.v1.Models
         Id = source.Id,
         Valor = source.Valor,
         Pergunta = new ObjectId(source.PerguntaId),
-        Alternativas = source.Alternativas.Select(c => new ObjectId(c.AlternativaId)).ToList()
+        Alternativas = source.Alternativas.Select(c => new ObjectId(c.AlternativaId)).ToList(),
+        Date = source.DataSync
       };
       return FormularioItem;
     }
