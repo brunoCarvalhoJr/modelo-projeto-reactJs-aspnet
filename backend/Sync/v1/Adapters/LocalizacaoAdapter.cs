@@ -24,6 +24,7 @@ namespace Sync.v1.Models
         Id = source.Id,
         Tipo = source.Tipo,
         Status = source.Status,
+        Talhao = source.TalhaoId,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
         Formularios = source.Formularios.Select(c => new ObjectId(c.Id)).ToList()
       };
@@ -35,6 +36,11 @@ namespace Sync.v1.Models
       backend.Models.Localizacao Localizacao = new backend.Models.Localizacao()
       {
         Id = source.Id,
+        Tipo = source.Tipo,
+        Status = source.Status,
+        TalhaoId = source.Talhao,
+        TheGeom = source.TheGeom.ToString().ConvertMobileToGeometria(),
+        Formularios = source.Formularios.Select(c => new backend.Models.Formulario { Id = c.Id }).ToList()
       };
       return Localizacao;
     }

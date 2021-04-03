@@ -7,11 +7,8 @@ using backend.Data;
 namespace backend.Models
 {
   [Table("ocorrencia", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Ocorrencia
+  public class Ocorrencia : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
     public List<Pergunta> Perguntas { get; set; } = new List<Pergunta>();
 

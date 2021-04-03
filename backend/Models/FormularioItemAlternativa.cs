@@ -7,12 +7,8 @@ using backend.Data;
 namespace backend.Models
 {
   [Table("formulario_item_alternativa", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class FormularioItemAlternativa
+  public class FormularioItemAlternativa : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
-
     [ForeignKey(nameof(Alternativa))]
     public Guid AlternativaId { get; set; }
     public virtual Alternativa Alternativa { get; set; }

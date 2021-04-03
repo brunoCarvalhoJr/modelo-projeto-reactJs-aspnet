@@ -7,11 +7,8 @@ using backend.Data;
 namespace backend.Models
 {
   [Table("formulario_item", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class FormularioItem
+  public class FormularioItem : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Valor { get; set; }
     public virtual List<FormularioItemAlternativa> Alternativas { get; set; } = new List<FormularioItemAlternativa>();
 

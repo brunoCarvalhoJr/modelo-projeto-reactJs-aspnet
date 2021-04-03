@@ -10,5 +10,6 @@ namespace Sync.v1.Models
     public object TheGeom { get; set; }
     public String Status { get; set; }
     public List<ObjectId> Formularios { get; set; }
+    public Guid Talhao { get; set; }
   }
 }

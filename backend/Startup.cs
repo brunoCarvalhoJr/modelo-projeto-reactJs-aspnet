@@ -34,6 +34,7 @@ namespace backend
 
       services.AddDbContextPool<AgroContext>(optionsAction =>
       {
+        optionsAction.EnableSensitiveDataLogging();
         optionsAction.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), x => x.UseNetTopologySuite());
       });
 

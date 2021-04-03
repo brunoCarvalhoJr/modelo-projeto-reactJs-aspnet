@@ -13,38 +13,40 @@ namespace Sync.v1
 
     public SyncPullService(AgroContext agroContext) => this.agroContext = agroContext;
 
-    public PopulateSchemas Execute(string usuario)
+    public PopulateSchemas Execute(string usuario, DateTime dataSync)
     {
       var populateSchema = new PopulateSchemas();
 
-      var alternativas = agroContext.Alternativas.ToList();
+      dataSync = dataSync.AddHours(-3);
+
+      var alternativas = agroContext.Alternativas.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Alternativa = new AlternativaAdapter().Pull(alternativas);
 
-      var fotos = agroContext.Fotos.ToList();
+      var fotos = agroContext.Fotos.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Foto = new FotoAdapter().Pull(fotos);
 
-      var perguntas = agroContext.Perguntas.ToList();
+      var perguntas = agroContext.Perguntas.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Pergunta = new PerguntaAdapter().Pull(perguntas);
 
-      var ocorrencias = agroContext.Ocorrencias.ToList();
+      var ocorrencias = agroContext.Ocorrencias.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Ocorrencia = new OcorrenciaAdapter().Pull(ocorrencias);
 
-      var ocorrenciasCategorias = agroContext.OcorrenciaCategorias.ToList();
+      var ocorrenciasCategorias = agroContext.OcorrenciaCategorias.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.OcorrenciaCategoria = new OcorrenciaCategoriaAdapter().Pull(ocorrenciasCategorias);
 
-      var formularioItems = agroContext.FormularioItems.Include(c => c.Alternativas).ToList();
+      var formularioItems = agroContext.FormularioItems.Where(c => c.DataSync >= dataSync).Include(c => c.Alternativas).ToList();
       populateSchema.FormularioItem = new FormularioItemAdapter().Pull(formularioItems);
 
-      var formularios = agroContext.Formularios.ToList();
+      var formularios = agroContext.Formularios.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Formulario = new FormularioAdapter().Pull(formularios);
 
-      var localizacoes = agroContext.Localizacoes.ToList();
+      var localizacoes = agroContext.Localizacoes.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Localizacao = new LocalizacaoAdapter().Pull(localizacoes);
 
-      var talhoes = agroContext.Talhoes.ToList();
+      var talhoes = agroContext.Talhoes.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Talhao = new TalhaoAdapter().Pull(talhoes);
 
-      var fazendas = agroContext.Fazendas.ToList();
+      var fazendas = agroContext.Fazendas.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Fazenda = new FazendaAdapter().Pull(fazendas);
 
       return populateSchema;

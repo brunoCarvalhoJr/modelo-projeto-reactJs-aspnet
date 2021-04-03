@@ -11,16 +11,16 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AgroContext))]
-    [Migration("20210330161945_InitialCreate_2")]
-    partial class InitialCreate_2
+    [Migration("20210403011603_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityByDefaultColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.4");
+                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -28,7 +28,7 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("text")
@@ -57,7 +57,7 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("text")
@@ -156,7 +156,7 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -189,7 +189,7 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id")
-                        .UseIdentityByDefaultColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer")
@@ -287,6 +287,10 @@ namespace backend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<string>("Nome")
                         .HasColumnType("text")
                         .HasColumnName("nome");
@@ -315,6 +319,10 @@ namespace backend.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("area");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<string>("Nome")
                         .HasColumnType("text")
                         .HasColumnName("nome");
@@ -340,6 +348,10 @@ namespace backend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<Guid>("LocalizacaoId")
                         .HasColumnType("uuid")
                         .HasColumnName("localizacao_id");
@@ -363,6 +375,10 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
 
                     b.Property<Guid>("FormularioId")
                         .HasColumnType("uuid")
@@ -399,6 +415,10 @@ namespace backend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("alternativa_id");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<Guid>("FormularioItemId")
                         .HasColumnType("uuid")
                         .HasColumnName("formulario_item_id");
@@ -421,6 +441,10 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
 
                     b.Property<Guid>("FormularioId")
                         .HasColumnType("uuid")
@@ -454,6 +478,10 @@ namespace backend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<string>("Status")
                         .HasColumnType("text")
                         .HasColumnName("status");
@@ -486,6 +514,10 @@ namespace backend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
                     b.Property<string>("Nome")
                         .HasColumnType("text")
                         .HasColumnName("nome");
@@ -509,6 +541,10 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
 
                     b.Property<string>("Icone")
                         .HasColumnType("text")
@@ -538,6 +574,10 @@ namespace backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
 
                     b.Property<string>("Nome")
                         .HasColumnType("text")
@@ -578,6 +618,10 @@ namespace backend.Migrations
                     b.Property<string>("Codigo")
                         .HasColumnType("text")
                         .HasColumnName("codigo");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
 
                     b.Property<Guid>("FazendaId")
                         .HasColumnType("uuid")

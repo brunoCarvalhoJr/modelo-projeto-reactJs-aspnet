@@ -8,11 +8,8 @@ using NetTopologySuite.Geometries;
 namespace backend.Models
 {
   [Table("fazenda", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Fazenda
+  public class Fazenda  : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
     public String Numero { get; set; }
     public double Area { get; set; }

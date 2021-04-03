@@ -29,13 +29,16 @@ namespace Sync.v1.Models
       return FormularioItem;
     }
 
-  public backend.Models.FormularioItem PushConvertEntity(FormularioItem source)
-  {
-    backend.Models.FormularioItem FormularioItem = new backend.Models.FormularioItem()
+    public backend.Models.FormularioItem PushConvertEntity(FormularioItem source)
     {
-      Id = source.Id,
-    };
-    return FormularioItem;
+      backend.Models.FormularioItem FormularioItem = new backend.Models.FormularioItem()
+      {
+        Id = source.Id,
+        Valor = source.Valor,
+        PerguntaId = source.Pergunta.Id,
+        Alternativas = source.Alternativas.Select(c => new backend.Models.FormularioItemAlternativa() { AlternativaId = c.Id }).ToList()
+      };
+      return FormularioItem;
+    }
   }
-}
 }

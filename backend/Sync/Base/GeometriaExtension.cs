@@ -1,12 +1,13 @@
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 
 namespace Sync.Base
 {
-  public class Coordinate
+  public class SyncCoordinate
   {
     public double longitude { get; set; }
     public double latitude { get; set; }
@@ -43,7 +44,40 @@ namespace Sync.Base
 
     private static object ConvertCoordinate(double x, double y)
     {
-      return new Coordinate { latitude = y, longitude = x };
+      return new SyncCoordinate { latitude = y, longitude = x };
+    }
+
+    public static Geometry ConvertMobileToGeometria(this String geometry)
+    {
+      List<SyncCoordinate> coordinates = new List<SyncCoordinate>();
+      try
+      {
+        var coordinate = JsonConvert.DeserializeObject<SyncCoordinate>(geometry);
+        coordinates.Add(coordinate);
+      }
+      catch
+      {
+        coordinates = JsonConvert.DeserializeObject<List<SyncCoordinate>>(geometry);
+      }
+
+      return ToGeometry(coordinates);
+    }
+
+    public static Geometry ToGeometry(List<SyncCoordinate> coordinates)
+    {
+      var bounds = coordinates.Select(coordinate => new Coordinate(coordinate.longitude, coordinate.latitude)).ToList();
+
+      if (bounds.Count == 1)
+      {
+        NetTopologySuite.Geometries.Point point = new NetTopologySuite.Geometries.Point(bounds.FirstOrDefault());
+        return point;
+      }
+      else
+      {
+        NetTopologySuite.Geometries.LinearRing ring = new NetTopologySuite.Geometries.LinearRing(bounds.ToArray());
+        NetTopologySuite.Geometries.Polygon polygon = new NetTopologySuite.Geometries.Polygon(ring);
+        return polygon;
+      }
     }
   }
 }

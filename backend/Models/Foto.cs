@@ -7,11 +7,8 @@ using backend.Data;
 namespace backend.Models
 {
   [Table("foto", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Foto
+  public class Foto : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Uri { get; set; }
     public String Nome { get; set; }
     public String Path { get; set; }

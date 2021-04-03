@@ -34,7 +34,9 @@ namespace Sync.v1.Models
       backend.Models.Foto Foto = new backend.Models.Foto()
       {
         Id = source.Id,
-        Nome = source.Nome
+        Nome = source.Nome,
+        Path = source.Path,
+        Uri = source.Uri
       };
       return Foto;
     }

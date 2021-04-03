@@ -8,11 +8,8 @@ using NetTopologySuite.Geometries;
 namespace backend.Models
 {
   [Table("talhao", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Talhao
+  public class Talhao : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
     public String Codigo { get; set; }
     public float Area { get; set; }

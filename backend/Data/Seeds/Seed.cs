@@ -109,6 +109,14 @@ namespace backend.Data
       }
     }
 
+// drop table IF EXISTS public.aspnetusers CASCADE;
+// drop table IF EXISTS public.aspnetuserroles CASCADE;
+// drop table IF EXISTS public.aspnetroles CASCADE;
+// drop table IF EXISTS public.aspnetroleclaims CASCADE;
+// drop table IF EXISTS public.aspnetuserclaims CASCADE;
+// drop table IF EXISTS public.aspnetuserlogins CASCADE;
+// drop table IF EXISTS public.aspnetuserroles CASCADE;
+// drop table IF EXISTS public.aspnetusertokens CASCADE;
     private Guid PopularPerguntas()
     {
       if (agroContext.OcorrenciaCategorias.Count() != 0)
@@ -131,6 +139,21 @@ namespace backend.Data
         Nome = "Anotação",
         OcorrenciaCategoriaId = ocorrenciaCategoria.Id
       };
+      Pergunta pergunta = new Pergunta()
+      {
+        Nome = "Pergunta Texto",
+        Tipo = "text",
+        OcorrenciaId = ocorrencia.Id
+      };
+      agroContext.Perguntas.Add(pergunta);
+
+      pergunta = new Pergunta()
+      {
+        Nome = "Pergunta com Alternativa",
+        Tipo = "select",
+        OcorrenciaId = ocorrencia.Id
+      };
+      agroContext.Perguntas.Add(pergunta);
       agroContext.Ocorrencias.Add(ocorrencia);
 
       // ######################################################################################################
@@ -152,7 +175,7 @@ namespace backend.Data
       };
       agroContext.Ocorrencias.Add(ocorrencia);
 
-      Pergunta pergunta = new Pergunta()
+      pergunta = new Pergunta()
       {
         Nome = "Pergunta Texto",
         Tipo = "text",

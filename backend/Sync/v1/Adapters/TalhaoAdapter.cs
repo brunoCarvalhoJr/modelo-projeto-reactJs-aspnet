@@ -36,7 +36,8 @@ namespace Sync.v1.Models
       backend.Models.Talhao Talhao = new backend.Models.Talhao()
       {
         Id = source.Id,
-        Nome = source.Nome
+        Nome = source.Nome,
+        TheGeom = source.TheGeom.ToString().ConvertMobileToGeometria(),
       };
       return Talhao;
     }

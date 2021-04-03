@@ -8,11 +8,8 @@ using NetTopologySuite.Geometries;
 namespace backend.Models
 {
   [Table("localizacao", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Localizacao
+  public class Localizacao : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Tipo { get; set; }
     public Geometry TheGeom { get; set; }
     public String Status { get; set; }

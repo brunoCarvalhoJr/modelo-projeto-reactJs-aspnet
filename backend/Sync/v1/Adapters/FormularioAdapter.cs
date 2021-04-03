@@ -34,7 +34,9 @@ namespace Sync.v1.Models
       backend.Models.Formulario Formulario = new backend.Models.Formulario()
       {
         Id = source.Id,
-        Nome = source.Nome
+        Nome = source.Nome,
+        Fotos = source.Fotos.Select(c => new backend.Models.Foto { Id = c.Id }).ToList(),
+        Itens = source.Itens.Select(c => new backend.Models.FormularioItem { Id = c.Id }).ToList(),
       };
       return Formulario;
     }

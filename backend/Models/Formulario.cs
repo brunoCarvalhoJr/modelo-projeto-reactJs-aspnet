@@ -7,11 +7,8 @@ using backend.Data;
 namespace backend.Models
 {
   [Table("formulario", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Formulario
+  public class Formulario  : BaseModel
   {
-    [Key]
-    [Required]
-    public Guid Id { get; set; } = Guid.NewGuid();
     public String Nome { get; set; }
     public List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
     public List<Foto> Fotos { get; set; } = new List<Foto>();
