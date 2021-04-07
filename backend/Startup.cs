@@ -77,6 +77,7 @@ namespace backend
       services.AddDatabaseDeveloperPageExceptionFilter();
       services.AddScoped<SyncPullService>();
       services.AddScoped<SyncPushService>();
+      services.AddScoped<SyncPopulateService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

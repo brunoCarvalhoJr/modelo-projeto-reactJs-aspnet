@@ -20,11 +20,13 @@ namespace backend.Controllers
   {
     private readonly SyncPullService syncPullService;
     private readonly SyncPushService syncPushService;
+    private readonly SyncPopulateService syncPopulateService;
 
-    public SincronizacaoV1Controller(SyncPullService syncPullService, SyncPushService syncPushService)
+    public SincronizacaoV1Controller(SyncPullService syncPullService, SyncPushService syncPushService, SyncPopulateService syncPopulateService)
     {
       this.syncPullService = syncPullService;
       this.syncPushService = syncPushService;
+      this.syncPopulateService = syncPopulateService;
     }
 
     [HttpGet("{usuario}/{dateSync}")]
@@ -33,6 +35,14 @@ namespace backend.Controllers
       await Task.Run(() => { });
       var populateSchemas = this.syncPullService.Execute(usuario, dateSync);
       return Ok(populateSchemas);
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetPopulateAsync()
+    {
+      await Task.Run(() => { });
+      this.syncPopulateService.Execute();
+      return Ok();
     }
 
     [HttpPost("{usuario}")]

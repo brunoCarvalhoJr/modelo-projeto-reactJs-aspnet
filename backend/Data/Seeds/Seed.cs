@@ -149,11 +149,63 @@ namespace backend.Data
 
       pergunta = new Pergunta()
       {
-        Nome = "Pergunta com Alternativa",
+        Nome = "Pergunta multi select",
+        Tipo = "multiselect",
+        OcorrenciaId = ocorrencia.Id
+      };
+      agroContext.Perguntas.Add(pergunta);
+
+        Alternativa alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 01",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 02",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 03",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+
+      pergunta = new Pergunta()
+      {
+        Nome = "Pergunta select",
         Tipo = "select",
         OcorrenciaId = ocorrencia.Id
       };
       agroContext.Perguntas.Add(pergunta);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 01",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 02",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
+      alternativa = new Alternativa()
+      {
+        Nome = "Alternativa 03",
+        PerguntaId = pergunta.Id
+      };
+      agroContext.Alternativas.Add(alternativa);
+
       agroContext.Ocorrencias.Add(ocorrencia);
 
       // ######################################################################################################
@@ -191,7 +243,7 @@ namespace backend.Data
       };
       agroContext.Perguntas.Add(pergunta);
 
-      Alternativa alternativa = new Alternativa()
+      alternativa = new Alternativa()
       {
         Nome = "Alternativa 01",
         PerguntaId = pergunta.Id
