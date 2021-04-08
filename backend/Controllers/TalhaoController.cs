@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using backend.Commands;
 using backend.Data;
 using backend.Models;
@@ -15,6 +17,12 @@ namespace backend.Controllers
     public TalhaoController(AgroContext context)
     {
       this.context = context;
+    }
+
+    [HttpGet("{fazenda}")]
+    public List<Talhao> Get(Guid fazenda)
+    {
+      return this.context.Talhoes.Where(c => c.FazendaId.Equals(fazenda)).ToList();
     }
 
     [HttpPost]
