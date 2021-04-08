@@ -52,7 +52,7 @@ namespace backend
 #if DEBUG
                 .UseUrls("http://localhost:5000")
 #else
-                .UseUrls("http://165.227.193.200:5000")
+                .UseUrls("http://159.65.216.107:5000")
 #endif
                 .UseKestrel(options =>
             {
