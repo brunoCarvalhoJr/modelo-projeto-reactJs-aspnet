@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import * as turf from '@turf/turf';
-import qs from 'querystring';
 import L from 'leaflet';
+import { Modal } from 'antd';
 import {
   SERVER,
   GEO_SERVER,
@@ -12,18 +11,17 @@ import {
   ZOOM_MAXIMO_MAPA,
   ZOOM_MINIMO_MAPA,
   ZOOM_INICIAL_MAPA,
-  GEO_SERVER_GEO_JSON,
 } from './Constants';
-import SideBar, { MapPainel } from './components/sidebar';
+import SideBar from './components/sidebar';
 import { MapContainer } from './components/container';
 import { Context } from './Context';
 import { ToolBar } from './components/tools/ToolBar';
 import { Zoom } from './components/tools/Zoom';
-import IconeFazenda from 'assets/markers/farm-2.png';
+import IconeFazenda from 'assets/markers/field.png';
+import IconeComment from 'assets/markers/comment-map-icon.png';
+import IconeOcorrencia from 'assets/markers/skull.png';
 
 import './map.css';
-
-const car = 'MG-3108008-AAEEAB404821459BB17C92EB0C235B5E';
 
 const PageMapa = () => {
   const mapRef = useRef(null);
@@ -31,7 +29,6 @@ const PageMapa = () => {
   const containerTopRight = useRef(null);
   const containerBottomLeft = useRef(null);
   const containerBottomRight = useRef(null);
-  const [talhoes, setTalhoes] = useState([]);
   const [initialized, setInitialized] = useState(false);
   const [layers] = useState(new L.featureGroup());
   const [layersEdit] = useState(new L.featureGroup());
@@ -47,8 +44,42 @@ const PageMapa = () => {
     tooltipAnchor: [16, -25],
   });
 
+  const marcadorAnotacao = new L.icon({
+    iconUrl: IconeComment,
+    shadowAnchor: [20, 40],
+    shadowSize: [40, 40],
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [1, -25],
+    tooltipAnchor: [16, -25],
+  });
+
+  const marcadorOcorrencia = new L.icon({
+    iconUrl: IconeOcorrencia,
+    shadowAnchor: [20, 40],
+    shadowSize: [40, 40],
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [1, -25],
+    tooltipAnchor: [16, -25],
+  });
+
   const onClickSideBar = () => {
     setSideBarOpen(!sidebarOpen);
+  };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   useEffect(() => {
@@ -79,7 +110,6 @@ const PageMapa = () => {
       bindEvents(mapRef.current);
       addLayerEstado(mapRef.current);
       await addLayerImovel(mapRef.current);
-      await addLayerTalhao();
       setInitialized(true);
     };
     load();
@@ -93,69 +123,62 @@ const PageMapa = () => {
     lmap.addLayer(layers);
   };
 
-  const _addLayerGEOJsonImovel = async style => {
+  const _addLayerGEOJsonImovel = async () => {
     const { data } = await axios.get(`${SERVER}/fazenda`);
-    var features = [];
 
-    debugger;
-    features.push(data.theGeom);
-    const geoJSON = L.geoJSON(features, { style });
+    const geoJSONImovel = L.geoJSON(data.theGeom, ESTILO_IMOVEL);
 
-    const list = [];
-    geoJSON.eachLayer(layer => {
+    geoJSONImovel.eachLayer(layer => {
       layers.addLayer(layer);
-      list.push(layer);
     });
-    return Promise.resolve({ layer: geoJSON, features, data });
-  };
 
-  const _addLayerGEOJsonTalhao = async fazenda => {
-    const { data } = await axios.get(`${SERVER}/talhao/${fazenda}`);
-    var features = [];
-
-    data.forEach(talhao => {
-      features.push(talhao.theGeom);
-      const geoJSON = L.geoJSON(features, ESTILO_TALHAO);
-
-      const list = [];
-      geoJSON.eachLayer(layer => {
-        layer.bindTooltip(talhao.nome);
-        layers.addLayer(layer);
-        list.push(layer);
-      });
-    });
-  };
-
-  const _addLayerGEOJsonLocalizacao = async fazenda => {
-    const { data } = await axios.get(`${SERVER}/localizacao/${fazenda}`);
-    data.forEach(localizacao => {
-      const geoJSON = L.geoJSON(localizacao.theGeom, {
+    data.talhoes.forEach(talhao => {
+      const geoJSON = L.geoJSON(talhao.theGeom, ESTILO_TALHAO);
+      const geoJSONCentro = L.geoJSON(talhao.centro, {
         style: ESTILO_TALHAO,
         pointToLayer: (feature, latlng) => {
           return L.marker(latlng, { icon: marcadorMapa });
         },
       });
+      geoJSONCentro.eachLayer(layer => { layers.addLayer(layer);});
+
       geoJSON.eachLayer(layer => {
-        layer.bindTooltip(localizacao.tipo);
+        layer.bindTooltip(talhao.nome);
         layers.addLayer(layer);
+        talhao.pontos.forEach(localizacao => {
+          localizacao.theGeom.properties = {
+            id: localizacao.id,
+          };
+          const geoJSON = L.geoJSON(localizacao.theGeom, {
+            style: ESTILO_TALHAO,
+            pointToLayer: (feature, latlng) => {
+              // return L.marker(latlng, { icon: marcadorAnotacao });
+              return L.marker(latlng, { icon: marcadorOcorrencia });
+            },
+          });
+          geoJSON.eachLayer(layer => {
+            var props = (layer.feature.properties =
+              layer.feature.properties || {});
+            props.id = localizacao.id;
+            layer.bindTooltip(localizacao.tipo);
+            layer.on('click', function (event) {
+              var feature = event.sourceTarget.feature;
+              detalheLocalizacao(feature.properties.id);
+            });
+            layers.addLayer(layer);
+          });
+        });
       });
     });
-    // //const { features } = data;
-    // const geoJSON = L.geoJSON(features, {
-    //   style,
-    //   pointToLayer: (feature, latlng) => {
-    //     return L.marker(latlng, { icon: marcadorMapa });
-    //   },
-    // });
 
-    // const list = [];
-    // geoJSON.eachLayer(layer => {
-    //   layer.bindTooltip(features[0].properties[property]);
-    //   layers.addLayer(layer);
-    //   list.push(layer);
-    // });
-    // setTalhoes(list);
-    // return Promise.resolve({ layer: geoJSON, features });
+    return Promise.resolve({ layer: geoJSONImovel, data });
+  };
+
+  const detalheLocalizacao = async localizacao => {
+    const { data } = await axios.get(
+      `${SERVER}/localizacao/${localizacao}/detalhe`,
+    );
+    showModal();
   };
 
   const _zoomLayer = (lmap, geometria, options = {}) => {
@@ -181,7 +204,6 @@ const PageMapa = () => {
     container.addTo(lmap);
     containerCurrent.current = container;
   };
-  // END: methods internal
 
   const addLayerEstado = lmap => {
     const wmsOptions = {
@@ -194,23 +216,8 @@ const PageMapa = () => {
   };
 
   const addLayerImovel = async lmap => {
-    const { layer, data } = await _addLayerGEOJsonImovel(ESTILO_IMOVEL);
-    await _addLayerGEOJsonTalhao(data.id, ESTILO_IMOVEL);
-    await _addLayerGEOJsonLocalizacao(data.id);
+    const { layer } = await _addLayerGEOJsonImovel();
     _zoomLayer(lmap, layer);
-  };
-
-  const addLayerTalhao = async () => {
-    const queryTalhao = {
-      typeName: 'agro:talhao',
-      maxFeatures: 50,
-      outputFormat: 'application/json',
-    };
-    // const { layer } = await _addLayerGEOJson(
-    //   queryTalhao,
-    //   ESTILO_TALHAO,
-    //   'nome',
-    // );
   };
 
   const bindEvents = lmap => {
@@ -234,9 +241,7 @@ const PageMapa = () => {
       ImovelId: 786,
       TheGeom: layer.toGeoJSON(),
     };
-    const talhao = await axios.post(`${SERVER}/talhao`, data);
-    // const talhaoLayer = L.geoJSON(talhao);
-    //setTalhoes([...talhoes, talhaoLayer]);
+    await axios.post(`${SERVER}/talhao`, data);
   };
 
   const topleft = lmap => {
@@ -263,9 +268,6 @@ const PageMapa = () => {
           layersEdit,
         }}
       >
-        <div className={`painel ${sidebarOpen ? '' : 'collapsed'}`}>
-          <MapPainel onClickItem={onClickSideBar} talhoes={talhoes} />
-        </div>
         <div id="map">
           {initialized && containerTopleft && (
             <MapContainer container={containerTopleft}>
@@ -289,6 +291,16 @@ const PageMapa = () => {
             <MapContainer container={containerBottomRight}></MapContainer>
           )}
         </div>
+        <Modal
+          title="Basic Modal"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
       </Context.Provider>
     </div>
   );
