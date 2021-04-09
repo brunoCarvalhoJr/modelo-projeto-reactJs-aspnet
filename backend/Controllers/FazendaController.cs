@@ -1,6 +1,7 @@
 
 using backend.Data;
 using backend.Models;
+using backend.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -17,9 +18,9 @@ namespace backend.Controllers
     }
 
     [HttpGet]
-    public Fazenda Get() //Filtrar pelo id da fazenda
+    public DetalheFazenda Get() //Filtrar pelo id da fazenda
     {
-      return this.context.Fazendas.First();
+      return new DetalheFazenda(this.context.Fazendas.FirstOrDefault());
     }
   }
 }

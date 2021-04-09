@@ -10,8 +10,8 @@ namespace backend.Models
   public class Formulario  : BaseModel
   {
     public String Nome { get; set; }
-    public List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
-    public List<Foto> Fotos { get; set; } = new List<Foto>();
+    public virtual List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
+    public virtual List<Foto> Fotos { get; set; } = new List<Foto>();
 
     [ForeignKey(nameof(Localizacao))]
     public Guid LocalizacaoId { get; set; }

@@ -36,6 +36,7 @@ namespace backend
       {
         optionsAction.EnableSensitiveDataLogging();
         optionsAction.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), x => x.UseNetTopologySuite());
+        optionsAction.UseLazyLoadingProxies(true);
       });
 
       services.AddIdentity<Usuario, Perfil>(options =>

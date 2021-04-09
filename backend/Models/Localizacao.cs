@@ -13,11 +13,9 @@ namespace backend.Models
     public String Tipo { get; set; }
     public Geometry TheGeom { get; set; }
     public String Status { get; set; }
-    public List<Formulario> Formularios { get; set; } = new List<Formulario>();
-
     [ForeignKey(nameof(Talhao))]
     public Guid TalhaoId { get; set; }
-
     public virtual Talhao Talhao { get; set; }
+    public virtual List<Formulario> Formularios { get; set; } = new List<Formulario>();
   }
 }

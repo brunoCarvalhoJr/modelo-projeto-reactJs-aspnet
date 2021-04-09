@@ -14,11 +14,11 @@ namespace backend.Models
     public String Codigo { get; set; }
     public float Area { get; set; }
     public Geometry TheGeom { get; set; }
-    public List<Localizacao> Localizacoes { get; set; } = new List<Localizacao>();
 
     [ForeignKey(nameof(Fazenda))]
     public Guid FazendaId { get; set; }
     public virtual Fazenda Fazenda { get; set; }
+    public virtual List<Localizacao> Localizacoes { get; set; } = new List<Localizacao>();
   }
 
 }

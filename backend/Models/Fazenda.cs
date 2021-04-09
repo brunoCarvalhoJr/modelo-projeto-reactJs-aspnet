@@ -14,7 +14,7 @@ namespace backend.Models
     public String Numero { get; set; }
     public double Area { get; set; }
     public Geometry TheGeom { get; set; }
-    public List<Talhao> Talhoes { get; set; } = new List<Talhao>();
+    public virtual List<Talhao> Talhoes { get; set; } = new List<Talhao>();
   }
 
 }
