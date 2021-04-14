@@ -14,6 +14,7 @@ import {
 } from './Constants';
 import SideBar from './components/sidebar';
 import { MapContainer } from './components/container';
+import MapModal from './components/modal';
 import { Context } from './Context';
 import { ToolBar } from './components/tools/ToolBar';
 import { Zoom } from './components/tools/Zoom';
@@ -140,7 +141,7 @@ const PageMapa = () => {
           return L.marker(latlng, { icon: marcadorMapa });
         },
       });
-      geoJSONCentro.eachLayer(layer => { layers.addLayer(layer);});
+      geoJSONCentro.eachLayer(layer => { layers.addLayer(layer); });
 
       geoJSON.eachLayer(layer => {
         layer.bindTooltip(talhao.nome);
@@ -292,14 +293,13 @@ const PageMapa = () => {
           )}
         </div>
         <Modal
-          title="Basic Modal"
+          title="Detalhes"
+          width={720}
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <MapModal />
         </Modal>
       </Context.Provider>
     </div>
