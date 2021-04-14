@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import {
+    Row,
+    Col,
+    Image,
     Form,
     Input,
     Button,
@@ -11,6 +14,7 @@ import {
     TreeSelect,
     Switch,
     Collapse,
+    Carousel,
 } from 'antd';
 
 const { Panel } = Collapse;
@@ -18,6 +22,15 @@ const { Panel } = Collapse;
 function callback(key) {
     console.log(key);
 }
+
+const contentStyle = {
+    height: '160px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
+    background: '#364d79',
+    marginRight: '36px'
+};
 
 const FormSizeDemo = () => {
     const [componentSize, setComponentSize] = useState('small');
@@ -85,6 +98,26 @@ const FormSizeDemo = () => {
                     <Form.Item label="Button">
                         <Button>Button</Button>
                     </Form.Item>
+                    <Row gutter={[21, 21]}>
+                        <Col span={8} >
+                            <Image
+                                width={200}
+                                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                            />
+                        </Col>
+                        <Col span={8} >
+                            <Image
+                                width={200}
+                                src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
+                            />
+                        </Col>
+                        <Col span={8} >
+                            <Image
+                                width={200}
+                                src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                            />
+                        </Col>
+                    </Row>
                 </Form>
             </Panel>
             <Panel header="This is panel header 2" key="2">
