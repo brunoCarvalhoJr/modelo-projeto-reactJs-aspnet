@@ -1,6 +1,7 @@
-import React from "react";
-import { PageHeader, Button, Card, Form, Input } from "antd";
+import React, { useState } from "react";
+import { Button, Card, Form, Input } from "antd";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useAuth } from '../../contexts/auth';
 
 const layout = {
   labelCol: { span: 4 },
@@ -10,52 +11,43 @@ const tailLayout = {
   wrapperCol: { offset: 0, span: 32 },
 };
 
-const LoginPage = () => (
-  <>
-    {/* <PageHeader
-      className="site-page-header"
-      onBack={() => null}
-      title="Login"
-      subTitle="Login"
-      extra={[
-        <Button key="3">Operation</Button>,
-        <Button key="2">Operation</Button>,
-        <Button key="1" type="primary">
-          Primary
-        </Button>,
-      ]}
-    /> */}
-    <Card className="login-form" title="Login">
+const LoginPage = ({ history }) => {
+  const { signIn } = useAuth();
+  const [username, setUsername] = useState('marcossbello222@gmail.com');
+  const [password, setPassword] = useState('12345678');
+
+  function handleSign() {
+    signIn();
+    history.push("/home");
+  }
+
+  return (
+    <>
+      <Card className="login-form" title="Login">
         <Form {...layout}>
           <Form.Item
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
-            <Input size="large" placeholder="Email" prefix={<UserOutlined />}/>
+            <Input size="large" placeholder="Email" prefix={<UserOutlined />} />
           </Form.Item>
 
           <Form.Item
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
-            <Input.Password size="large" placeholder="Senha" prefix={<LockOutlined />}/>
+            <Input.Password size="large" placeholder="Senha" prefix={<LockOutlined />} />
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button size="large" type="primary" htmlType="submit" className="button-login">
+            <Button size="large" type="primary" htmlType="submit" className="button-login" onClick={handleSign}>
               Entrar
             </Button>
           </Form.Item>
-
-          <Form.Item {...tailLayout}>
-            <Button size="large"  htmlType="submit" className="button-login">
-              Cadastrar
-            </Button>
-          </Form.Item>
-        
         </Form>
-    </Card>
-  </>
-);
+      </Card>
+    </>
+  )
+};
 
 export default LoginPage;

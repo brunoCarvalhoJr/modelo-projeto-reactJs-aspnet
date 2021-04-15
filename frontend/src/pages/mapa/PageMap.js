@@ -31,6 +31,7 @@ const PageMapa = () => {
   const containerBottomLeft = useRef(null);
   const containerBottomRight = useRef(null);
   const [initialized, setInitialized] = useState(false);
+  const [detalhe, setDetalhe] = useState();
   const [layers] = useState(new L.featureGroup());
   const [layersEdit] = useState(new L.featureGroup());
   const [sidebarOpen, setSideBarOpen] = useState(false);
@@ -179,6 +180,7 @@ const PageMapa = () => {
     const { data } = await axios.get(
       `${SERVER}/localizacao/${localizacao}/detalhe`,
     );
+    setDetalhe(data)
     showModal();
   };
 
@@ -299,7 +301,7 @@ const PageMapa = () => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <MapModal />
+          <MapModal detalhe={detalhe} />
         </Modal>
       </Context.Provider>
     </div>

@@ -37,7 +37,7 @@ namespace Sync.v1.Models
         Id = source.Id,
         Valor = source.Valor,
         PerguntaId = source.Pergunta.Id,
-        Alternativas = source.Alternativas.Select(c => new backend.Models.FormularioItemAlternativa() { AlternativaId = c.Id }).ToList()
+        Alternativas = source.Alternativas.Select(c => new backend.Models.FormularioItemAlternativa() { FormularioItemId = source.Id, AlternativaId = c.Id }).ToList()
       };
       return FormularioItem;
     }

@@ -38,7 +38,7 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Tipo = source.Tipo,
-        Status = source.Status,
+        Status = "FINALIZADO",
         TalhaoId = source.Talhao,
         TheGeom = source.TheGeom.ToString().ConvertMobileToGeometria(),
         Formularios = source.Formularios.Select(c => new backend.Models.Formulario { Id = c.Id }).ToList()

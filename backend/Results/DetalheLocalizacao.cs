@@ -10,11 +10,13 @@ namespace backend.Results
     public DetalheFormularioItem(FormularioItem formularioItem)
     {
       this.Valor = formularioItem.Valor;
+      this.Tipo = formularioItem.Pergunta.Tipo;
       this.Alternativas = formularioItem.Alternativas.Select(f => f.Alternativa.Nome).ToList();
       this.Pergunta = formularioItem.Pergunta.Nome;
     }
 
     public String Valor { get; set; }
+    public String Tipo { get; set; }
     public String Pergunta { get; set; }
     public virtual List<String> Alternativas { get; set; }
   }
