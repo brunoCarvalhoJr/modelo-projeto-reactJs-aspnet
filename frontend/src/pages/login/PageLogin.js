@@ -11,14 +11,13 @@ const tailLayout = {
   wrapperCol: { offset: 0, span: 32 },
 };
 
-const LoginPage = ({ history }) => {
+const LoginPage = () => {
   const { signIn } = useAuth();
-  const [username, setUsername] = useState('marcossbello222@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  const [username, setUsername] = useState('paulohenriquevn');
+  const [password, setPassword] = useState('123456');
 
   function handleSign() {
-    signIn();
-    history.push("/home");
+    signIn(username, password);
   }
 
   return (
@@ -26,19 +25,18 @@ const LoginPage = ({ history }) => {
       <Card className="login-form" title="Login">
         <Form {...layout}>
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            name="Usuário"
+            rules={[{ required: true, message: 'Campo usuario é obrigatório!' }]}
           >
-            <Input size="large" placeholder="Email" prefix={<UserOutlined />} />
+            <Input size="large" value={username} onChange={({ target }) => setUsername(target.value)} placeholder="Email" prefix={<UserOutlined />} />
           </Form.Item>
 
           <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            name="Senha"
+            rules={[{ required: true, message: 'Campo senha é obrigatório!' }]}
           >
-            <Input.Password size="large" placeholder="Senha" prefix={<LockOutlined />} />
+            <Input.Password size="large" value={password} onChange={({ target }) => setPassword(target.value)} placeholder="Senha" prefix={<LockOutlined />} />
           </Form.Item>
-
           <Form.Item {...tailLayout}>
             <Button size="large" type="primary" htmlType="submit" className="button-login" onClick={handleSign}>
               Entrar

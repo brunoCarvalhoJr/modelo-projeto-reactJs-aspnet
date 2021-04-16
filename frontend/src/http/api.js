@@ -11,7 +11,7 @@ const api = axios.create({
 // Add a request interceptor
 api.interceptors.request.use(
   async (config) => {
-    const token = localStorage.getToken('Token');
+    const token = localStorage.getItem('Token');
     if (token != null) {
       config.headers['x-access-token'] = token;
     }
@@ -28,7 +28,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
     const {status} = error.response;
-
+    console.log('status', status)
     switch (status) {
       case httpStatus.UNAUTHORIZED:
         alert(Messages.USUARIO_NAO_AUTORIZADO);

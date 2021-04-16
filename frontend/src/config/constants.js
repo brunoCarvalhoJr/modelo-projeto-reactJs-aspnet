@@ -12,5 +12,5 @@ export const Messages = {
   SENHA_USUARIO_INCORRETO: 'CPF e/ou senha estão incorretos.',
   USUARIO_SEM_PERMISSAO:
     'Desculpe, você não tem permissão para acessar este módulo.',
-  USUARIO_NAO_AUTORIZADO: 'Sua sessão expirou.',
+  USUARIO_NAO_AUTORIZADO: 'Usuário não autorizado.',
 };

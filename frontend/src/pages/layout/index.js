@@ -4,39 +4,32 @@ import {
   Menu,
   Popover,
   Card,
-  Statistic,
-  Typography,
+  Typography
 } from "antd";
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
+  LogoutOutlined,
   UserOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  LikeOutlined,
-  MedicineBoxOutlined,
-  FlagOutlined,
-  SyncOutlined,
 } from "@ant-design/icons";
 
 import { Avatar } from "antd";
+import { useAuth } from '../../contexts/auth';
+
 import "./layout.css";
-import logo from "assets/logo.png";
 const { Header, Content } = Layout;
 
-const { Title } = Typography;
+const { Text } = Typography;
 
-const AppLayout = ({children}) => {
-  const contentMenu = () => (
+const AppLayout = ({ children }) => {
+  const { signOut, user }  = useAuth();
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const menuUsuario = () => (
     <Menu mode="vertical" defaultSelectedKeys={["2"]}>
-      <Menu.Item key="1" icon={<MenuUnfoldOutlined />}>
-        nav 1
-      </Menu.Item>
-      <Menu.Item key="2" icon={<MenuFoldOutlined />}>
-        nav 2
-      </Menu.Item>
-      <Menu.Item key="3" icon={<UserOutlined />}>
-        nav 3
+      <Menu.Item key="1" icon={<LogoutOutlined />} onClick={handleSignOut}>
+        Sair
       </Menu.Item>
     </Menu>
   );
@@ -54,14 +47,9 @@ const AppLayout = ({children}) => {
           <div className="layout-logo">
             {/* <img className="logo" src={logo} width="32" height="32" alt="Logo"/> */}
           </div>
-          <Popover
-            content={contentMenu()}
-            trigger="click"
-            placement="bottomLeft"
-          ></Popover>
           <div className="profile">
             <Popover
-              content={<div></div>}
+              content={menuUsuario()}
               trigger="click"
               placement="bottomLeft"
             >
@@ -71,11 +59,12 @@ const AppLayout = ({children}) => {
                 style={{ backgroundColor: "#3775F2", verticalAlign: "middle" }}
               />
             </Popover>
+            <Text  style={{ color: "#3775F2", paddingLeft: '10px' }} strong>{user.name}</Text>
           </div>
         </Header>
         <Content className="site-content">
           <Card>
-          {children}
+            {children}
           </Card>
         </Content>
       </Layout>

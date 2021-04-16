@@ -1,31 +1,20 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import jwt_decode from "jwt-decode";
 import * as auth from '../http/auth';
 import api from '../http/api';
 
-const initialUser = {
-  name: '',
-  email: ''
-}
-
-const initialState = {
-  signed: false,
-  user: {},
-  loading: false,
-  signIn: () => { },
-  signOut: () => { }
-}
-
-const AuthContext = createContext(initialState);
+const AuthContext = createContext({
+  signed: false
+});
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadStorageData() {
       const storagedUser = localStorage.getItem('@RNAuth:user');
       const storagedToken = localStorage.getItem('@RNAuth:token');
-
       if (storagedUser && storagedToken) {
         setUser(JSON.parse(storagedUser));
         api.defaults.headers.Authorization = `Baerer ${storagedToken}`;
@@ -35,20 +24,20 @@ const AuthProvider = ({ children }) => {
     }
 
     loadStorageData();
-  });
+  }, []);
 
-  async function signIn() {
-    const response = await auth.signIn();
-    setUser(response.user);
+  async function signIn(username, password) {
+    const { data } = await auth.signIn(username, password);
 
-    api.defaults.headers.Authorization = `Baerer ${response.token}`;
+    const { token } = data;
 
-    localStorage.setItem('@RNAuth:user', JSON.stringify(response.user));
-    localStorage.setItem('@RNAuth:token', response.token);
-    localStorage.setItem(
-      '@RNAuth:dateSync',
-      new Date('0001-01-01T00:00:00Z').toDateString(),
-    );
+    api.defaults.headers.Authorization = `Baerer ${token}`;
+
+    var decoded = jwt_decode(token);
+    setUser(decoded);
+
+    localStorage.setItem('@RNAuth:user', JSON.stringify(decoded));
+    localStorage.setItem('@RNAuth:token', token);
   }
 
   async function signOut() {
@@ -58,7 +47,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, user, loading, signIn, signOut }}>
+      value={{ signed: !!user, user, loading, signIn: signIn, signOut: signOut }}>
       {children}
     </AuthContext.Provider>
   );
