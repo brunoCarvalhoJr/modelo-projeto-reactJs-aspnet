@@ -54,7 +54,7 @@ namespace backend.Controllers
                 }
             }
 
-            return BadRequest("Não foi possível realizar o login");
+            return Unauthorized("Não foi possível realizar o login");
         }
 
         private object GenerateToken(Usuario user)
