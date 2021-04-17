@@ -1,11 +1,10 @@
 import axios from 'axios';
 import httpStatus from 'http-status';
 
-import {Messages, ApiUrl} from '../config/constants';
+import { Messages, ApiUrl } from '../config/constants';
 
-console.log(ApiUrl);
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: `${ApiUrl}`,
 });
 
 // Add a request interceptor
@@ -13,7 +12,7 @@ api.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem('Token');
     if (token != null) {
-      config.headers['x-access-token'] = token;
+      config.headers['Authorization'] = token;
     }
 
     return config;
@@ -27,7 +26,7 @@ api.interceptors.response.use(
     if (!error.response) {
       return Promise.reject(error);
     }
-    const {status} = error.response;
+    const { status } = error.response;
     console.log('status', status)
     switch (status) {
       case httpStatus.UNAUTHORIZED:

@@ -5,11 +5,25 @@ using backend.Models;
 
 namespace backend.Results
 {
+  public class DetalheFoto
+  {
+    public Guid Id { get; set; }
+
+    public DetalheFoto(Foto foto)
+    {
+      this.Id = foto.Id;
+    }
+  }
+
   public class DetalheFormularioItem
   {
     public DetalheFormularioItem(FormularioItem formularioItem)
     {
       this.Valor = formularioItem.Valor;
+      if (!string.IsNullOrEmpty(formularioItem.Valor) && formularioItem.Pergunta.Tipo == "select" && formularioItem.Pergunta.Alternativas.Any())
+      {
+        this.Valor = formularioItem.Pergunta.Alternativas.FirstOrDefault(c => c.Id.Equals(Guid.Parse(formularioItem.Valor)))?.Nome;
+      }
       this.Tipo = formularioItem.Pergunta.Tipo;
       this.Alternativas = formularioItem.Alternativas.Select(f => f.Alternativa.Nome).ToList();
       this.Pergunta = formularioItem.Pergunta.Nome;
@@ -27,11 +41,11 @@ namespace backend.Results
     {
       this.Nome = formulario.Nome;
       this.Itens = formulario.Itens.Select(c => new DetalheFormularioItem(c)).ToList();
-      this.Fotos = formulario.Fotos;
+      this.Fotos = formulario.Fotos.Select(c => new DetalheFoto(c)).ToList();
     }
 
     public String Nome { get; set; }
-    public List<Foto> Fotos { get; set; }
+    public List<DetalheFoto> Fotos { get; set; }
     public List<DetalheFormularioItem> Itens { get; set; }
   }
 

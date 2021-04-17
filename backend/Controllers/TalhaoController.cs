@@ -31,13 +31,13 @@ namespace backend.Controllers
       Talhao talhao = new Talhao();
       talhao.Nome = viewModel.Nome;
       talhao.Codigo = viewModel.Numero;
-      // talhao.ImovelId = viewModel.ImovelId;
+      talhao.FazendaId = viewModel.FazendaId;
       talhao.TheGeom = viewModel.TheGeom.Geometry;
       context.Talhoes.Add(talhao);
       context.SaveChanges();
       viewModel.TheGeom.Attributes.Add("nome", viewModel.Nome);
       viewModel.TheGeom.Attributes.Add("numero", viewModel.Numero);
-      viewModel.TheGeom.Attributes.Add("imovelid", viewModel.ImovelId);
+      viewModel.TheGeom.Attributes.Add("imovelid", viewModel.FazendaId);
       return viewModel.TheGeom;
     }
 

@@ -16,6 +16,7 @@ import {
     Collapse,
     List,
 } from 'antd';
+import {ApiUrl} from '../../../../config/constants';
 
 const { Panel } = Collapse;
 
@@ -25,7 +26,7 @@ function callback(key) {
 
 const FormSizeDemo = ({ detalhe }) => {
     console.log('detalhe', detalhe);
-    const [detalheTalhao, setDetalhe] = useState(detalhe);
+    const [detalheTalhao,] = useState(detalhe);
     const [componentSize, setComponentSize] = useState('middle');
     const onFormLayoutChange = ({ size }) => {
         setComponentSize(size);
@@ -70,30 +71,15 @@ const FormSizeDemo = ({ detalhe }) => {
                             </>
                         ))}
                         <Row gutter={[21, 21]}>
-                            <Col span={8} >
-                                <Image
-                                    width={200}
-                                    src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                                />
-                            </Col>
-                            <Col span={8} >
-                                <Image
-                                    width={200}
-                                    src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
-                                />
-                            </Col>
-                            <Col span={8} >
-                                <Image
-                                    width={200}
-                                    src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-                                />
-                            </Col>
-                            <Col span={8} >
-                                <Image
-                                    width={200}
-                                    src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-                                />
-                            </Col>
+                            {formulario.fotos.map((foto) => (
+                                <Col span={8} >
+                                    <Image
+                                        width={200}
+                                        height={200}
+                                        src={`${ApiUrl}/foto/${foto.id}`}
+                                    />
+                                </Col>
+                            ))}
                         </Row>
                     </Form>
                 </Panel>

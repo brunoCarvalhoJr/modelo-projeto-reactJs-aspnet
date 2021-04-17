@@ -74,36 +74,36 @@ namespace backend.Data
           FazendaId = fazenda.Id
         });
 
-        var localizacao = new Localizacao(){
-          Tipo = "OCORRENCIA",
-          Status = "FINALIZADO",
-          TheGeom = geoLocalizacao001,
-          TalhaoId = talhao.Id
-        };
-        agroContext.Localizacoes.Add(localizacao);
+        // var localizacao = new Localizacao(){
+        //   Tipo = "OCORRENCIA",
+        //   Status = "FINALIZADO",
+        //   TheGeom = geoLocalizacao001,
+        //   TalhaoId = talhao.Id
+        // };
+        // agroContext.Localizacoes.Add(localizacao);
 
 
-        var formulario = new Formulario(){
-          Nome = "Formulário",
-          LocalizacaoId = localizacao.Id
-        };
-        agroContext.Formularios.Add(formulario);
+        // var formulario = new Formulario(){
+        //   Nome = "Formulário",
+        //   LocalizacaoId = localizacao.Id
+        // };
+        // agroContext.Formularios.Add(formulario);
 
 
-        var formularioItem = new FormularioItem(){
-            Valor = "Valor",
-            PerguntaId = perguntaId,
-            FormularioId = formulario.Id
-        };
+        // var formularioItem = new FormularioItem(){
+        //     Valor = "Valor",
+        //     PerguntaId = perguntaId,
+        //     FormularioId = formulario.Id
+        // };
 
-        agroContext.FormularioItems.Add(formularioItem);
+        // agroContext.FormularioItems.Add(formularioItem);
 
-        var alternativaFormulario = new FormularioItemAlternativa(){
-          AlternativaId = agroContext.Alternativas.FirstOrDefault().Id,
-          FormularioItemId = formularioItem.Id
-        };
+        // var alternativaFormulario = new FormularioItemAlternativa(){
+        //   AlternativaId = agroContext.Alternativas.FirstOrDefault().Id,
+        //   FormularioItemId = formularioItem.Id
+        // };
 
-        agroContext.FormularioItemAlternativas.Add(alternativaFormulario);
+        // agroContext.FormularioItemAlternativas.Add(alternativaFormulario);
 
         agroContext.SaveChanges();
       }
@@ -117,6 +117,9 @@ namespace backend.Data
 // drop table IF EXISTS public.aspnetuserlogins CASCADE;
 // drop table IF EXISTS public.aspnetuserroles CASCADE;
 // drop table IF EXISTS public.aspnetusertokens CASCADE;
+// drop table IF EXISTS public."_EFMigrationsHistory" CASCADE;
+
+
     private Guid PopularPerguntas()
     {
       if (agroContext.OcorrenciaCategorias.Count() != 0)

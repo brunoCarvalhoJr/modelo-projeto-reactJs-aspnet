@@ -15,7 +15,7 @@ namespace backend.Controllers
 {
     [Authorize]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class LoginController : Controller
     {
         private readonly UserManager<Usuario> userManager;
@@ -65,6 +65,7 @@ namespace backend.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 //Custom
                 new Claim(ReagroClaimNames.Name, user.Nome),
+                new Claim(ReagroClaimNames.Email, user.Email),
                 new Claim(ReagroClaimNames.UserId, user.Id.ToString()),
             };
 
@@ -93,5 +94,6 @@ namespace backend.Controllers
     {
         public const string Name = "name";
         public const string UserId = "userId";
+        public const string Email = "email";
     }
 }

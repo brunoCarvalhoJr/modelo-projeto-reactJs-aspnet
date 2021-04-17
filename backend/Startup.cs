@@ -64,7 +64,7 @@ namespace backend
       {
         options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-        options.SerializerSettings.DateFormatString = "dd/MM/yyyy HH:mm:ss";
+        // options.SerializerSettings.DateFormatString = "dd/MM/yyyy HH:mm:ss";
         options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
         options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
         options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());

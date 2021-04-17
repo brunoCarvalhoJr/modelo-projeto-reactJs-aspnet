@@ -128,6 +128,7 @@ const PageMapa = () => {
   const _addLayerGEOJsonImovel = async () => {
     const { data } = await axios.get(`${SERVER}/fazenda`);
 
+    
     const geoJSONImovel = L.geoJSON(data.theGeom, ESTILO_IMOVEL);
 
     geoJSONImovel.eachLayer(layer => {
@@ -154,7 +155,8 @@ const PageMapa = () => {
           const geoJSON = L.geoJSON(localizacao.theGeom, {
             style: ESTILO_TALHAO,
             pointToLayer: (feature, latlng) => {
-              // return L.marker(latlng, { icon: marcadorAnotacao });
+              if (localizacao.tipo === 'ANOTACAO')
+                return L.marker(latlng, { icon: marcadorAnotacao });
               return L.marker(latlng, { icon: marcadorOcorrencia });
             },
           });
@@ -219,7 +221,8 @@ const PageMapa = () => {
   };
 
   const addLayerImovel = async lmap => {
-    const { layer } = await _addLayerGEOJsonImovel();
+    const { layer, data } = await _addLayerGEOJsonImovel();
+    localStorage.setItem('@RNAuth:fazenda', data.id);
     _zoomLayer(lmap, layer);
   };
 
@@ -238,10 +241,11 @@ const PageMapa = () => {
   };
 
   const sendServer = async layer => {
+    const fazenda = localStorage.getItem('@RNAuth:fazenda');
     const data = {
-      Nome: 'T000',
+      Nome: 'TALHÃO',
       Numero: '2',
-      ImovelId: 786,
+      FazendaId: fazenda,
       TheGeom: layer.toGeoJSON(),
     };
     await axios.post(`${SERVER}/talhao`, data);

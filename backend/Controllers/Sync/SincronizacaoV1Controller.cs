@@ -15,7 +15,7 @@ using Sync.v1;
 namespace backend.Controllers
 {
   [Produces("application/json")]
-  [Route("api/v1/sincronizacao")]
+  [Route("v1/sincronizacao")]
   public class SincronizacaoV1Controller : Controller
   {
     private readonly SyncPullService syncPullService;

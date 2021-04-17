@@ -10,6 +10,6 @@ namespace backend.Commands
 
     public Feature TheGeom { get; set; }
 
-    public int ImovelId { get; set; }
+    public Guid FazendaId { get; set; }
   }
 }
