@@ -26,6 +26,7 @@ namespace backend.Data
     public DbSet<OcorrenciaCategoria> OcorrenciaCategorias { get; set; }
     public DbSet<Pergunta> Perguntas { get; set; }
     public DbSet<Talhao> Talhoes { get; set; }
+    public DbSet<UsuarioFazenda> UsuarioFazenda { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)

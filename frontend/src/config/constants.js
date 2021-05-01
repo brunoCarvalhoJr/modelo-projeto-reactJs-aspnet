@@ -1,6 +1,7 @@
 export const Secret = "SECRET";
 export const Namespace = "NAMESPACE";
-export const ApiUrl = "http://localhost:5000";
+export const ApiUrl = "http://159.65.216.107";
+//export const ApiUrl = "http://localhost:5000";
 
 export const Messages = {
   ALERT_ATENCAO: 'Atenção',

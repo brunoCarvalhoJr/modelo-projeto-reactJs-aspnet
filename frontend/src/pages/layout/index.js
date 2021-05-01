@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Layout,
   Menu,
@@ -7,23 +7,42 @@ import {
   Typography
 } from "antd";
 import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
   LogoutOutlined,
   UserOutlined,
+  UnorderedListOutlined,
+  UploadOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 
 import { Avatar } from "antd";
 import { useAuth } from '../../contexts/auth';
+import { withRouter } from 'react-router-dom';
 
 import "./layout.css";
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const { Text } = Typography;
 
-const AppLayout = ({ children }) => {
-  const { signOut, user }  = useAuth();
+const AppLayout = ({ children, history}) => {
+  const [collapsed, setCollapsed] = useState(true);
+  const { signOut, user } = useAuth();
 
   const handleSignOut = () => {
     signOut();
+  };
+
+  const toggle = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const selecionar = () => {
+    history.push('/');
+  };
+
+  const visualizar = () => {
+    history.push('/mapa');
   };
 
   const menuUsuario = () => (
@@ -36,6 +55,14 @@ const AppLayout = ({ children }) => {
 
   return (
     <Layout>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="logo" />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu.Item key="1" icon={<UnorderedListOutlined />} onClick={selecionar}>
+            Selecionar de Fazenda
+          </Menu.Item>
+        </Menu>
+      </Sider>
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
@@ -45,7 +72,7 @@ const AppLayout = ({ children }) => {
           }}
         >
           <div className="layout-logo">
-            {/* <img className="logo" src={logo} width="32" height="32" alt="Logo"/> */}
+            {'Agro - Monitoramento'}
           </div>
           <div className="profile">
             <Popover
@@ -59,7 +86,7 @@ const AppLayout = ({ children }) => {
                 style={{ backgroundColor: "#3775F2", verticalAlign: "middle" }}
               />
             </Popover>
-            <Text  style={{ color: "#3775F2", paddingLeft: '10px' }} strong>{user.name}</Text>
+            <Text style={{ color: "#3775F2", paddingLeft: '10px' }} strong>{user.name}</Text>
           </div>
         </Header>
         <Content className="site-content">
@@ -72,4 +99,4 @@ const AppLayout = ({ children }) => {
   );
 };
 
-export default AppLayout;
+export default withRouter(AppLayout);

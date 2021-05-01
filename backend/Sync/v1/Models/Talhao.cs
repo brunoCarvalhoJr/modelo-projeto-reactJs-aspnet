@@ -13,5 +13,7 @@ namespace Sync.v1.Models
     public List<ObjectId> Localizacoes { get; set; }
 
     public DateTime Date;
+
+    public object Centro { get; set; }
   }
 }

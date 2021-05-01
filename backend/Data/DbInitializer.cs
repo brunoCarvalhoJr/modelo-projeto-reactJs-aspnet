@@ -29,9 +29,9 @@ namespace backend.Data
 
         context.SaveChanges();
         var result = userManager.CreateAsync(user, "123456").Result;
-      }
 
-      new SeedFazenda(context).Executar();
+        new SeedFazenda(context).Executar(user);
+      }
     }
   }
 }

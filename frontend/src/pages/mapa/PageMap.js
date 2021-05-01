@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import api from '../../http/api';
 import L from 'leaflet';
-import { Modal } from 'antd';
+import { Modal, Card } from 'antd';
 import {
-  SERVER,
   GEO_SERVER,
   ESTILO_TALHAO,
   ESTILO_IMOVEL,
@@ -21,15 +20,17 @@ import { Zoom } from './components/tools/Zoom';
 import IconeFazenda from 'assets/markers/field.png';
 import IconeComment from 'assets/markers/comment-map-icon.png';
 import IconeOcorrencia from 'assets/markers/skull.png';
+import { withRouter } from 'react-router-dom';
 
 import './map.css';
 
-const PageMapa = () => {
+const PageMapa = ({ match }) => {
   const mapRef = useRef(null);
   const containerTopleft = useRef(null);
   const containerTopRight = useRef(null);
   const containerBottomLeft = useRef(null);
   const containerBottomRight = useRef(null);
+  const [fazenda, setFazenda] = useState();
   const [initialized, setInitialized] = useState(false);
   const [detalhe, setDetalhe] = useState();
   const [layers] = useState(new L.featureGroup());
@@ -87,6 +88,9 @@ const PageMapa = () => {
   useEffect(() => {
     const load = async () => {
       if (initialized) return;
+      const {
+        params: { fazenda }
+      } = match;
       const googleSat = L.tileLayer(
         'http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
         {
@@ -111,7 +115,7 @@ const PageMapa = () => {
       bottomright(mapRef.current);
       bindEvents(mapRef.current);
       addLayerEstado(mapRef.current);
-      await addLayerImovel(mapRef.current);
+      await addLayerImovel(fazenda, mapRef.current);
       setInitialized(true);
     };
     load();
@@ -125,10 +129,10 @@ const PageMapa = () => {
     lmap.addLayer(layers);
   };
 
-  const _addLayerGEOJsonImovel = async () => {
-    const { data } = await axios.get(`${SERVER}/fazenda`);
+  const _addLayerGEOJsonImovel = async (fazendaId) => {
+    const { data } = await api.get(`/fazenda/${fazendaId}`);
 
-    
+
     const geoJSONImovel = L.geoJSON(data.theGeom, ESTILO_IMOVEL);
 
     geoJSONImovel.eachLayer(layer => {
@@ -179,8 +183,8 @@ const PageMapa = () => {
   };
 
   const detalheLocalizacao = async localizacao => {
-    const { data } = await axios.get(
-      `${SERVER}/localizacao/${localizacao}/detalhe`,
+    const { data } = await api.get(
+      `/localizacao/${localizacao}/detalhe`,
     );
     setDetalhe(data)
     showModal();
@@ -220,8 +224,9 @@ const PageMapa = () => {
     _addLayerWMS(lmap, wmsOptions);
   };
 
-  const addLayerImovel = async lmap => {
-    const { layer, data } = await _addLayerGEOJsonImovel();
+  const addLayerImovel = async (fazendaId, lmap) => {
+    const { layer, data } = await _addLayerGEOJsonImovel(fazendaId);
+    setFazenda(data);
     localStorage.setItem('@RNAuth:fazenda', data.id);
     _zoomLayer(lmap, layer);
   };
@@ -248,7 +253,7 @@ const PageMapa = () => {
       FazendaId: fazenda,
       TheGeom: layer.toGeoJSON(),
     };
-    await axios.post(`${SERVER}/talhao`, data);
+    await api.post(`/talhao`, data);
   };
 
   const topleft = lmap => {
@@ -268,48 +273,52 @@ const PageMapa = () => {
   };
 
   return (
-    <div className="viewMap">
-      <Context.Provider
-        value={{
-          map: mapRef.current,
-          layersEdit,
-        }}
-      >
-        <div id="map">
-          {initialized && containerTopleft && (
-            <MapContainer container={containerTopleft}>
-              <SideBar onClickItem={onClickSideBar} />
-            </MapContainer>
-          )}
-          {initialized && containerTopRight && (
-            <MapContainer container={containerTopRight}>
-              <Zoom
-                initialValue={ZOOM_INICIAL_MAPA}
-                max={ZOOM_MAXIMO_MAPA}
-                min={ZOOM_MINIMO_MAPA}
-              />
-              <ToolBar />
-            </MapContainer>
-          )}
-          {initialized && containerBottomLeft && (
-            <MapContainer container={containerBottomLeft}></MapContainer>
-          )}
-          {initialized && containerBottomRight && (
-            <MapContainer container={containerBottomRight}></MapContainer>
-          )}
+    <>
+      <Card title={fazenda && fazenda.nome}>
+        <div className="viewMap">
+          <Context.Provider
+            value={{
+              map: mapRef.current,
+              layersEdit,
+            }}
+          >
+            <div id="map">
+              {initialized && containerTopleft && (
+                <MapContainer container={containerTopleft}>
+                  <SideBar onClickItem={onClickSideBar} />
+                </MapContainer>
+              )}
+              {initialized && containerTopRight && (
+                <MapContainer container={containerTopRight}>
+                  <Zoom
+                    initialValue={ZOOM_INICIAL_MAPA}
+                    max={ZOOM_MAXIMO_MAPA}
+                    min={ZOOM_MINIMO_MAPA}
+                  />
+                  <ToolBar />
+                </MapContainer>
+              )}
+              {initialized && containerBottomLeft && (
+                <MapContainer container={containerBottomLeft}></MapContainer>
+              )}
+              {initialized && containerBottomRight && (
+                <MapContainer container={containerBottomRight}></MapContainer>
+              )}
+            </div>
+            <Modal
+              title="Detalhes"
+              width={720}
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
+              <MapModal detalhe={detalhe} />
+            </Modal>
+          </Context.Provider>
         </div>
-        <Modal
-          title="Detalhes"
-          width={720}
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <MapModal detalhe={detalhe} />
-        </Modal>
-      </Context.Provider>
-    </div>
+      </Card>
+    </>
   );
 };
 
-export default PageMapa;
+export default withRouter(PageMapa);

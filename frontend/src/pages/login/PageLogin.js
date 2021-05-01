@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Card, Form, Input } from "antd";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/auth';
+import { withRouter } from 'react-router-dom';
 
 const layout = {
   labelCol: { span: 4 },
@@ -11,13 +12,14 @@ const tailLayout = {
   wrapperCol: { offset: 0, span: 32 },
 };
 
-const LoginPage = () => {
+const LoginPage = ({history}) => {
   const { signIn } = useAuth();
   const [username, setUsername] = useState('paulohenriquevn');
   const [password, setPassword] = useState('123456');
 
   function handleSign() {
     signIn(username, password);
+    history.push(`/`);
   }
 
   return (
@@ -48,4 +50,4 @@ const LoginPage = () => {
   )
 };
 
-export default LoginPage;
+export default withRouter(LoginPage);

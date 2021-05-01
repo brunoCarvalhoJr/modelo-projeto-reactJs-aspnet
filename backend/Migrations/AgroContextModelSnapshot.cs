@@ -17,7 +17,7 @@ namespace backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -642,6 +642,38 @@ namespace backend.Migrations
                     b.ToTable("talhao", "monitoramento");
                 });
 
+            modelBuilder.Entity("backend.Models.UsuarioFazenda", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("fazenda_id");
+
+                    b.Property<int>("Usuario")
+                        .HasColumnType("integer")
+                        .HasColumnName("usuario");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer")
+                        .HasColumnName("usuario_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_usuario_fazenda");
+
+                    b.HasIndex("FazendaId")
+                        .HasDatabaseName("ix_usuario_fazenda_fazenda_id");
+
+                    b.ToTable("usuario_fazenda", "monitoramento");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Models.Perfil", null)
@@ -819,6 +851,18 @@ namespace backend.Migrations
                         .WithMany("Talhoes")
                         .HasForeignKey("FazendaId")
                         .HasConstraintName("fk_talhao_fazenda_fazenda_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fazenda");
+                });
+
+            modelBuilder.Entity("backend.Models.UsuarioFazenda", b =>
+                {
+                    b.HasOne("backend.Models.Fazenda", "Fazenda")
+                        .WithMany()
+                        .HasForeignKey("FazendaId")
+                        .HasConstraintName("fk_usuario_fazenda_fazenda_fazenda_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

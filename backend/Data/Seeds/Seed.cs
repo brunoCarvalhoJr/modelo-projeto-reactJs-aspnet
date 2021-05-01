@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using backend.Models;
+using Models;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
@@ -17,7 +18,7 @@ namespace backend.Data
       this.agroContext = agroContext;
     }
 
-    public void Executar()
+    public void Executar(Usuario usuario)
     {
       var perguntaId = PopularPerguntas();
 
@@ -26,17 +27,8 @@ namespace backend.Data
         var geoJsonFazenda = File.ReadAllText(Path.Combine("Data", "Seeds", "fazenda.json"));
         var geoFazenda = validarGeoJSON(geoJsonFazenda);
 
-        var geoJsonTalhao001 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_001.json"));
-        var geoTalhao001 = validarGeoJSON(geoJsonTalhao001);
-
-        var geoJsonTalhao002 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_002.json"));
-        var geoTalhao002 = validarGeoJSON(geoJsonTalhao002);
-
-        var geoJsonTalhao003 = File.ReadAllText(Path.Combine("Data", "Seeds", "talhao_003.json"));
-        var geoTalhao003 = validarGeoJSON(geoJsonTalhao003);
-
-        var geoJsonLocalizacao001 = File.ReadAllText(Path.Combine("Data", "Seeds", "localizacao_001.json"));
-        var geoLocalizacao001 = validarGeoJSON(geoJsonLocalizacao001);
+        var geoJsonFazenda2 = File.ReadAllText(Path.Combine("Data", "Seeds", "fazenda_2.json"));
+        var geoFazenda2 = validarGeoJSON(geoJsonFazenda2);
 
         var fazenda = new Fazenda()
         {
@@ -46,64 +38,29 @@ namespace backend.Data
           TheGeom = geoFazenda
         };
 
-        agroContext.Fazendas.Add(fazenda);
-
-        var talhao = new Talhao()
+        var fazenda2 = new Fazenda()
         {
-          Nome = "Talhao",
-          Codigo = "001",
-          TheGeom = geoTalhao001,
-          FazendaId = fazenda.Id
+          Nome = "Fazenda 200",
+          Numero = "2000",
+          Area = 1,
+          TheGeom = geoFazenda2
         };
 
-        agroContext.Talhoes.Add(talhao);
+        agroContext.Fazendas.Add(fazenda);
+        agroContext.Fazendas.Add(fazenda2);
 
-        agroContext.Talhoes.Add(new Talhao()
-        {
-          Nome = "Talhao",
-          Codigo = "002",
-          TheGeom = geoTalhao002,
-          FazendaId = fazenda.Id
-        });
+        var usuarioFazenda = new UsuarioFazenda{
+          FazendaId = fazenda.Id,
+          UsuarioId = usuario.Id
+        };
 
-        agroContext.Talhoes.Add(new Talhao()
-        {
-          Nome = "Talhao",
-          Codigo = "003",
-          TheGeom = geoTalhao003,
-          FazendaId = fazenda.Id
-        });
+         var usuarioFazenda2 = new UsuarioFazenda{
+          FazendaId = fazenda.Id,
+          UsuarioId = usuario.Id
+        };
 
-        // var localizacao = new Localizacao(){
-        //   Tipo = "OCORRENCIA",
-        //   Status = "FINALIZADO",
-        //   TheGeom = geoLocalizacao001,
-        //   TalhaoId = talhao.Id
-        // };
-        // agroContext.Localizacoes.Add(localizacao);
-
-
-        // var formulario = new Formulario(){
-        //   Nome = "Formulário",
-        //   LocalizacaoId = localizacao.Id
-        // };
-        // agroContext.Formularios.Add(formulario);
-
-
-        // var formularioItem = new FormularioItem(){
-        //     Valor = "Valor",
-        //     PerguntaId = perguntaId,
-        //     FormularioId = formulario.Id
-        // };
-
-        // agroContext.FormularioItems.Add(formularioItem);
-
-        // var alternativaFormulario = new FormularioItemAlternativa(){
-        //   AlternativaId = agroContext.Alternativas.FirstOrDefault().Id,
-        //   FormularioItemId = formularioItem.Id
-        // };
-
-        // agroContext.FormularioItemAlternativas.Add(alternativaFormulario);
+        agroContext.UsuarioFazenda.Add(usuarioFazenda);
+        agroContext.UsuarioFazenda.Add(usuarioFazenda2);
 
         agroContext.SaveChanges();
       }

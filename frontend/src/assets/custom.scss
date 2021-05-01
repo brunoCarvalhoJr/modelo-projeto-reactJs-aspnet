@@ -1,8 +1,13 @@
 .ant-modal-body {
     padding: 3px !important;
   }
-  
-  .ant-list-item{
-    background-color: #f5f5f5;
-    padding: 5px 10px !important;
+
+  .ant-list-item:hover{
+    background-color: #c0d3e4;
+    cursor: pointer;
   }
+
+  .ant-list-items  { .selected{
+    background-color: #c0d3e4;
+  }
+}

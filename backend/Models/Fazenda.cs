@@ -15,6 +15,7 @@ namespace backend.Models
     public double Area { get; set; }
     public Geometry TheGeom { get; set; }
     public virtual List<Talhao> Talhoes { get; set; } = new List<Talhao>();
+    public virtual List<UsuarioFazenda> Usuarios { get; set; } = new List<UsuarioFazenda>();
   }
 
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { Button, List, Collapse, Card, Typography } from 'antd';
-import { SERVER } from '../../Constants';
 import './sidebar.css';
 import talhao from 'assets/talhao.png';
 
@@ -12,7 +11,7 @@ const { Meta } = Card;
 const CardItem = item => {
   const { properties } = item.feature;
   const onClickItem = async () => {
-    await axios.delete(`${SERVER}/talhao/${properties.id}`);
+    await axios.delete(`/talhao/${properties.id}`);
   };
   return (
     <Card

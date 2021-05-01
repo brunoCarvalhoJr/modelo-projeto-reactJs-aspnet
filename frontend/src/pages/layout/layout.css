@@ -1,23 +1,5 @@
-#components-layout-demo-custom-trigger .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-#components-layout-demo-custom-trigger .trigger:hover {
-  color: #1890ff;
-}
-
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
-}
-
 .site-layout-background {
-  padding: 0px 10% !important;
+  padding: 0px 3% !important;
   display: flex;
   justify-content: space-between;
 }
@@ -26,6 +8,9 @@
   display: flex;
   justify-content: flex-start;
   width: 80%;
+  color: #1890ff;
+  text-align: left;
+  font-size: 35px;
 }
 .layout-logo .logo {
   margin-right: 5%;
@@ -69,7 +54,7 @@
 .site-content {
   width: 100%;
   margin: 0 auto;
-  min-height: 300 !important;
+  min-height: 800px !important;
 }
 
 .fazenda {
@@ -97,4 +82,22 @@
 
 .button-login{
   width: 100%;
+}
+
+.trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: #fff;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.logo {
+  height: 29px;
+  margin: 16px;
 }

@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Sync.v1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend
 {
@@ -103,8 +105,8 @@ namespace backend
       app.UseDefaultFiles();
       app.UseStaticFiles();
       app.UseRouting();
-      app.UseAuthentication();
-      app.UseAuthorization();
+      // custom jwt auth middleware
+      app.UseMiddleware<Extensions.JwtMiddleware>();
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();

@@ -18,7 +18,7 @@ namespace Sync.v1
     public void Execute(PopulateSchemas populate)
     {
       var jsonString = JsonSerializer.Serialize(populate);
-      File.WriteAllText(Path.Combine("Sync", "Data", "Pendentes", $"{DateTime.UtcNow.ToString("dd-MM-yyyy H:mm")}.json"), jsonString);
+      File.WriteAllText(Path.Combine("Sync", "Data", "Pendentes", $"{DateTime.UtcNow.ToString("dd-MM-yyyy H:mm")}-{Guid.NewGuid()}.json"), jsonString);
 
       //TODO: RETIRAR DEPOIS QUE HOMOLOGAR
       Task.Delay(3000);

@@ -222,6 +222,29 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "usuario_fazenda",
+                schema: "monitoramento",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    usuario_id = table.Column<int>(type: "integer", nullable: false),
+                    usuario = table.Column<int>(type: "integer", nullable: false),
+                    fazenda_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_usuario_fazenda", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_usuario_fazenda_fazenda_fazenda_id",
+                        column: x => x.fazenda_id,
+                        principalSchema: "monitoramento",
+                        principalTable: "fazenda",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ocorrencia",
                 schema: "monitoramento",
                 columns: table => new
@@ -520,6 +543,12 @@ namespace backend.Migrations
                 schema: "monitoramento",
                 table: "talhao",
                 column: "fazenda_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_usuario_fazenda_fazenda_id",
+                schema: "monitoramento",
+                table: "usuario_fazenda",
+                column: "fazenda_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -545,6 +574,10 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "foto",
+                schema: "monitoramento");
+
+            migrationBuilder.DropTable(
+                name: "usuario_fazenda",
                 schema: "monitoramento");
 
             migrationBuilder.DropTable(

@@ -30,6 +30,9 @@ namespace Sync.v1
         var files = Directory.GetFiles(path, "*.json").OrderBy(f => new FileInfo(f).CreationTimeUtc);
         foreach (var file in files)
         {
+          if (file.Contains("empty.json"))
+            continue;
+
           try
           {
             var jsonString = File.ReadAllText(file);

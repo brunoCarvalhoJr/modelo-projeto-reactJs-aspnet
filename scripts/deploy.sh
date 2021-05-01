@@ -102,6 +102,10 @@ ssh "$connection" <<-DEPLOY
 
   cd publish
 
+  chmod 777 /home/paulohenriquevn/aplicacao/publish/Sync/Data/Pendentes/
+  
+  chmod 777 /home/paulohenriquevn/aplicacao/publish/Sync/Data/Processados/
+  
   echo $server_password | sudo -S systemctl start kestrel-dotnet.service
 
 DEPLOY

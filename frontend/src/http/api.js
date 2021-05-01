@@ -7,6 +7,12 @@ const api = axios.create({
   baseURL: `${ApiUrl}`,
 });
 
+const locationPage = () => {
+  localStorage.clear();
+  window.location.href = '/#/login';
+  window.location.reload();
+};
+
 // Add a request interceptor
 api.interceptors.request.use(
   async (config) => {
@@ -30,7 +36,7 @@ api.interceptors.response.use(
     console.log('status', status)
     switch (status) {
       case httpStatus.UNAUTHORIZED:
-        alert(Messages.USUARIO_NAO_AUTORIZADO);
+        locationPage();
         break;
 
       case httpStatus.FORBIDDEN:
@@ -55,3 +61,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+

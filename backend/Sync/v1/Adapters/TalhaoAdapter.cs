@@ -26,6 +26,7 @@ namespace Sync.v1.Models
         Area = source.Area,
         Codigo = source.Codigo,
         TheGeom = source.TheGeom.ConvertGeometriaToMobile(),
+        Centro = source.TheGeom.Centroid.ConvertGeometriaToMobile(),
         Localizacoes = source.Localizacoes.Select(c => new ObjectId(c.Id)).ToList(),
         Date = source.DataSync
       };
