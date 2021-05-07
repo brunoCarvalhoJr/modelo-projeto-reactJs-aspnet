@@ -63,7 +63,7 @@ namespace backend.Data
 
         var usuarioFazenda2 = new UsuarioFazenda
         {
-          FazendaId = fazenda.Id,
+          FazendaId = fazenda2.Id,
           UsuarioId = usuario.Id
         };
 

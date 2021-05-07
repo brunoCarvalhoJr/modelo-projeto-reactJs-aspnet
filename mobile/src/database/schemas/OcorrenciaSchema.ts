@@ -5,12 +5,14 @@ import {Pergunta} from './PerguntaSchema';
 class Ocorrencia extends Base {
   public id: string;
   public nome: string;
+  public ordem: number;
   public perguntas: Pergunta[] = [];
 
-  constructor(nome: string) {
+  constructor(nome: string, ordem: number) {
     super();
     this.id = uuidv4();
     this.nome = nome;
+    this.ordem = ordem;
   }
 
   static CODIGO = {
@@ -34,6 +36,7 @@ class Ocorrencia extends Base {
     properties: {
       id: 'string',
       nome: 'string',
+      ordem: 'int',
       perguntas: 'Pergunta[]',
       date: 'date',
     },

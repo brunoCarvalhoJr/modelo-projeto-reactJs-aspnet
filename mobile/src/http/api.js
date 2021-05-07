@@ -5,8 +5,12 @@ import * as ToastHelper from '../widgets/toast';
 import { Messages } from '../config/constants';
 import LocalStorage from '../database/localStorage';
 
+// const api = axios.create({
+//   baseURL: 'http://159.65.216.107',
+// });
+
 const api = axios.create({
-  baseURL: 'http://159.65.216.107',
+  baseURL: 'http://localhost:5000',
 });
 
 // Add a request interceptor

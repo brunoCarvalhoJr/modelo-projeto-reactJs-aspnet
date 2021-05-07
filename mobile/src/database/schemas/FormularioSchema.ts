@@ -6,15 +6,19 @@ import {Base} from './BaseSchema';
 class Formulario extends Base {
   public id: string;
   public nome: string;
+  public responder: boolean;
+  public ordem: number;
   public itens: FormularioItem[];
   public fotos: Foto[] = [];
 
-  constructor(nome: string, itens: FormularioItem[] = [], fotos: Foto[] = []) {
+  constructor(nome: string, responder: boolean, ordem: number = 0, itens: FormularioItem[] = [], fotos: Foto[] = []) {
     super();
     this.id = uuidv4();
     this.nome = nome;
+    this.responder = responder;
     this.fotos = fotos;
     this.itens = itens;
+    this.ordem = ordem;
   }
 
   static schema = {
@@ -23,6 +27,8 @@ class Formulario extends Base {
     properties: {
       id: 'string',
       nome: 'string',
+      responder: 'bool',
+      ordem: 'int',
       fotos: 'Foto[]',
       itens: 'FormularioItem[]',
       date: 'date',

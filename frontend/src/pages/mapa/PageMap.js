@@ -14,6 +14,7 @@ import {
 import SideBar from './components/sidebar';
 import { MapContainer } from './components/container';
 import MapModal from './components/modal';
+import TalhaoModal from './components/talhao';
 import { Context } from './Context';
 import { ToolBar } from './components/tools/ToolBar';
 import { Zoom } from './components/tools/Zoom';
@@ -31,6 +32,8 @@ const PageMapa = ({ match }) => {
   const containerBottomLeft = useRef(null);
   const containerBottomRight = useRef(null);
   const [fazenda, setFazenda] = useState();
+  const [cadastroTalhao, setCadastroTalhao] = useState();
+  const [talhaoLayer, setTalhaoLayer] = useState();
   const [initialized, setInitialized] = useState(false);
   const [detalhe, setDetalhe] = useState();
   const [layers] = useState(new L.featureGroup());
@@ -72,6 +75,7 @@ const PageMapa = ({ match }) => {
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isTalhaoModalVisible, setIsTalhaoModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -83,6 +87,34 @@ const PageMapa = ({ match }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const showTalhaoModal = () => {
+    setIsTalhaoModalVisible(true);
+  };
+
+  const setValues = (dadosTalhao) => {
+    setCadastroTalhao(dadosTalhao);
+  };
+
+  const handleTalhaoOk = async () => {
+    const fazenda = localStorage.getItem('@RNAuth:fazenda');
+    const data = {
+      Nome: cadastroTalhao.nome,
+      Numero: cadastroTalhao.numero,
+      FazendaId: fazenda,
+      TheGeom: cadastroTalhao.layer.toGeoJSON(),
+    };
+    await api.post(`/talhao`, data);
+    layersEdit.addLayer(cadastroTalhao.layer);
+    setIsTalhaoModalVisible(false);
+    window.location.reload();
+  };
+
+  const handleTalhaoCancel = () => {
+    setIsTalhaoModalVisible(false);
+    setCadastroTalhao({})
+    setTalhaoLayer({})
   };
 
   useEffect(() => {
@@ -234,26 +266,24 @@ const PageMapa = ({ match }) => {
   const bindEvents = lmap => {
     lmap.on(L.Draw.Event.CREATED, async ({ layer }) => {
       await addLayerEditing(layer);
+      setTalhaoLayer(layer);
+      setValues({
+        'nome': 'Talhão',
+        'layer': layer
+      });
+      showTalhaoModal();
     });
   };
 
   const addLayerEditing = async layer => {
     layer.on('edit', async ({ target }) => {
-      await sendServer(target);
+      setTalhaoLayer(target);
+      setValues({
+        'nome': 'Talhão',
+        'layer': layer
+      });
+      showTalhaoModal();
     });
-    layersEdit.addLayer(layer);
-    await sendServer(layer);
-  };
-
-  const sendServer = async layer => {
-    const fazenda = localStorage.getItem('@RNAuth:fazenda');
-    const data = {
-      Nome: 'TALHÃO',
-      Numero: '2',
-      FazendaId: fazenda,
-      TheGeom: layer.toGeoJSON(),
-    };
-    await api.post(`/talhao`, data);
   };
 
   const topleft = lmap => {
@@ -306,13 +336,24 @@ const PageMapa = ({ match }) => {
               )}
             </div>
             <Modal
-              title="Detalhes"
               width={720}
+              title="Detalhes"
+              destroyOnClose={true}
               visible={isModalVisible}
               onOk={handleOk}
               onCancel={handleCancel}
             >
               <MapModal detalhe={detalhe} />
+            </Modal>
+            <Modal
+              width={720}
+              title="Dados Talhão"
+              destroyOnClose={true}
+              visible={isTalhaoModalVisible}
+              onOk={handleTalhaoOk}
+              onCancel={handleTalhaoCancel}
+            >
+              <TalhaoModal layer={talhaoLayer} setValues={setValues} />
             </Modal>
           </Context.Provider>
         </div>

@@ -147,7 +147,7 @@ function TalhaoScreen({ route, navigation }) {
               return new FormularioItem(pergunta);
             });
 
-            const formulario = new Formulario(value.nome, itemsFormularios);
+            const formulario = new Formulario(value.nome, true, value.ordem, itemsFormularios);
             localizacao.formularios.push(formulario);
           }
         });

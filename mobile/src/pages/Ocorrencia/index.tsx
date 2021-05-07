@@ -1,18 +1,18 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Realm from 'realm';
-import {View, TouchableOpacity, Alert} from 'react-native';
-import {Button, Icon, Text} from 'native-base';
+import { View, TouchableOpacity, Alert } from 'react-native';
+import { Button, Icon, Text } from 'native-base';
 import CheckBox from '@react-native-community/checkbox';
-import {StyleSheet} from 'react-native';
-import {useState} from 'react';
-import {FlatList, TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {getRealm} from '../../database/store';
-import {Ocorrencia} from '../../database/schemas/OcorrenciaSchema';
-import {Localizacao} from '../../database/schemas/LocalizacaoSchema';
-import {OcorrenciaCategoria} from '../../database/schemas/OcorrenciaCategoriaSchema';
-import {Formulario} from '../../database/schemas/FormularioSchema';
-import {FormularioItem} from '../../database/schemas/FormularioItemSchema';
-import {useCadastro} from '../../contexts/cadastro';
+import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { getRealm } from '../../database/store';
+import { Ocorrencia } from '../../database/schemas/OcorrenciaSchema';
+import { Localizacao } from '../../database/schemas/LocalizacaoSchema';
+import { OcorrenciaCategoria } from '../../database/schemas/OcorrenciaCategoriaSchema';
+import { Formulario } from '../../database/schemas/FormularioSchema';
+import { FormularioItem } from '../../database/schemas/FormularioItemSchema';
+import { useCadastro } from '../../contexts/cadastro';
 
 const styles = StyleSheet.create({
   container: {
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function HeaderSelecao({onPress}) {
+function HeaderSelecao({ onPress }) {
   return (
     <View style={styles.formNavigator}>
       <View style={styles.header}>
@@ -91,9 +91,9 @@ function HeaderSelecao({onPress}) {
   );
 }
 
-const SelecionarSubGrupo: React.FC = ({navigation, route}) => {
-  const {ocorrenciacategoriaid} = route.params;
-  const {localizacao} = useCadastro();
+const SelecionarSubGrupo: React.FC = ({ navigation, route }) => {
+  const { ocorrenciacategoriaid } = route.params;
+  const { localizacao } = useCadastro();
   const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>([]);
   const [ocorrenciasSelecionadas, setOcorrenciasSelecionadas] = useState<
     Ocorrencia[]
@@ -105,7 +105,8 @@ const SelecionarSubGrupo: React.FC = ({navigation, route}) => {
         .objects<OcorrenciaCategoria>(OcorrenciaCategoria.schema.name)
         .find((c) => c.id === ocorrenciacategoriaid);
 
-      setOcorrencias([...(ocorrenciacategoria?.ocorrencias || [])]);
+      const ocorrenciasCategorias = ocorrenciacategoria?.ocorrencias || [];
+      setOcorrencias([...ocorrenciasCategorias]);
     });
   }, [ocorrenciacategoriaid, localizacao]);
 
@@ -122,7 +123,7 @@ const SelecionarSubGrupo: React.FC = ({navigation, route}) => {
               return new FormularioItem(pergunta);
             });
 
-            const formulario = new Formulario(value.nome, itemsFormularios);
+            const formulario = new Formulario(value.nome, false, value.ordem, itemsFormularios);
             localizacaoDb.formularios.push(formulario);
             instanceDB.create<Localizacao>(
               Localizacao.schema.name,
@@ -160,9 +161,9 @@ const SelecionarSubGrupo: React.FC = ({navigation, route}) => {
     <>
       <HeaderSelecao onPress={salvar} />
       <FlatList
-        data={ocorrencias}
+        data={ocorrencias.sort((a, b) => a.ordem - b.ordem)}
         extraData={ocorrenciasSelecionadas}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View style={styles.viewCheckboxes}>
             <CheckBox
               tintColors={{ true: '#465881', false: '#465881' }}

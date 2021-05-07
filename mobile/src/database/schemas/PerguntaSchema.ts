@@ -6,14 +6,16 @@ class Pergunta extends Base {
   public id: string;
   public tipo: string;
   public nome: string;
+  public ordem: number;
   public obrigatorio: boolean = false;
   public alternativas: Alternativa[] = [];
 
-  constructor(tipo: string, nome: string) {
+  constructor(tipo: string, nome: string, ordem: number) {
     super();
     this.id = uuidv4();
     this.tipo = tipo;
     this.nome = nome;
+    this.ordem = ordem;
   }
 
   static schema = {
@@ -23,6 +25,7 @@ class Pergunta extends Base {
       id: 'string',
       tipo: 'string',
       nome: 'string',
+      ordem: 'int',
       obrigatorio: 'bool',
       alternativas: 'Alternativa[]',
       date: 'date',

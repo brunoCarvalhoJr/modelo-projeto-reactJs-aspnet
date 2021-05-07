@@ -6025,11 +6025,6 @@ react-native-easy-grid@0.2.2:
   dependencies:
     lodash "^4.17.15"
 
-react-native-exif@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-exif/-/react-native-exif-0.4.0.tgz#70f7230e5eae2a2dfc1623b01c419d81a95620f3"
-  integrity sha512-86e4fUn2S5yW20wo/yUAzhwZZ3czHk1rJyAsVD36jcB//gxb0DQBYVNmGLowXqo83Z48AsdHua2moHyIRJKDew==
-
 react-native-fast-image@^8.3.4:
   version "8.3.4"
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"

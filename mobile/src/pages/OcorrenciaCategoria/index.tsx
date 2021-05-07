@@ -72,7 +72,7 @@ const OcorrenciaCategoriaScreen: React.FC = ({route, navigation}) => {
     <>
       <Container style={styles.mainContainer}>
         <FlatList
-          data={ocorrencias}
+          data={ocorrencias.sort((a, b) => a.ordem - b.ordem)}
           renderItem={({item}) => (
             <TouchableOpacity
               key={item.id.toString()}

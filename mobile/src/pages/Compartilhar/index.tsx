@@ -214,7 +214,9 @@ const CompartilharScreen: React.FC = ({ navigation }) => {
           .objects<Localizacao>(Localizacao.schema.name)
           .find((c) => c.id === localizacao?.id) || ({} as Localizacao);
 
-      setFormularios([...localizacaoDb.formularios]);
+      const formulariosLocalizacao = localizacaoDb.formularios || [];
+
+      setFormularios([...formulariosLocalizacao]);
     });
   }, [localizacao]);
 
@@ -254,7 +256,7 @@ const CompartilharScreen: React.FC = ({ navigation }) => {
       />
       <FlatList
         testID="perguntas-list"
-        data={formularios}
+        data={formularios.sort((a, b) => a.ordem - b.ordem)}
         renderItem={({ item }) => (
           <Card>
             <CardItem header bordered>

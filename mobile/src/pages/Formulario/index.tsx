@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, TouchableOpacity, PermissionsAndroid} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, TouchableOpacity, PermissionsAndroid } from 'react-native';
 import {
   Button,
   Card,
@@ -11,20 +11,21 @@ import {
   Body,
   Thumbnail,
   Picker,
+  Switch,
   Input,
 } from 'native-base';
-import {StyleSheet, Dimensions} from 'react-native';
-import {useState} from 'react';
-import {getRealm} from '../../database/store';
-import {Formulario} from '../../database/schemas/FormularioSchema';
-import {FormularioItem} from '../../database/schemas/FormularioItemSchema';
-import {Alternativa} from '../../database/schemas/AlternativaSchema';
-import {Localizacao} from '../../database/schemas/LocalizacaoSchema';
-import {Foto} from '../../database/schemas/FotoSchema';
+import { StyleSheet, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { getRealm } from '../../database/store';
+import { Formulario } from '../../database/schemas/FormularioSchema';
+import { FormularioItem } from '../../database/schemas/FormularioItemSchema';
+import { Alternativa } from '../../database/schemas/AlternativaSchema';
+import { Localizacao } from '../../database/schemas/LocalizacaoSchema';
+import { Foto } from '../../database/schemas/FotoSchema';
 import * as ImagePicker from 'react-native-image-picker';
-import {useCadastro} from '../../contexts/cadastro';
+import { useCadastro } from '../../contexts/cadastro';
 import CheckBox from '@react-native-community/checkbox';
-import {FlatList, TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 var width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function HeaderFormulario({onPress}) {
+function HeaderFormulario({ onPress }) {
   return (
     <View style={styles.formNavigator}>
       <View style={styles.header}>
@@ -154,8 +155,8 @@ function HeaderFormulario({onPress}) {
   );
 }
 
-const FormularioScreen: React.FC = ({navigation}) => {
-  const {localizacao} = useCadastro();
+const FormularioScreen: React.FC = ({ navigation }) => {
+  const { localizacao } = useCadastro();
   const [formularios, setFormularios] = useState<Formulario[]>([]);
   const [refresh, setRefresh] = useState(1);
 
@@ -166,7 +167,9 @@ const FormularioScreen: React.FC = ({navigation}) => {
           .objects<Localizacao>(Localizacao.schema.name)
           .find((c) => c.id === localizacao?.id) || ({} as Localizacao);
 
-      setFormularios([...localizacaoDb.formularios]);
+      const formulariosLocalizacao = localizacaoDb.formularios || [];
+
+      setFormularios([...formulariosLocalizacao]);
     });
   }, [localizacao]);
 
@@ -184,7 +187,7 @@ const FormularioScreen: React.FC = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         ImagePicker.launchCamera(
-          {mediaType: 'photo', includeBase64: true, quality: 0.5},
+          { mediaType: 'photo', includeBase64: true, quality: 0.5 },
           async (response) => {
             if (response.errorMessage) {
               console.log('ImagePicker Error: ', response.errorMessage);
@@ -229,7 +232,7 @@ const FormularioScreen: React.FC = ({navigation}) => {
         style={[styles.thumbnail]}
         square
         small
-        source={{uri: foto.uri}}
+        source={{ uri: foto.uri }}
       />
     </TouchableOpacity>
   );
@@ -263,117 +266,127 @@ const FormularioScreen: React.FC = ({navigation}) => {
       <HeaderFormulario onPress={onPress} />
       <FlatList
         testID="perguntas-list"
-        data={formularios}
-        renderItem={({item}) => (
+        data={formularios.sort((a, b) => a.ordem - b.ordem)}
+        renderItem={({ item }) => (
           <Card>
             <CardItem header bordered>
               <Text style={styles.subTitle}>{item.nome}</Text>
+              <Switch value={item.responder} onValueChange={() => {
+                getRealm().then((instanceDb) => {
+                  instanceDb.write(() => {
+                    item.responder = !item.responder
+                    setRefresh(refresh + 1);
+                  });
+                });
+              }} />
             </CardItem>
-            <CardItem bordered>
-              <Body>
-                <Form style={styles.form}>
-                  {item.itens.map((formularioItem) => (
-                    <View style={styles.formItem}>
-                      <View style={styles.formItemLabel}>
-                        <Text style={styles.label}>
-                          {formularioItem.pergunta.nome}
-                        </Text>
-                      </View>
-                      {formularioItem.pergunta.tipo === 'text' && (
-                        <View style={styles.formItemField}>
-                          <Item regular>
-                            <Input
-                              defaultValue={formularioItem.valor}
-                              onChangeText={(value) => {
-                                getRealm().then((instanceDb) => {
-                                  instanceDb.write(() => {
-                                    formularioItem.valor = value;
-                                    setRefresh(refresh + 1);
-                                  });
-                                });
-                              }}
-                            />
-                          </Item>
+            {item.responder &&
+              <CardItem bordered>
+                <Body>
+                  <Form style={styles.form}>
+                    {item.itens.map((formularioItem) => (
+                      <View style={styles.formItem}>
+                        <View style={styles.formItemLabel}>
+                          <Text style={styles.label}>
+                            {formularioItem.pergunta.nome}
+                          </Text>
                         </View>
-                      )}
-                      {formularioItem.pergunta.tipo === 'select' && (
-                        <View style={styles.formItemField}>
-                          <Item regular>
-                            <Picker
-                              selectedValue={formularioItem.valor}
-                              onValueChange={(value) => {
-                                getRealm().then((instanceDb) => {
-                                  instanceDb.write(() => {
-                                    formularioItem.valor = value;
-                                    setRefresh(refresh + 1);
-                                  });
-                                });
-                              }}>
-                              {formularioItem.pergunta.alternativas &&
-                                formularioItem.pergunta.alternativas.length >
-                                  0 &&
-                                formularioItem.pergunta.alternativas.map(
-                                  (item) => (
-                                    <Picker.Item
-                                      label={item.nome}
-                                      value={item.id}
-                                      key={item.id}
-                                    />
-                                  ),
-                                )}
-                            </Picker>
-                          </Item>
-                        </View>
-                      )}
-                      {formularioItem.pergunta.tipo === 'multiselect' &&
-                        formularioItem.pergunta.alternativas &&
-                        formularioItem.pergunta.alternativas.length > 0 && (
+                        {formularioItem.pergunta.tipo === 'text' && (
                           <View style={styles.formItemField}>
-                            <FlatList
-                              data={formularioItem.pergunta.alternativas}
-                              extraData={formularioItem.alternativas}
-                              renderItem={({item}) => (
-                                <View style={styles.viewCheckboxes}>
-                                  <CheckBox
-                                    tintColors={{ true: '#465881', false: '#465881' }}
-                                    value={checkSelecionado(
-                                      formularioItem,
-                                      item,
-                                    )}
-                                    onValueChange={() =>
-                                      selecione(formularioItem, item)
-                                    }
-                                  />
-                                  <TouchableWithoutFeedback
-                                    onPress={() =>
-                                      selecione(formularioItem, item)
-                                    }>
-                                    <Text>{item.nome}</Text>
-                                  </TouchableWithoutFeedback>
-                                </View>
-                              )}
-                              keyExtractor={(item) => item.id.toString()}
-                            />
+                            <Item regular>
+                              <Input
+                                defaultValue={formularioItem.valor}
+                                onChangeText={(value) => {
+                                  getRealm().then((instanceDb) => {
+                                    instanceDb.write(() => {
+                                      formularioItem.valor = value;
+                                      setRefresh(refresh + 1);
+                                    });
+                                  });
+                                }}
+                              />
+                            </Item>
                           </View>
                         )}
+                        {formularioItem.pergunta.tipo === 'select' && (
+                          <View style={styles.formItemField}>
+                            <Item regular>
+                              <Picker
+                                selectedValue={formularioItem.valor}
+                                onValueChange={(value) => {
+                                  getRealm().then((instanceDb) => {
+                                    instanceDb.write(() => {
+                                      formularioItem.valor = value;
+                                      setRefresh(refresh + 1);
+                                    });
+                                  });
+                                }}>
+                                {formularioItem.pergunta.alternativas &&
+                                  formularioItem.pergunta.alternativas.length >
+                                  0 &&
+                                  formularioItem.pergunta.alternativas.map(
+                                    (item) => (
+                                      <Picker.Item
+                                        label={item.nome}
+                                        value={item.id}
+                                        key={item.id}
+                                      />
+                                    ),
+                                  )}
+                              </Picker>
+                            </Item>
+                          </View>
+                        )}
+                        {formularioItem.pergunta.tipo === 'multiselect' &&
+                          formularioItem.pergunta.alternativas &&
+                          formularioItem.pergunta.alternativas.length > 0 && (
+                            <View style={styles.formItemField}>
+                              <FlatList
+                                data={formularioItem.pergunta.alternativas}
+                                extraData={formularioItem.alternativas}
+                                renderItem={({ item }) => (
+                                  <View style={styles.viewCheckboxes}>
+                                    <CheckBox
+                                      tintColors={{ true: '#465881', false: '#465881' }}
+                                      value={checkSelecionado(
+                                        formularioItem,
+                                        item,
+                                      )}
+                                      onValueChange={() =>
+                                        selecione(formularioItem, item)
+                                      }
+                                    />
+                                    <TouchableWithoutFeedback
+                                      onPress={() =>
+                                        selecione(formularioItem, item)
+                                      }>
+                                      <Text>{item.nome}</Text>
+                                    </TouchableWithoutFeedback>
+                                  </View>
+                                )}
+                                keyExtractor={(item) => item.id.toString()}
+                              />
+                            </View>
+                          )}
+                      </View>
+                    ))}
+                  </Form>
+                  <View style={styles.constainerThumbnail}>
+                    <View style={styles.listThumbnailPhone}>
+                      <Button
+                        style={styles.button}
+                        block
+                        onPress={() => addFoto(item)}>
+                        <Icon style={styles.buttonIcon} type="FontAwesome5" name="camera" />
+                      </Button>
+                      {refresh !== 0 &&
+                        item.fotos &&
+                        item.fotos.map((foto) => ImageItem(foto))}
                     </View>
-                  ))}
-                </Form>
-                <View style={styles.constainerThumbnail}>
-                  <View style={styles.listThumbnailPhone}>
-                    <Button
-                      style={styles.button}
-                      block
-                      onPress={() => addFoto(item)}>
-                      <Icon style={styles.buttonIcon} type="FontAwesome5" name="camera" />
-                    </Button>
-                    {refresh !== 0 &&
-                      item.fotos &&
-                      item.fotos.map((foto) => ImageItem(foto))}
                   </View>
-                </View>
-              </Body>
-            </CardItem>
+                </Body>
+              </CardItem>
+            }
           </Card>
         )}
         extraData={refresh}
