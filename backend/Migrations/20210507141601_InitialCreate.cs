@@ -12,6 +12,9 @@ namespace backend.Migrations
             migrationBuilder.EnsureSchema(
                 name: "monitoramento");
 
+            migrationBuilder.EnsureSchema(
+                name: "historico");
+
             migrationBuilder.CreateTable(
                 name: "aspnetroles",
                 columns: table => new
@@ -57,6 +60,20 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "cultura",
+                schema: "monitoramento",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    nome = table.Column<string>(type: "text", nullable: true),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_cultura", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "fazenda",
                 schema: "monitoramento",
                 columns: table => new
@@ -65,12 +82,43 @@ namespace backend.Migrations
                     nome = table.Column<string>(type: "text", nullable: true),
                     numero = table.Column<string>(type: "text", nullable: true),
                     area = table.Column<double>(type: "double precision", nullable: false),
+                    safra_tipo = table.Column<string>(type: "character varying(256)", nullable: false),
+                    safra_ano_inicio = table.Column<int>(type: "integer", nullable: false),
+                    safra_ano_fim = table.Column<int>(type: "integer", nullable: false),
                     the_geom = table.Column<Geometry>(type: "geometry", nullable: true),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_fazenda", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "historico_localizacao",
+                schema: "historico",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tipo = table.Column<string>(type: "text", nullable: true),
+                    the_geom = table.Column<Geometry>(type: "geometry", nullable: true),
+                    status = table.Column<string>(type: "text", nullable: true),
+                    nome = table.Column<string>(type: "text", nullable: true),
+                    codigo = table.Column<string>(type: "text", nullable: true),
+                    area = table.Column<float>(type: "real", nullable: false),
+                    cultura = table.Column<string>(type: "text", nullable: true),
+                    talhao_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    fazenda_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    fazenda_nome = table.Column<string>(type: "text", nullable: true),
+                    safra_nome = table.Column<string>(type: "text", nullable: true),
+                    safra_tipo = table.Column<string>(type: "text", nullable: true),
+                    safra_ano_inicio = table.Column<int>(type: "integer", nullable: false),
+                    safra_ano_fim = table.Column<int>(type: "integer", nullable: false),
+                    formulario_nome = table.Column<string>(type: "text", nullable: true),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_historico_localizacao", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,7 +276,6 @@ namespace backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     usuario_id = table.Column<int>(type: "integer", nullable: false),
-                    usuario = table.Column<int>(type: "integer", nullable: false),
                     fazenda_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -251,6 +298,7 @@ namespace backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     nome = table.Column<string>(type: "text", nullable: true),
+                    ordem = table.Column<int>(type: "integer", nullable: false),
                     ocorrencia_categoria_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -299,6 +347,7 @@ namespace backend.Migrations
                     tipo = table.Column<string>(type: "text", nullable: true),
                     nome = table.Column<string>(type: "text", nullable: true),
                     obrigatorio = table.Column<bool>(type: "boolean", nullable: false),
+                    ordem = table.Column<int>(type: "integer", nullable: false),
                     ocorrencia_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -321,6 +370,7 @@ namespace backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     nome = table.Column<string>(type: "text", nullable: true),
+                    responder = table.Column<bool>(type: "boolean", nullable: false),
                     localizacao_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -329,6 +379,69 @@ namespace backend.Migrations
                     table.PrimaryKey("pk_formulario", x => x.id);
                     table.ForeignKey(
                         name: "fk_formulario_localizacao_localizacao_id",
+                        column: x => x.localizacao_id,
+                        principalSchema: "monitoramento",
+                        principalTable: "localizacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "historico_formulario_item",
+                schema: "historico",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    valor = table.Column<string>(type: "text", nullable: true),
+                    pergunta_nome = table.Column<string>(type: "text", nullable: true),
+                    localizacao_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    historico_localizacao_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_historico_formulario_item", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_historico_formulario_item_historico_localizacao_historico_l~",
+                        column: x => x.historico_localizacao_id,
+                        principalSchema: "historico",
+                        principalTable: "historico_localizacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_historico_formulario_item_localizacao_localizacao_id",
+                        column: x => x.localizacao_id,
+                        principalSchema: "monitoramento",
+                        principalTable: "localizacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "historico_foto",
+                schema: "historico",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    uri = table.Column<string>(type: "text", nullable: true),
+                    nome = table.Column<string>(type: "text", nullable: true),
+                    path = table.Column<string>(type: "text", nullable: true),
+                    localizacao_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    historico_localizacao_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_historico_foto", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_historico_foto_historico_localizacao_historico_localizacao_~",
+                        column: x => x.historico_localizacao_id,
+                        principalSchema: "historico",
+                        principalTable: "historico_localizacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_historico_foto_localizacao_localizacao_id",
                         column: x => x.localizacao_id,
                         principalSchema: "monitoramento",
                         principalTable: "localizacao",
@@ -408,6 +521,29 @@ namespace backend.Migrations
                         column: x => x.formulario_id,
                         principalSchema: "monitoramento",
                         principalTable: "formulario",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "historico_formulario_item_alternativa",
+                schema: "historico",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    alternativa_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    alternativa_nome = table.Column<string>(type: "text", nullable: true),
+                    historico_formulario_item_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_historico_formulario_item_alternativa", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_historico_formulario_item_alternativa_historico_formulario_~",
+                        column: x => x.historico_formulario_item_id,
+                        principalSchema: "historico",
+                        principalTable: "historico_formulario_item",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -521,6 +657,36 @@ namespace backend.Migrations
                 column: "formulario_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_historico_formulario_item_historico_localizacao_id",
+                schema: "historico",
+                table: "historico_formulario_item",
+                column: "historico_localizacao_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_historico_formulario_item_localizacao_id",
+                schema: "historico",
+                table: "historico_formulario_item",
+                column: "localizacao_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_historico_formulario_item_alternativa_historico_formulario_~",
+                schema: "historico",
+                table: "historico_formulario_item_alternativa",
+                column: "historico_formulario_item_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_historico_foto_historico_localizacao_id",
+                schema: "historico",
+                table: "historico_foto",
+                column: "historico_localizacao_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_historico_foto_localizacao_id",
+                schema: "historico",
+                table: "historico_foto",
+                column: "localizacao_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_localizacao_talhao_id",
                 schema: "monitoramento",
                 table: "localizacao",
@@ -569,12 +735,24 @@ namespace backend.Migrations
                 name: "aspnetusertokens");
 
             migrationBuilder.DropTable(
+                name: "cultura",
+                schema: "monitoramento");
+
+            migrationBuilder.DropTable(
                 name: "formulario_item_alternativa",
                 schema: "monitoramento");
 
             migrationBuilder.DropTable(
                 name: "foto",
                 schema: "monitoramento");
+
+            migrationBuilder.DropTable(
+                name: "historico_formulario_item_alternativa",
+                schema: "historico");
+
+            migrationBuilder.DropTable(
+                name: "historico_foto",
+                schema: "historico");
 
             migrationBuilder.DropTable(
                 name: "usuario_fazenda",
@@ -595,12 +773,20 @@ namespace backend.Migrations
                 schema: "monitoramento");
 
             migrationBuilder.DropTable(
+                name: "historico_formulario_item",
+                schema: "historico");
+
+            migrationBuilder.DropTable(
                 name: "formulario",
                 schema: "monitoramento");
 
             migrationBuilder.DropTable(
                 name: "pergunta",
                 schema: "monitoramento");
+
+            migrationBuilder.DropTable(
+                name: "historico_localizacao",
+                schema: "historico");
 
             migrationBuilder.DropTable(
                 name: "localizacao",

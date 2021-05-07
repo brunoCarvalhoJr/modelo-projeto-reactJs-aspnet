@@ -11,7 +11,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AgroContext))]
-    [Migration("20210429171803_InitialCreate")]
+    [Migration("20210507141601_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -308,6 +308,27 @@ namespace backend.Migrations
                     b.ToTable("alternativa", "monitoramento");
                 });
 
+            modelBuilder.Entity("backend.Models.Cultura", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cultura");
+
+                    b.ToTable("cultura", "monitoramento");
+                });
+
             modelBuilder.Entity("backend.Models.Fazenda", b =>
                 {
                     b.Property<Guid>("Id")
@@ -330,6 +351,19 @@ namespace backend.Migrations
                     b.Property<string>("Numero")
                         .HasColumnType("text")
                         .HasColumnName("numero");
+
+                    b.Property<int>("SafraAnoFim")
+                        .HasColumnType("integer")
+                        .HasColumnName("safra_ano_fim");
+
+                    b.Property<int>("SafraAnoInicio")
+                        .HasColumnType("integer")
+                        .HasColumnName("safra_ano_inicio");
+
+                    b.Property<string>("SafraTipo")
+                        .IsRequired()
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("safra_tipo");
 
                     b.Property<Geometry>("TheGeom")
                         .HasColumnType("geometry")
@@ -359,6 +393,10 @@ namespace backend.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("text")
                         .HasColumnName("nome");
+
+                    b.Property<bool>("Responder")
+                        .HasColumnType("boolean")
+                        .HasColumnName("responder");
 
                     b.HasKey("Id")
                         .HasName("pk_formulario");
@@ -471,6 +509,197 @@ namespace backend.Migrations
                     b.ToTable("foto", "monitoramento");
                 });
 
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFormularioItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<Guid?>("HistoricoLocalizacaoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("historico_localizacao_id");
+
+                    b.Property<Guid>("LocalizacaoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("localizacao_id");
+
+                    b.Property<string>("PerguntaNome")
+                        .HasColumnType("text")
+                        .HasColumnName("pergunta_nome");
+
+                    b.Property<string>("Valor")
+                        .HasColumnType("text")
+                        .HasColumnName("valor");
+
+                    b.HasKey("Id")
+                        .HasName("pk_historico_formulario_item");
+
+                    b.HasIndex("HistoricoLocalizacaoId")
+                        .HasDatabaseName("ix_historico_formulario_item_historico_localizacao_id");
+
+                    b.HasIndex("LocalizacaoId")
+                        .HasDatabaseName("ix_historico_formulario_item_localizacao_id");
+
+                    b.ToTable("historico_formulario_item", "historico");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFormularioItemAlternativa", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("AlternativaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("alternativa_id");
+
+                    b.Property<string>("AlternativaNome")
+                        .HasColumnType("text")
+                        .HasColumnName("alternativa_nome");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<Guid>("HistoricoFormularioItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("historico_formulario_item_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_historico_formulario_item_alternativa");
+
+                    b.HasIndex("HistoricoFormularioItemId")
+                        .HasDatabaseName("ix_historico_formulario_item_alternativa_historico_formulario_~");
+
+                    b.ToTable("historico_formulario_item_alternativa", "historico");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFoto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<Guid?>("HistoricoLocalizacaoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("historico_localizacao_id");
+
+                    b.Property<Guid>("LocalizacaoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("localizacao_id");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text")
+                        .HasColumnName("path");
+
+                    b.Property<string>("Uri")
+                        .HasColumnType("text")
+                        .HasColumnName("uri");
+
+                    b.HasKey("Id")
+                        .HasName("pk_historico_foto");
+
+                    b.HasIndex("HistoricoLocalizacaoId")
+                        .HasDatabaseName("ix_historico_foto_historico_localizacao_id");
+
+                    b.HasIndex("LocalizacaoId")
+                        .HasDatabaseName("ix_historico_foto_localizacao_id");
+
+                    b.ToTable("historico_foto", "historico");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoLocalizacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<float>("Area")
+                        .HasColumnType("real")
+                        .HasColumnName("area");
+
+                    b.Property<string>("Codigo")
+                        .HasColumnType("text")
+                        .HasColumnName("codigo");
+
+                    b.Property<string>("Cultura")
+                        .HasColumnType("text")
+                        .HasColumnName("cultura");
+
+                    b.Property<DateTime>("DataSync")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("data_sync");
+
+                    b.Property<Guid>("FazendaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("fazenda_id");
+
+                    b.Property<string>("FazendaNome")
+                        .HasColumnType("text")
+                        .HasColumnName("fazenda_nome");
+
+                    b.Property<string>("FormularioNome")
+                        .HasColumnType("text")
+                        .HasColumnName("formulario_nome");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("text")
+                        .HasColumnName("nome");
+
+                    b.Property<int>("SafraAnoFim")
+                        .HasColumnType("integer")
+                        .HasColumnName("safra_ano_fim");
+
+                    b.Property<int>("SafraAnoInicio")
+                        .HasColumnType("integer")
+                        .HasColumnName("safra_ano_inicio");
+
+                    b.Property<string>("SafraNome")
+                        .HasColumnType("text")
+                        .HasColumnName("safra_nome");
+
+                    b.Property<string>("SafraTipo")
+                        .HasColumnType("text")
+                        .HasColumnName("safra_tipo");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TalhaoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("talhao_id");
+
+                    b.Property<Geometry>("TheGeom")
+                        .HasColumnType("geometry")
+                        .HasColumnName("the_geom");
+
+                    b.Property<string>("Tipo")
+                        .HasColumnType("text")
+                        .HasColumnName("tipo");
+
+                    b.HasKey("Id")
+                        .HasName("pk_historico_localizacao");
+
+                    b.ToTable("historico_localizacao", "historico");
+                });
+
             modelBuilder.Entity("backend.Models.Localizacao", b =>
                 {
                     b.Property<Guid>("Id")
@@ -525,6 +754,10 @@ namespace backend.Migrations
                     b.Property<Guid>("OcorrenciaCategoriaId")
                         .HasColumnType("uuid")
                         .HasColumnName("ocorrencia_categoria_id");
+
+                    b.Property<int>("Ordem")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.HasKey("Id")
                         .HasName("pk_ocorrencia");
@@ -590,6 +823,10 @@ namespace backend.Migrations
                     b.Property<Guid>("OcorrenciaId")
                         .HasColumnType("uuid")
                         .HasColumnName("ocorrencia_id");
+
+                    b.Property<int>("Ordem")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.Property<string>("Tipo")
                         .HasColumnType("text")
@@ -658,10 +895,6 @@ namespace backend.Migrations
                     b.Property<Guid>("FazendaId")
                         .HasColumnType("uuid")
                         .HasColumnName("fazenda_id");
-
-                    b.Property<int>("Usuario")
-                        .HasColumnType("integer")
-                        .HasColumnName("usuario");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("integer")
@@ -811,6 +1044,52 @@ namespace backend.Migrations
                     b.Navigation("Formulario");
                 });
 
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFormularioItem", b =>
+                {
+                    b.HasOne("backend.Models.Historico.HistoricoLocalizacao", null)
+                        .WithMany("Itens")
+                        .HasForeignKey("HistoricoLocalizacaoId")
+                        .HasConstraintName("fk_historico_formulario_item_historico_localizacao_historico_l~");
+
+                    b.HasOne("backend.Models.Localizacao", "Localizacao")
+                        .WithMany()
+                        .HasForeignKey("LocalizacaoId")
+                        .HasConstraintName("fk_historico_formulario_item_localizacao_localizacao_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Localizacao");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFormularioItemAlternativa", b =>
+                {
+                    b.HasOne("backend.Models.Historico.HistoricoFormularioItem", "HistoricoFormularioItem")
+                        .WithMany("Alternativas")
+                        .HasForeignKey("HistoricoFormularioItemId")
+                        .HasConstraintName("fk_historico_formulario_item_alternativa_historico_formulario_~")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HistoricoFormularioItem");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFoto", b =>
+                {
+                    b.HasOne("backend.Models.Historico.HistoricoLocalizacao", null)
+                        .WithMany("Fotos")
+                        .HasForeignKey("HistoricoLocalizacaoId")
+                        .HasConstraintName("fk_historico_foto_historico_localizacao_historico_localizacao_~");
+
+                    b.HasOne("backend.Models.Localizacao", "Localizacao")
+                        .WithMany()
+                        .HasForeignKey("LocalizacaoId")
+                        .HasConstraintName("fk_historico_foto_localizacao_localizacao_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Localizacao");
+                });
+
             modelBuilder.Entity("backend.Models.Localizacao", b =>
                 {
                     b.HasOne("backend.Models.Talhao", "Talhao")
@@ -861,19 +1140,19 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.UsuarioFazenda", b =>
                 {
-                    b.HasOne("backend.Models.Fazenda", "Fazenda")
-                        .WithMany()
+                    b.HasOne("backend.Models.Fazenda", null)
+                        .WithMany("Usuarios")
                         .HasForeignKey("FazendaId")
                         .HasConstraintName("fk_usuario_fazenda_fazenda_fazenda_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Fazenda");
                 });
 
             modelBuilder.Entity("backend.Models.Fazenda", b =>
                 {
                     b.Navigation("Talhoes");
+
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("backend.Models.Formulario", b =>
@@ -886,6 +1165,18 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.FormularioItem", b =>
                 {
                     b.Navigation("Alternativas");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoFormularioItem", b =>
+                {
+                    b.Navigation("Alternativas");
+                });
+
+            modelBuilder.Entity("backend.Models.Historico.HistoricoLocalizacao", b =>
+                {
+                    b.Navigation("Fotos");
+
+                    b.Navigation("Itens");
                 });
 
             modelBuilder.Entity("backend.Models.Localizacao", b =>

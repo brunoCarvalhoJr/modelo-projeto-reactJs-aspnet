@@ -20,7 +20,7 @@ namespace backend.Data
 
     public void Executar(Usuario usuario)
     {
-      var perguntaId = PopularPerguntas();
+      PopularPerguntas();
 
       if (agroContext.Fazendas.Count() == 0)
       {
@@ -35,7 +35,10 @@ namespace backend.Data
           Nome = "Fazenda 100",
           Numero = "1000",
           Area = 1,
-          TheGeom = geoFazenda
+          TheGeom = geoFazenda,
+          SafraAnoInicio = 2021,
+          SafraAnoFim = 2021,
+          SafraTipo = SafraTipo.SAFRA
         };
 
         var fazenda2 = new Fazenda()
@@ -43,18 +46,23 @@ namespace backend.Data
           Nome = "Fazenda 200",
           Numero = "2000",
           Area = 1,
-          TheGeom = geoFazenda2
+          TheGeom = geoFazenda2,
+          SafraAnoInicio = 2021,
+          SafraAnoFim = 2022,
+          SafraTipo = SafraTipo.SAFRINHA
         };
 
         agroContext.Fazendas.Add(fazenda);
         agroContext.Fazendas.Add(fazenda2);
 
-        var usuarioFazenda = new UsuarioFazenda{
+        var usuarioFazenda = new UsuarioFazenda
+        {
           FazendaId = fazenda.Id,
           UsuarioId = usuario.Id
         };
 
-         var usuarioFazenda2 = new UsuarioFazenda{
+        var usuarioFazenda2 = new UsuarioFazenda
+        {
           FazendaId = fazenda.Id,
           UsuarioId = usuario.Id
         };
@@ -66,227 +74,219 @@ namespace backend.Data
       }
     }
 
-// drop table IF EXISTS public.aspnetusers CASCADE;
-// drop table IF EXISTS public.aspnetuserroles CASCADE;
-// drop table IF EXISTS public.aspnetroles CASCADE;
-// drop table IF EXISTS public.aspnetroleclaims CASCADE;
-// drop table IF EXISTS public.aspnetuserclaims CASCADE;
-// drop table IF EXISTS public.aspnetuserlogins CASCADE;
-// drop table IF EXISTS public.aspnetuserroles CASCADE;
-// drop table IF EXISTS public.aspnetusertokens CASCADE;
-// drop table IF EXISTS public."_EFMigrationsHistory" CASCADE;
+    // drop table IF EXISTS public.aspnetusers CASCADE;
+    // drop table IF EXISTS public.aspnetuserroles CASCADE;
+    // drop table IF EXISTS public.aspnetroles CASCADE;
+    // drop table IF EXISTS public.aspnetroleclaims CASCADE;
+    // drop table IF EXISTS public.aspnetuserclaims CASCADE;
+    // drop table IF EXISTS public.aspnetuserlogins CASCADE;
+    // drop table IF EXISTS public.aspnetuserroles CASCADE;
+    // drop table IF EXISTS public.aspnetusertokens CASCADE;
+    // drop table IF EXISTS public."_EFMigrationsHistory" CASCADE;
 
+    Guid ID_CULTURA_CAFE = Guid.Parse("688e02fd-7b68-49f1-a7e5-069141a69c70");
+    private void PopularCulturas()
+    {
+      if (agroContext.Culturas.Count() != 0)
+        return;
 
-    private Guid PopularPerguntas()
+      Cultura cultura = new Cultura
+      {
+        Id = ID_CULTURA_CAFE,
+        Nome = "Café"
+      };
+
+      agroContext.Culturas.Add(cultura);
+    }
+
+    private void PopularPerguntas()
     {
       if (agroContext.OcorrenciaCategorias.Count() != 0)
-        return Guid.Empty;
+        return;
 
-      // ######################################################################################################
-      // ################################### ANOTACAO #########################################################
-      // ######################################################################################################
-      OcorrenciaCategoria ocorrenciaCategoria = new OcorrenciaCategoria()
+      var categoriaANOTACAO = new OcorrenciaCategoria()
       {
         Nome = "Anotação",
         Tipo = "ANOTACAO",
         Ordem = 0,
         Icone = "default",
       };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
 
-      Ocorrencia ocorrencia = new Ocorrencia()
-      {
-        Nome = "Anotação",
-        OcorrenciaCategoriaId = ocorrenciaCategoria.Id
-      };
-      Pergunta pergunta = new Pergunta()
-      {
-        Nome = "Pergunta Texto",
-        Tipo = "text",
-        OcorrenciaId = ocorrencia.Id
-      };
-      agroContext.Perguntas.Add(pergunta);
-
-      pergunta = new Pergunta()
-      {
-        Nome = "Pergunta multi select",
-        Tipo = "multiselect",
-        OcorrenciaId = ocorrencia.Id
-      };
-      agroContext.Perguntas.Add(pergunta);
-
-        Alternativa alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 01",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 02",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 03",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-
-      pergunta = new Pergunta()
-      {
-        Nome = "Pergunta select",
-        Tipo = "select",
-        OcorrenciaId = ocorrencia.Id
-      };
-      agroContext.Perguntas.Add(pergunta);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 01",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 02",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 03",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      agroContext.Ocorrencias.Add(ocorrencia);
-
-      // ######################################################################################################
-      // ################################### INSETO ###########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
+      var categoriaINSETO = new OcorrenciaCategoria()
       {
         Nome = "Inseto",
         Tipo = "OCORRENCIA",
-        Ordem = 0,
+        Ordem = 1,
         Icone = "virus",
       };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
 
-      ocorrencia = new Ocorrencia()
-      {
-        Nome = "Ferrugem do cafeeiro",
-        OcorrenciaCategoriaId = ocorrenciaCategoria.Id
-      };
-      agroContext.Ocorrencias.Add(ocorrencia);
-
-      pergunta = new Pergunta()
-      {
-        Nome = "Pergunta Texto",
-        Tipo = "text",
-        OcorrenciaId = ocorrencia.Id
-      };
-      agroContext.Perguntas.Add(pergunta);
-
-      pergunta = new Pergunta()
-      {
-        Nome = "Pergunta com Alternativa",
-        Tipo = "select",
-        OcorrenciaId = ocorrencia.Id
-      };
-      agroContext.Perguntas.Add(pergunta);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 01",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 02",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      alternativa = new Alternativa()
-      {
-        Nome = "Alternativa 03",
-        PerguntaId = pergunta.Id
-      };
-      agroContext.Alternativas.Add(alternativa);
-
-      // ######################################################################################################
-      // ################################### Doença ###########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
-      {
-        Nome = "Doença",
-        Tipo = "OCORRENCIA",
-        Ordem = 1,
-        Icone = "spider",
-      };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
-
-      // ######################################################################################################
-      // ################################### Invasora #########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
+      var ocorrenciaINVASORA = new OcorrenciaCategoria()
       {
         Nome = "Invasora",
         Tipo = "OCORRENCIA",
         Ordem = 2,
         Icone = "spa",
       };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
 
-      // ######################################################################################################
-      // ################################### Nematoide #########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
+      agroContext.OcorrenciaCategorias.Add(categoriaANOTACAO);
+      agroContext.OcorrenciaCategorias.Add(categoriaINSETO);
+      agroContext.OcorrenciaCategorias.Add(ocorrenciaINVASORA);
+
+      var ocorrenciaANOTACAO = new Ocorrencia()
       {
-        Nome = "Nematoide",
-        Tipo = "OCORRENCIA",
-        Icone = "pastafarianism",
+        Nome = "ANOTAÇÃO",
+        Ordem = 0,
+        OcorrenciaCategoriaId = categoriaANOTACAO.Id
+      };
+
+      var ocorrenciaPERCEVEJO_BARRIGA = new Ocorrencia()
+      {
+        Nome = "PERCEVEJO BARRIGA VERDE",
+        Ordem = 1,
+        OcorrenciaCategoriaId = ocorrenciaINVASORA.Id
+      };
+
+      var ocorrenciaPERCEVEJO_MARROM = new Ocorrencia()
+      {
+        Nome = "PERCEVEJO BARRIGA VERDE",
+        Ordem = 2,
+        OcorrenciaCategoriaId = ocorrenciaINVASORA.Id
+      };
+
+      var ocorrenciaFERRUGEM_CAFFEIRO = new Ocorrencia()
+      {
+        Nome = "FERRUGEM DO CAFEEIRO",
         Ordem = 3,
+        OcorrenciaCategoriaId = categoriaINSETO.Id
       };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
 
-      // ######################################################################################################
-      // ################################### Inimigo #########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
-      {
-        Nome = "Inimigo",
-        Tipo = "OCORRENCIA",
-        Ordem = 4,
-        Icone = "otter",
-      };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+      agroContext.Ocorrencias.Add(ocorrenciaANOTACAO);
+      agroContext.Ocorrencias.Add(ocorrenciaPERCEVEJO_BARRIGA);
+      agroContext.Ocorrencias.Add(ocorrenciaPERCEVEJO_MARROM);
+      agroContext.Ocorrencias.Add(ocorrenciaFERRUGEM_CAFFEIRO);
 
-      // ######################################################################################################
-      // ################################### Outro #########################################################
-      // ######################################################################################################
-      ocorrenciaCategoria = new OcorrenciaCategoria()
+      //ANOTAÇÃO
+      var perguntaANOTACAO = new Pergunta()
       {
-        Nome = "Outro",
-        Tipo = "OCORRENCIA",
-        Ordem = 5,
-        Icone = "pen-nib",
+        Nome = "Descrição da anotação",
+        Tipo = "text",
+        Ordem = 0,
+        OcorrenciaId = ocorrenciaANOTACAO.Id
       };
-      agroContext.OcorrenciaCategorias.Add(ocorrenciaCategoria);
+      agroContext.Perguntas.Add(perguntaANOTACAO);
+
+      //PERCEVEJO BARRIGA VERDE
+      var perguntaPERCEVEJO_BARRIGA_1 = new Pergunta()
+      {
+        Nome = "No. de Adultos",
+        Tipo = "text",
+        Ordem = 0,
+        OcorrenciaId = ocorrenciaPERCEVEJO_BARRIGA.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_BARRIGA_1);
+
+      var perguntaPERCEVEJO_BARRIGA_2 = new Pergunta()
+      {
+        Nome = "Númeo amostra plantas",
+        Tipo = "text",
+        Ordem = 1,
+        OcorrenciaId = ocorrenciaPERCEVEJO_BARRIGA.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_BARRIGA_2);
+
+      var perguntaPERCEVEJO_BARRIGA_3 = new Pergunta()
+      {
+        Nome = "No. de Ninfas",
+        Tipo = "text",
+        Ordem = 2,
+        OcorrenciaId = ocorrenciaPERCEVEJO_BARRIGA.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_BARRIGA_3);
+
+      var perguntaPERCEVEJO_BARRIGA_4 = new Pergunta()
+      {
+        Nome = "Plantas Atacadas",
+        Tipo = "text",
+        Ordem = 3,
+        OcorrenciaId = ocorrenciaPERCEVEJO_BARRIGA.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_BARRIGA_4);
+
+      //PERCEVEJO MARROM
+      var perguntaPERCEVEJO_MARROM_1 = new Pergunta()
+      {
+        Nome = "No. de Adultos",
+        Tipo = "text",
+        Ordem = 0,
+        OcorrenciaId = ocorrenciaPERCEVEJO_MARROM.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_MARROM_1);
+
+      var perguntaPERCEVEJO_MARROM_2 = new Pergunta()
+      {
+        Nome = "Númeo amostra plantas",
+        Tipo = "text",
+        Ordem = 1,
+        OcorrenciaId = ocorrenciaPERCEVEJO_MARROM.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_MARROM_2);
+
+      var perguntaPERCEVEJO_MARROM_3 = new Pergunta()
+      {
+        Nome = "No. de Ninfas",
+        Tipo = "text",
+        Ordem = 2,
+        OcorrenciaId = ocorrenciaPERCEVEJO_MARROM.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_MARROM_3);
+
+      var perguntaPERCEVEJO_MARROM_4 = new Pergunta()
+      {
+        Nome = "Plantas Atacadas",
+        Tipo = "text",
+        Ordem = 3,
+        OcorrenciaId = ocorrenciaPERCEVEJO_MARROM.Id
+      };
+      agroContext.Perguntas.Add(perguntaPERCEVEJO_MARROM_4);
+
+      //FERRUGEM_CAFFEIRO
+      var perguntaFERRUGEM_CAFFEIRO_1 = new Pergunta()
+      {
+        Nome = "No. de Adultos",
+        Tipo = "text",
+        Ordem = 0,
+        OcorrenciaId = ocorrenciaFERRUGEM_CAFFEIRO.Id
+      };
+      agroContext.Perguntas.Add(perguntaFERRUGEM_CAFFEIRO_1);
+
+      var perguntaFERRUGEM_CAFFEIRO_2 = new Pergunta()
+      {
+        Nome = "Númeo amostra plantas",
+        Tipo = "text",
+        Ordem = 1,
+        OcorrenciaId = ocorrenciaFERRUGEM_CAFFEIRO.Id
+      };
+      agroContext.Perguntas.Add(perguntaFERRUGEM_CAFFEIRO_2);
+
+      var perguntaFERRUGEM_CAFFEIRO_3 = new Pergunta()
+      {
+        Nome = "No. de Ninfas",
+        Tipo = "text",
+        Ordem = 2,
+        OcorrenciaId = ocorrenciaFERRUGEM_CAFFEIRO.Id
+      };
+      agroContext.Perguntas.Add(perguntaFERRUGEM_CAFFEIRO_3);
+
+      var perguntaFERRUGEM_CAFFEIRO_4 = new Pergunta()
+      {
+        Nome = "Plantas Atacadas",
+        Tipo = "text",
+        Ordem = 3,
+        OcorrenciaId = ocorrenciaFERRUGEM_CAFFEIRO.Id
+      };
+      agroContext.Perguntas.Add(perguntaFERRUGEM_CAFFEIRO_4);
 
       agroContext.SaveChanges();
-
-      return pergunta.Id;
     }
 
     private Geometry validarGeoJSON(string geoJson)

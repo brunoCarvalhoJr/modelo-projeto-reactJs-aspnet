@@ -4,17 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using backend.Data;
 
-namespace backend.Models
+namespace backend.Models.Historico
 {
-  [Table("formulario", Schema = Schema.SCHEMA_MONITORAMENTO)]
-  public class Formulario : BaseModel
+  [Table("historico_foto", Schema = Schema.SCHEMA_HISTORICO)]
+  public class HistoricoFoto : BaseModel
   {
+    public String Uri { get; set; }
     public String Nome { get; set; }
-
-    public Boolean Responder { get; set; }
-
-    public virtual List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
-    public virtual List<Foto> Fotos { get; set; } = new List<Foto>();
+    public String Path { get; set; }
 
     [ForeignKey(nameof(Localizacao))]
     public Guid LocalizacaoId { get; set; }

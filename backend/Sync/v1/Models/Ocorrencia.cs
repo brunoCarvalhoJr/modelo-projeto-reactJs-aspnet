@@ -7,6 +7,9 @@ namespace Sync.v1.Models
   public class Ocorrencia : ObjectId
   {
     public String Nome { get; set; }
+
+    public int Ordem { get; set; }
+    
     public List<ObjectId> Perguntas { get; set; }
     public DateTime Date;
   }

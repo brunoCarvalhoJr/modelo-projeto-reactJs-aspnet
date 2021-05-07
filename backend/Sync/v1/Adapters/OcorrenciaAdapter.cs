@@ -23,6 +23,7 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Nome = source.Nome,
+        Ordem = source.Ordem,
         Perguntas = source.Perguntas.Select(c=> new ObjectId(c.Id)).ToList(),
         Date = source.DataSync
       };
@@ -34,7 +35,8 @@ namespace Sync.v1.Models
       backend.Models.Ocorrencia Ocorrencia = new backend.Models.Ocorrencia()
       {
         Id = source.Id,
-        Nome = source.Nome
+        Nome = source.Nome,
+        Ordem = source.Ordem,
       };
       return Ocorrencia;
     }

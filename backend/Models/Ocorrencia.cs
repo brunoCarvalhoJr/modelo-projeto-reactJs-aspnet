@@ -10,6 +10,9 @@ namespace backend.Models
   public class Ocorrencia : BaseModel
   {
     public String Nome { get; set; }
+
+    public int Ordem { get; set; }
+    
     public virtual List<Pergunta> Perguntas { get; set; } = new List<Pergunta>();
 
     [ForeignKey(nameof(OcorrenciaCategoria))]

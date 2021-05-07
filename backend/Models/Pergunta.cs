@@ -13,6 +13,8 @@ namespace backend.Models
     public String Nome { get; set; }
     public bool Obrigatorio { get; set; } = false;
 
+    public int Ordem { get; set; }
+
     [ForeignKey(nameof(Ocorrencia))]
     public Guid OcorrenciaId { get; set; }
     public virtual Ocorrencia Ocorrencia { get; set; }

@@ -8,6 +8,9 @@ namespace Sync.v1.Models
   {
     public String Tipo { get; set; }
     public String Nome { get; set; }
+
+    public int Ordem { get; set; }
+    
     public bool Obrigatorio { get; set; } = false;
     public List<ObjectId> Alternativas { get; set; }
     public DateTime Date;

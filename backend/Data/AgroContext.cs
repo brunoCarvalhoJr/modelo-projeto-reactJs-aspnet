@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Models;
 using Microsoft.AspNetCore.Identity;
+using backend.Models.Historico;
 
 namespace backend.Data
 {
@@ -26,8 +27,15 @@ namespace backend.Data
     public DbSet<OcorrenciaCategoria> OcorrenciaCategorias { get; set; }
     public DbSet<Pergunta> Perguntas { get; set; }
     public DbSet<Talhao> Talhoes { get; set; }
+    public DbSet<Cultura> Culturas { get; set; }
     public DbSet<UsuarioFazenda> UsuarioFazenda { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
+
+    //HISTORICO
+    public DbSet<HistoricoFormularioItem> HistoricoFormularioItems { get; set; }
+    public DbSet<HistoricoFormularioItemAlternativa> HistoricoFormularioItemAlternativas { get; set; }
+    public DbSet<HistoricoFoto> HistoricoFotos { get; set; }
+    public DbSet<HistoricoLocalizacao> HistoricoLocalizacoes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

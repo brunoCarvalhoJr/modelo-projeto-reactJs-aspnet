@@ -40,11 +40,13 @@ namespace backend.Results
     public DetalheFormulario(Formulario formulario)
     {
       this.Nome = formulario.Nome;
+      this.Responder = formulario.Responder;
       this.Itens = formulario.Itens.Select(c => new DetalheFormularioItem(c)).ToList();
       this.Fotos = formulario.Fotos.Select(c => new DetalheFoto(c)).ToList();
     }
 
     public String Nome { get; set; }
+    public Boolean Responder { get; set; }
     public List<DetalheFoto> Fotos { get; set; }
     public List<DetalheFormularioItem> Itens { get; set; }
   }
