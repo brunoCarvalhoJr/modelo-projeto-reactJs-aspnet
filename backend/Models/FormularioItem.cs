@@ -10,6 +10,7 @@ namespace backend.Models
   public class FormularioItem : BaseModel
   {
     public String Valor { get; set; }
+    public int Ordem { get; set; }
     public virtual List<FormularioItemAlternativa> Alternativas { get; set; } = new List<FormularioItemAlternativa>();
 
     [ForeignKey(nameof(Pergunta))]

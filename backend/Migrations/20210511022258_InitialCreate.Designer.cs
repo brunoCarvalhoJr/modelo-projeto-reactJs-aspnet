@@ -11,7 +11,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AgroContext))]
-    [Migration("20210507141601_InitialCreate")]
+    [Migration("20210511022258_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -394,6 +394,10 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nome");
 
+                    b.Property<int>("Ordem")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
+
                     b.Property<bool>("Responder")
                         .HasColumnType("boolean")
                         .HasColumnName("responder");
@@ -421,6 +425,10 @@ namespace backend.Migrations
                     b.Property<Guid>("FormularioId")
                         .HasColumnType("uuid")
                         .HasColumnName("formulario_id");
+
+                    b.Property<int>("Ordem")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordem");
 
                     b.Property<Guid>("PerguntaId")
                         .HasColumnType("uuid")

@@ -7,13 +7,10 @@ import {
   Typography
 } from "antd";
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   LogoutOutlined,
   UserOutlined,
   UnorderedListOutlined,
-  UploadOutlined,
-  EnvironmentOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 
 import { Avatar } from "antd";
@@ -41,8 +38,8 @@ const AppLayout = ({ children, history}) => {
     history.push('/');
   };
 
-  const visualizar = () => {
-    history.push('/mapa');
+  const pergutnas = () => {
+    history.push('/pergunta/listar');
   };
 
   const menuUsuario = () => (
@@ -60,6 +57,9 @@ const AppLayout = ({ children, history}) => {
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
           <Menu.Item key="1" icon={<UnorderedListOutlined />} onClick={selecionar}>
             Selecionar de Fazenda
+          </Menu.Item>
+          <Menu.Item key="2" icon={<QuestionCircleOutlined />} onClick={pergutnas}>
+            Perguntas
           </Menu.Item>
         </Menu>
       </Sider>

@@ -6,7 +6,6 @@ import { Base } from './BaseSchema';
 class FormularioItem extends Base {
   public id: string;
   public valor: string | undefined;
-  public ordem: number;
   public alternativas: Alternativa[] | undefined;
   public pergunta: Pergunta;
 
@@ -14,7 +13,6 @@ class FormularioItem extends Base {
     super();
     this.id = uuidv4();
     this.pergunta = pergunta;
-    this.ordem = pergunta.ordem;
     if (pergunta.tipo === 'select' && this.pergunta.alternativas[0]) {
       this.valor = this.pergunta.alternativas[0].id;
     }
@@ -26,7 +24,6 @@ class FormularioItem extends Base {
     properties: {
       id: 'string',
       valor: 'string?',
-      ordem: 'int',
       pergunta: 'Pergunta',
       alternativas: 'Alternativa[]',
       date: 'date',

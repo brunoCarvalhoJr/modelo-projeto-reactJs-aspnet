@@ -23,6 +23,7 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Valor = source.Valor,
+        Ordem = source.Ordem,
         Pergunta = new ObjectId(source.PerguntaId),
         Alternativas = source.Alternativas.Select(c => new ObjectId(c.AlternativaId)).ToList(),
         Date = source.DataSync
@@ -36,6 +37,7 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Valor = source.Valor,
+        Ordem = source.Ordem,
         PerguntaId = source.Pergunta.Id,
         Alternativas = source.Alternativas.Select(c => new backend.Models.FormularioItemAlternativa() { FormularioItemId = source.Id, AlternativaId = c.Id }).ToList()
       };

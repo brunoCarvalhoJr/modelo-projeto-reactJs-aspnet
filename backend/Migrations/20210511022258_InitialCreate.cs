@@ -370,6 +370,7 @@ namespace backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     nome = table.Column<string>(type: "text", nullable: true),
+                    ordem = table.Column<int>(type: "integer", nullable: false),
                     responder = table.Column<bool>(type: "boolean", nullable: false),
                     localizacao_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -478,6 +479,7 @@ namespace backend.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     valor = table.Column<string>(type: "text", nullable: true),
+                    ordem = table.Column<int>(type: "integer", nullable: false),
                     pergunta_id = table.Column<Guid>(type: "uuid", nullable: false),
                     formulario_id = table.Column<Guid>(type: "uuid", nullable: false),
                     data_sync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)

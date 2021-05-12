@@ -28,7 +28,7 @@ namespace Sync.v1
       var fotos = agroContext.Fotos.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Foto = new FotoAdapter().Pull(fotos);
 
-      var perguntas = agroContext.Perguntas.Where(c => c.DataSync >= dataSync).ToList();
+      var perguntas = agroContext.Perguntas.Where(c => c.Ativo && c.DataSync >= dataSync).ToList();
       populateSchema.Pergunta = new PerguntaAdapter().Pull(perguntas);
 
       var ocorrencias = agroContext.Ocorrencias.Where(c => c.DataSync >= dataSync).ToList();
@@ -49,7 +49,9 @@ namespace Sync.v1
       var talhoes = agroContext.Talhoes.Where(c => c.DataSync >= dataSync).ToList();
       populateSchema.Talhao = new TalhaoAdapter().Pull(talhoes);
 
-      var fazendas = agroContext.Fazendas.Where(c => c.DataSync >= dataSync).ToList();
+      var talhoesFazendaId = talhoes.Select(c => c.FazendaId).ToList();
+
+      var fazendas = agroContext.Fazendas.Where(c => c.DataSync >= dataSync || talhoesFazendaId.Any(t => c.Id.Equals(t))).ToList();
       populateSchema.Fazenda = new FazendaAdapter().Pull(fazendas);
 
       return populateSchema;

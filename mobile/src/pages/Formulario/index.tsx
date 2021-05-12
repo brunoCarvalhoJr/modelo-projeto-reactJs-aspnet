@@ -158,6 +158,7 @@ function HeaderFormulario({ onPress }) {
 const FormularioScreen: React.FC = ({ navigation }) => {
   const { localizacao } = useCadastro();
   const [formularios, setFormularios] = useState<Formulario[]>([]);
+  const [localizacaoDb, setLocalizacaoDb] = useState<Localizacao>([]);
   const [refresh, setRefresh] = useState(1);
 
   useEffect(() => {
@@ -166,6 +167,8 @@ const FormularioScreen: React.FC = ({ navigation }) => {
         instanceDB
           .objects<Localizacao>(Localizacao.schema.name)
           .find((c) => c.id === localizacao?.id) || ({} as Localizacao);
+
+      setLocalizacaoDb(localizacaoDb);
 
       const formulariosLocalizacao = localizacaoDb.formularios || [];
 
@@ -223,7 +226,12 @@ const FormularioScreen: React.FC = ({ navigation }) => {
   };
 
   const onPress = () => {
-    navigation.navigate('Compartilhar');
+    getRealm().then((instanceDB) => {
+      instanceDB.write(() => {
+        localizacaoDb.status = Localizacao.STATUS.CONCLUIDO
+      })
+      navigation.navigate('Compartilhar');
+    })
   };
 
   const ImageItem = (foto: Foto) => (
@@ -295,6 +303,24 @@ const FormularioScreen: React.FC = ({ navigation }) => {
                           <View style={styles.formItemField}>
                             <Item regular>
                               <Input
+                                defaultValue={formularioItem.valor}
+                                onChangeText={(value) => {
+                                  getRealm().then((instanceDb) => {
+                                    instanceDb.write(() => {
+                                      formularioItem.valor = value;
+                                      setRefresh(refresh + 1);
+                                    });
+                                  });
+                                }}
+                              />
+                            </Item>
+                          </View>
+                        )}
+                        {formularioItem.pergunta.tipo === 'numeric' && (
+                          <View style={styles.formItemField}>
+                            <Item regular>
+                              <Input
+                                keyboardType="numeric"
                                 defaultValue={formularioItem.valor}
                                 onChangeText={(value) => {
                                   getRealm().then((instanceDb) => {

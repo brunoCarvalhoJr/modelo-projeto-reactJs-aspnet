@@ -27,10 +27,12 @@ namespace backend.Results
       this.Tipo = formularioItem.Pergunta.Tipo;
       this.Alternativas = formularioItem.Alternativas.Select(f => f.Alternativa.Nome).ToList();
       this.Pergunta = formularioItem.Pergunta.Nome;
+      this.Ordem = formularioItem.Pergunta.Ordem;
     }
 
     public String Valor { get; set; }
     public String Tipo { get; set; }
+    public int Ordem { get; set; }
     public String Pergunta { get; set; }
     public virtual List<String> Alternativas { get; set; }
   }

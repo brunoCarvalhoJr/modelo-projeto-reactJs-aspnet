@@ -10,9 +10,8 @@ namespace backend.Models
   public class Formulario : BaseModel
   {
     public String Nome { get; set; }
-
+    public int Ordem { get; set; }
     public Boolean Responder { get; set; }
-
     public virtual List<FormularioItem> Itens { get; set; } = new List<FormularioItem>();
     public virtual List<Foto> Fotos { get; set; } = new List<Foto>();
 

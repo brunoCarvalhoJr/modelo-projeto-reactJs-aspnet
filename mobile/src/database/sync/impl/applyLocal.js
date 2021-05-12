@@ -6,11 +6,11 @@ const getObjetId = (item) => {
 
 const getObjectIdByList = (records) =>
   records.map((c) => {
-    return {id: c.id};
+    return { id: c.id };
   });
 
 function createObjectByRecord(record) {
-  const {properties} = record.objectSchema();
+  const { properties } = record.objectSchema();
   const cloneObject = {};
   Object.entries(properties).forEach((entry) => {
     const [key, value] = entry;
@@ -47,6 +47,13 @@ export default function applyLocalChanges(REALM, dateSync) {
   return new Promise((resolve) => {
     let responses = {};
     const promises = [];
+
+    //DELETA TODAS AS LOCALIZAÇÕES NÃO FINALIZADA
+    const localizacoes = REALM.objects('Localizacao').filtered(`status = $0`, 'PENDENTE');
+    [...localizacoes].forEach((localizacao) => {
+      REALM.delete(localizacao);
+    })
+
     tabelasSync.forEach(async (tableName) => {
       const query = `date >= $0`;
       const records = REALM.objects(tableName).filtered(query, dateSync);

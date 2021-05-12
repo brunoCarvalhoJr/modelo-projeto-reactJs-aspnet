@@ -23,6 +23,8 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Nome = source.Nome,
+        Ordem = source.Ordem,
+        Responder = source.Responder,
         Fotos = source.Fotos.Select(c => new ObjectId(c.Id)).ToList(),
         Itens = source.Itens.Select(c => new ObjectId(c.Id)).ToList(),
         Date = source.DataSync
@@ -36,6 +38,8 @@ namespace Sync.v1.Models
       {
         Id = source.Id,
         Nome = source.Nome,
+        Ordem = source.Ordem,
+        Responder = source.Responder,
         Fotos = source.Fotos.Select(c => new backend.Models.Foto { Id = c.Id }).ToList(),
         Itens = source.Itens.Select(c => new backend.Models.FormularioItem { Id = c.Id }).ToList(),
       };

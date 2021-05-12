@@ -107,8 +107,7 @@ function TalhaoScreen({ route, navigation }) {
         .find((c) => c.id === talhaoid);
       setTalhao(talhaoDb || talhao);
       if (talhaoDb) {
-        console.log(talhaoDb.centro);
-        setCentro(JSON.parse(talhaoDb.centro))
+        setCentro(JSON.parse(talhaoDb.centro));
       }
     });
   }, [talhaoid]);
@@ -244,7 +243,7 @@ function TalhaoScreen({ route, navigation }) {
               />
               {talhao.localizacoes &&
                 !inserindoLocalizacao &&
-                talhao.localizacoes.map((localizacao) => (
+                talhao.localizacoes.filter(l=>l.status != Localizacao.STATUS.PENDENTE).map((localizacao) => (
                   <React.Fragment>
                     <Marker
                       coordinate={JSON.parse(localizacao.theGeom || '')}

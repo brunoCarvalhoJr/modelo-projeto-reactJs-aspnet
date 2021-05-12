@@ -44,10 +44,15 @@ const FormSizeDemo = ({ detalhe }) => {
                         onValuesChange={onFormLayoutChange}
                         size={componentSize}
                     >
-                        {formulario.itens.map((itemFomulario) => (
+                        {formulario.itens.sort((a, b) => a.ordem - b.ordem).map((itemFomulario) => (
                             <>
 
                                 {itemFomulario.tipo === 'text' &&
+                                    <Form.Item label={itemFomulario.pergunta}>
+                                        <Input disabled value={itemFomulario.valor} />
+                                    </Form.Item>
+                                }
+                                {itemFomulario.tipo === 'numeric' &&
                                     <Form.Item label={itemFomulario.pergunta}>
                                         <Input disabled value={itemFomulario.valor} />
                                     </Form.Item>

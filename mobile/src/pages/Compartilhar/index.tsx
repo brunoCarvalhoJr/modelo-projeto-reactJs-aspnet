@@ -290,6 +290,18 @@ const CompartilharScreen: React.FC = ({ navigation }) => {
                           </Item>
                         </View>
                       )}
+                       {formularioItem.pergunta.tipo === 'numeric' && (
+                          <View style={styles.formItemField}>
+                            <Item regular>
+                              <Input
+                                style={styles.formItemInput}
+                                disabled={true}
+                                keyboardType="numeric"
+                                defaultValue={formularioItem.valor}
+                              />
+                            </Item>
+                          </View>
+                        )}
                       {formularioItem.pergunta.tipo === 'select' && (
                         <View style={styles.formItemField}>
                           <Item regular disabled>
