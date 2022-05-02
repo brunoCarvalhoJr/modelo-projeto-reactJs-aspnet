@@ -1,10 +1,10 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 import * as auth from '../http/auth';
 import api from '../http/api';
 
 const AuthContext = createContext({
-  signed: false
+  signed: false,
 });
 
 const AuthProvider = ({ children }) => {
@@ -47,7 +47,14 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, user, loading, signIn: signIn, signOut: signOut }}>
+      value={{
+        signed: !!user,
+        user,
+        loading,
+        signIn: signIn,
+        signOut: signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
